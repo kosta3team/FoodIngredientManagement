@@ -1,0 +1,184 @@
+/* 공통 레이아웃 및 컴포넌트 스타일 */
+:root {
+  --hq-sidebar-width: 245px;
+  --hq-sidebar-bg: #20365d;
+  --hq-sidebar-active: #3478df;
+  --hq-page-bg: #f5f6f8;
+}
+
+body {
+  background: var(--hq-page-bg);
+  color: #212529;
+}
+
+.hq-layout {
+  min-height: 100vh;
+}
+
+.hq-sidebar {
+  width: var(--hq-sidebar-width);
+  min-height: 100vh;
+  background: var(--hq-sidebar-bg);
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.hq-brand {
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.hq-sidebar .nav-link {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  color: #dce5f5;
+  padding: .55rem .7rem;
+  border-radius: .4rem;
+  font-size: .9rem;
+}
+
+.hq-sidebar .nav-link:hover,
+.hq-sidebar .nav-link.active {
+  color: #fff;
+  background: var(--hq-sidebar-active);
+}
+
+.hq-sidebar .nav-heading {
+  color: #91a7cb;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  margin: 1rem .7rem .35rem;
+}
+
+.hq-sidebar .nav-sub-link {
+  padding-left: 2.2rem;
+  font-size: .82rem;
+}
+
+.hq-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.hq-header {
+  min-height: 72px;
+  background: #fff;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.hq-card {
+  border: 0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
+}
+
+.hq-kpi-number {
+  font-size: 1.65rem;
+  font-weight: 700;
+}
+
+.hq-chart {
+  display: block;
+  width: 100%;
+  height: 210px;
+}
+
+.hq-table th {
+  background: #f1f3f6;
+  white-space: nowrap;
+}
+
+.hq-page-title {
+  font-weight: 700;
+}
+
+@media (max-width: 992px) {
+  :root { --hq-sidebar-width: 210px; }
+}
+
+@media (max-width: 768px) {
+  .hq-sidebar {
+    width: 68px;
+    padding: .75rem .4rem !important;
+  }
+  .hq-sidebar .brand-text,
+  .hq-sidebar .menu-text,
+  .hq-sidebar .nav-heading,
+  .hq-sidebar .nav-sub-link {
+    display: none;
+  }
+  .hq-sidebar .nav-link {
+    justify-content: center;
+    padding: .7rem .2rem;
+  }
+  .hq-header {
+    padding: .75rem !important;
+  }
+  .hq-content {
+    padding: 1rem !important;
+  }
+}
+
+/*
+사이드바 시작
+ */
+.hq-sidebar {
+  width: 230px;
+  min-height: 100vh;
+  flex-shrink: 0;
+  background: #172b4d;
+}
+
+/* 대분류 메뉴 */
+.nav-parent {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  padding: 11px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+.nav-parent:hover {
+  background: #29436b;
+  color: #fff;
+}
+
+/* 하위 메뉴 기본: 숨김 */
+.nav-submenu {
+  display: none;
+  padding: 4px 0 6px 35px;
+}
+
+/* 마우스 호버 또는 키보드 포커스 시 펼침 */
+.nav-group:hover .nav-submenu,
+.nav-group:focus-within .nav-submenu {
+  display: block;
+}
+
+/* 하위 메뉴 링크 */
+.nav-submenu a {
+  display: block;
+  padding: 8px 10px;
+  color: #b8c5d6;
+  font-size: 13px;
+  text-decoration: none;
+  border-radius: 3px;
+}
+
+.nav-submenu a:hover {
+  color: #fff;
+  background: #29436b;
+}
+
+/* 하단 관리자 영역 */
+.sidebar-footer {
+  border-color: #40516c !important;
+}
+
+/*
+사이드바 끝
+ */
