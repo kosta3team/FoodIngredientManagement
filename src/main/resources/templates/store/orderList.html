@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>직영점 - 발주 요청 조회</title>
+<link href="/vendor/bootstrap/bootstrap.min.css" rel="stylesheet"/>
+<!-- 기존 공통 CSS는 그대로 두고, Bootstrap 파일만 로컬로 불러온다. -->
+<link href="/css/common.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="hq-layout d-flex">
+<!-- 기존 sidebar.html을 한 번만 AJAX 로드하여 모든 화면에서 재사용한다. -->
+<div id="sidebar-container"></div>
+<main class="hq-main">
+<header class="hq-header d-flex align-items-center px-4 fw-bold">식재료 · 재고 · 폐기 운영 관리</header>
+<!-- 화면 본문: 카드와 표는 common.css 및 Bootstrap 클래스만 사용한다. -->
+<div class="hq-content p-4">
+<div class="d-flex justify-content-between flex-wrap gap-2 align-items-center mb-3"><h4 class="hq-page-title mb-0">발주요청 조회 (직영점)</h4><span class="badge text-bg-primary fs-6">지점: 서울 한국대점</span></div>
+<div class="card hq-card p-3 mb-3"><!--DB 결과를 AJAX로 채운 다음 현재 화면의 행을 검색 조건에 따라 필터링한다.--><form class="row g-2 align-items-end" data-search-table="storeOrderTable">
+<div class="col-md-4"><label class="form-label fw-semibold">검색</label><input class="form-control" name="keyword" placeholder="발주번호 또는 품목명"/></div>
+<div class="col-md-2"><label class="form-label fw-semibold">상태</label><select class="form-select" name="status"><option value="">전체</option><option value="REQUESTED">요청접수</option><option value="PENDING">대기</option><option value="APPROVED">승인</option><option value="REJECTED">거절</option></select></div>
+<div class="col-md-2"><label class="form-label fw-semibold">시작일</label><input class="form-control" name="startDate" type="date"/></div><div class="col-md-2"><label class="form-label fw-semibold">종료일</label><input class="form-control" name="endDate" type="date"/></div>
+<div class="col-auto"><button class="btn btn-primary" type="submit">검색</button></div>
+</form></div>
+<div class="card hq-card p-3"><div class="table-responsive"><table class="table table-hover align-middle hq-table mb-0" id="storeOrderTable"><thead><tr><th>순번</th><th>발주일시</th><th>주문요약</th><th class="text-end">총 발주금액</th><th>처리 상태</th><th>상세보기</th><th>수정</th><th>삭제</th></tr></thead><!--MariaDB에서 가져온 데이터로 목록을 구성한다.--><tbody></tbody></table></div></div>
+<div class="text-end fs-5 fw-bold mt-3">총 발주 누계 금액: <span class="text-primary" id="storeOrderTotal">0원</span></div>
+<div class="text-secondary mt-2">※ MariaDB에 저장된 데이터를 조회합니다. 인증·권한 기능은 아직 구현되지 않았습니다.</div>
+</div>
+</main>
+</div>
+<!-- Offcanvas 외형은 목록에 두고, 상세 본문만 fetch로 가져와 오른쪽에서 표시한다. -->
+<div aria-labelledby="commonDrawerTitle" class="offcanvas offcanvas-end w-50" id="commonDetailDrawer" tabindex="-1">
+<div class="offcanvas-header border-bottom">
+<h5 class="offcanvas-title fw-bold" id="commonDrawerTitle">상세 정보</h5>
+<button aria-label="닫기" class="btn-close" data-bs-dismiss="offcanvas" type="button"></button>
+</div>
+<div class="offcanvas-body" id="commonDrawerBody"></div>
+</div>
+<script src="/js/api.js"></script><script src="/vendor/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="/js/layout.js"></script>
+<script src="/js/drawer.js"></script>
+<script src="/js/storeOrder.js"></script>
+<script src="/js/pageDemo.js"></script>
+</body>
+</html>

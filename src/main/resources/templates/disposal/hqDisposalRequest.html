@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>본사 - 폐기 등록</title>
+<link href="/vendor/bootstrap/bootstrap.min.css" rel="stylesheet"/>
+<!-- 기존 공통 CSS는 그대로 두고, Bootstrap 파일만 로컬로 불러온다. -->
+<link href="/css/common.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="hq-layout d-flex">
+<!-- 기존 sidebar.html을 한 번만 AJAX 로드하여 모든 화면에서 재사용한다. -->
+<div id="sidebar-container"></div>
+<main class="hq-main">
+<header class="hq-header d-flex align-items-center px-4 fw-bold">식재료 · 재고 · 폐기 운영 관리</header>
+<!-- 화면 본문: 카드와 표는 common.css 및 Bootstrap 클래스만 사용한다. -->
+<div class="hq-content p-4">
+<div class="d-flex justify-content-between flex-wrap gap-2 align-items-center mb-3"><h4 class="hq-page-title mb-0">폐기 등록 (본사)</h4><a class="btn btn-outline-secondary" href="/hq/disposal/list">폐기 조회</a></div>
+<div class="card hq-card p-3"><!--유효성 검사 후 JavaScript에서 POST API를 호출해 MariaDB에 저장한다.--><form id="disposalRequestForm"><h6 class="fw-bold mb-3">폐기 정보 입력</h6><div class="row g-3"><div class="col-md-6"><label class="form-label fw-semibold" for="disposalLocation">폐기 장소</label><select class="form-select" id="disposalLocation" required=""><option value="">장소 선택</option><option>본사 물류창고</option><option>서울 한국대점</option><option>강남점</option><option>잠실점</option></select></div><div class="col-md-6"><label class="form-label fw-semibold" for="disposalIngredient">식재료명</label><select class="form-select" id="disposalIngredient" required=""><option value="">식재료 선택</option></select></div><div class="col-md-6"><label class="form-label fw-semibold" for="disposalInventory">재고번호</label><select class="form-select" id="disposalInventory" required=""><option value="">재고 선택</option></select></div><div class="col-md-6"><label class="form-label fw-semibold" for="disposalQty">폐기수량</label><input class="form-control" id="disposalQty" min="1" required="" type="number" value="1"/></div><div class="col-md-6"><label class="form-label fw-semibold" for="disposalType">폐기유형</label><select class="form-select" id="disposalType"><option>사용기한 경과</option><option>파손/오염</option><option>품질 이상</option><option>식재료규칙</option></select></div><div class="col-md-6"><label class="form-label fw-semibold" for="disposalMethod">처리방식</label><select class="form-select" id="disposalMethod"><option>즉시 폐기</option><option>현장 폐기</option><option>반품 처리</option></select></div><div class="col-md-6"><label class="form-label fw-semibold" for="disposedAt">폐기일자</label><input class="form-control" id="disposedAt" required="" type="date"/></div><div class="col-md-6"><label class="form-label fw-semibold" for="disposalManager">등록 담당자</label><input class="form-control" id="disposalManager" maxlength="50" required="" value="본사 관리자"/></div><div class="col-12"><label class="form-label fw-semibold" for="disposalReason">폐기 상세사유</label><textarea class="form-control" id="disposalReason" placeholder="폐기 사유 및 특이사항" required="" rows="4"></textarea></div><div class="col-12"><label class="form-label fw-semibold" for="disposalPhoto">증빙사진 (선택)</label><input accept="image/*" class="form-control" id="disposalPhoto" type="file"/><div class="small text-secondary mt-1">증빙사진 DB 저장은 아직 구현하지 않았습니다.</div></div></div><div class="text-end mt-4"><a class="btn btn-outline-secondary me-2" href="/hq/disposal/list">취소</a><button class="btn btn-primary" type="submit">폐기 등록</button></div></form></div>
+</div>
+</main>
+</div>
+<script src="/js/api.js"></script><script src="/vendor/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="/js/layout.js"></script>
+<script src="/js/pageDemo.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+    const dateInput = document.getElementById("disposedAt");
+    if (dateInput && !dateInput.value) {
+        const today = new Date();
+        const local = new Date(today.getTime() - today.getTimezoneOffset() * 60000);
+        dateInput.value = local.toISOString().slice(0, 10);
+    }
+});</script></body>
+</html>

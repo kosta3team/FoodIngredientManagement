@@ -27,7 +27,14 @@
         <url/>
     </scm>
     <properties>
-        <java.version>17</java.version>
+        <!-- 팀 프로젝트의 Java 버전 -->
+        <java.version>21</java.version>
+
+        <!-- Java 21 문법과 API 기준으로 컴파일 -->
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+
+        <!-- Lombok 1.18.48부터 JDK 27 컴파일러를 지원한다. 기존 Lombok 설정은 유지한다. -->
+        <lombok.version>1.18.48</lombok.version>
     </properties>
     <dependencies>
         <dependency>
@@ -41,6 +48,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc</artifactId>
+        </dependency>
+        <!-- 임시 JDBC 데이터 접근. Service/Repository 작성 시 DB 로직 이동 가능 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
@@ -62,6 +74,8 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <!-- JDK 27을 실수로 사용하더라도 기존 버전으로 컴파일 오류가 나지 않도록 명시 -->
+            <version>${lombok.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -108,6 +122,8 @@
                                 <path>
                                     <groupId>org.projectlombok</groupId>
                                     <artifactId>lombok</artifactId>
+                                    <!-- Maven 컴파일 시 Lombok 버전을 동일하게 맞춘다. -->
+                                    <version>${lombok.version}</version>
                                 </path>
                             </annotationProcessorPaths>
                         </configuration>
@@ -123,6 +139,8 @@
                                 <path>
                                     <groupId>org.projectlombok</groupId>
                                     <artifactId>lombok</artifactId>
+                                    <!-- 테스트 컴파일에도 같은 Lombok 버전을 사용한다. -->
+                                    <version>${lombok.version}</version>
                                 </path>
                             </annotationProcessorPaths>
                         </configuration>
@@ -132,4 +150,35 @@
         </plugins>
     </build>
 
+    <!-- 팀원 모두 JDK 21로 빌드하도록 검사 -->
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.6.3</version>
+
+        <executions>
+            <execution>
+                <id>check-java-version</id>
+                <phase>validate</phase>
+
+                <goals>
+                    <goal>enforce</goal>
+                </goals>
+
+                <configuration>
+                    <rules>
+                        <requireJavaVersion>
+                            <!-- JDK 21 이상, 22 미만만 허용 -->
+                            <version>[21,22)</version>
+
+                            <message>
+                                이 프로젝트는 JDK 21을 사용해야 합니다.
+                                JAVA_HOME과 IntelliJ SDK를 확인하세요.
+                            </message>
+                        </requireJavaVersion>
+                    </rules>
+                </configuration>
+            </execution>
+        </executions>
+    </plugin>
 </project>

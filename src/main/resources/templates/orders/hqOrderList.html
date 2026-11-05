@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>본사 - 발주 조회</title>
+<link href="/vendor/bootstrap/bootstrap.min.css" rel="stylesheet"/>
+<!-- 기존 공통 CSS는 그대로 두고, Bootstrap 파일만 로컬로 불러온다. -->
+<link href="/css/common.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="hq-layout d-flex">
+<!-- 기존 sidebar.html을 한 번만 AJAX 로드하여 모든 화면에서 재사용한다. -->
+<div id="sidebar-container"></div>
+<main class="hq-main">
+<header class="hq-header d-flex align-items-center px-4 fw-bold">식재료 · 재고 · 폐기 운영 관리</header>
+<!-- 화면 본문: 카드와 표는 common.css 및 Bootstrap 클래스만 사용한다. -->
+<div class="hq-content p-4">
+<div class="d-flex justify-content-between flex-wrap gap-2 align-items-center mb-3"><h4 class="hq-page-title mb-0">발주 조회 (본사)</h4><span class="badge text-bg-primary fs-6">본사 관리자</span></div>
+<div class="card hq-card p-3 mb-3"><!--DB 결과를 AJAX로 채운 다음 현재 화면의 행을 검색 조건에 따라 필터링한다.--><form class="row g-2 align-items-end" data-search-table="hqOrderTable">
+<div class="col-md-4"><label class="form-label fw-semibold">검색</label><input class="form-control" name="keyword" placeholder="발주번호 또는 지점명"/></div>
+<div class="col-md-2"><label class="form-label fw-semibold">지점</label><select class="form-select" name="location"><option value="">전체 지점</option><option>서울 한국대점</option><option>강남점</option><option>잠실점</option></select></div>
+<div class="col-md-2"><label class="form-label fw-semibold">시작일</label><input class="form-control" name="startDate" type="date"/></div><div class="col-md-2"><label class="form-label fw-semibold">종료일</label><input class="form-control" name="endDate" type="date"/></div>
+<div class="col-auto"><button class="btn btn-primary" type="submit">검색</button></div>
+</form></div>
+<div class="card hq-card p-3"><div class="row g-2 align-items-end mb-3"><div class="col-auto"><label class="form-label fw-semibold" for="bulkStatus">선택 발주 처리</label><select class="form-select" id="bulkStatus"><option value="">상태 선택</option><option value="APPROVED">승인</option><option value="PENDING">대기</option><option value="REJECTED">거절</option></select></div><div class="col-auto"><div class="text-secondary mb-2">선택: <strong id="selectedOrderCount">0</strong>건</div><button class="btn btn-primary" disabled="" id="applyBulkStatus" onclick="applyBulkStatus()" type="button">일괄 처리</button></div></div>
+<div class="border rounded p-3 mb-3" hidden="" id="bulkReasonArea"><label class="form-label fw-semibold" for="bulkReason">공통 사유 (선택된 모든 발주에 적용)</label><textarea class="form-control mb-3" id="bulkReason" placeholder="대기 또는 거절 사유 입력" rows="2"></textarea><div class="d-flex flex-wrap align-items-center gap-2 mb-2"><strong>예외 사유</strong><span class="text-secondary">공통 사유가 다른 발주만 지정합니다.</span></div><div class="row g-2"><div class="col-md-3"><select class="form-select" id="exceptionOrderId"><option value="">발주번호 선택</option></select></div><div class="col-md-7"><input class="form-control" id="exceptionReason" placeholder="선택한 발주의 예외 사유" type="text"/></div><div class="col-md-2"><button class="btn btn-outline-primary w-100" onclick="addExceptionReason()" type="button">예외 추가</button></div></div><ul class="list-group mt-2" id="exceptionReasonList"></ul></div>
+<div class="table-responsive"><table class="table table-hover align-middle hq-table mb-0" id="hqOrderTable"><thead><tr><th><input aria-label="전체 선택" class="form-check-input" id="selectAllOrders" onchange="selectAllOrders(this)" type="checkbox"/></th><th>순번</th><th>발주번호</th><th>발주일시</th><th>도착 지점</th><th>주문요약</th><th class="text-end">총 발주금액</th><th>현재 상태</th><th>변경 예정</th><th>상세</th></tr></thead><!--MariaDB에서 가져온 데이터로 목록을 구성한다.--><tbody></tbody></table></div></div>
+<div class="text-secondary mt-3">※ MariaDB에 저장된 데이터를 조회합니다. 인증·권한 기능은 아직 구현되지 않았습니다.</div>
+</div>
+</main>
+</div>
+<!-- Offcanvas 외형은 목록에 두고, 상세 본문만 fetch로 가져와 오른쪽에서 표시한다. -->
+<div aria-labelledby="commonDrawerTitle" class="offcanvas offcanvas-end w-50" id="commonDetailDrawer" tabindex="-1">
+<div class="offcanvas-header border-bottom">
+<h5 class="offcanvas-title fw-bold" id="commonDrawerTitle">상세 정보</h5>
+<button aria-label="닫기" class="btn-close" data-bs-dismiss="offcanvas" type="button"></button>
+</div>
+<div class="offcanvas-body" id="commonDrawerBody"></div>
+</div>
+<script src="/js/api.js"></script><script src="/vendor/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="/js/layout.js"></script>
+<script src="/js/drawer.js"></script>
+<script src="/js/orderReview.js"></script>
+<script src="/js/pageDemo.js"></script>
+</body>
+</html>

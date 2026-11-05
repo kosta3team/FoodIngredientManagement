@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>본사 - 식재료 조회</title>
+<link href="/vendor/bootstrap/bootstrap.min.css" rel="stylesheet"/>
+<!-- 기존 공통 CSS는 그대로 두고, Bootstrap 파일만 로컬로 불러온다. -->
+<link href="/css/common.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="hq-layout d-flex">
+<!-- 기존 sidebar.html을 한 번만 AJAX 로드하여 모든 화면에서 재사용한다. -->
+<div id="sidebar-container"></div>
+<main class="hq-main">
+<header class="hq-header d-flex align-items-center px-4 fw-bold">식재료 · 재고 · 폐기 운영 관리</header>
+<!-- 화면 본문: 카드와 표는 common.css 및 Bootstrap 클래스만 사용한다. -->
+<div class="hq-content p-4">
+<div class="d-flex justify-content-between flex-wrap gap-2 align-items-center mb-3"><h4 class="hq-page-title mb-0">식재료 목록 조회 (본사)</h4><a class="btn btn-primary" href="/ingredients/request">식재료 등록</a></div>
+<div class="card hq-card p-3 mb-3"><!--DB 결과를 AJAX로 채운 다음 현재 화면의 행을 검색 조건에 따라 필터링한다.--><form class="row g-2 align-items-end" data-search-table="ingredientTable">
+<div class="col-md-4"><label class="form-label fw-semibold">검색</label><input class="form-control" name="keyword" placeholder="식재료명 검색"/></div>
+<div class="col-auto"><button class="btn btn-primary" type="submit">검색</button></div>
+</form></div>
+<div class="card hq-card p-3"><div class="table-responsive"><table class="table table-hover align-middle hq-table mb-0" id="ingredientTable"><thead><tr><th>선택</th><th>코드</th><th>식재료명</th><th>분류</th><th>입고 단위</th><th>보관유형</th><th>단가</th><th>상세</th></tr></thead><tbody></tbody></table></div></div>
+</div>
+</main>
+</div>
+<!-- Offcanvas 외형은 목록에 두고, 상세 본문만 fetch로 가져와 오른쪽에서 표시한다. -->
+<div aria-labelledby="commonDrawerTitle" class="offcanvas offcanvas-end w-50" id="commonDetailDrawer" tabindex="-1">
+<div class="offcanvas-header border-bottom">
+<h5 class="offcanvas-title fw-bold" id="commonDrawerTitle">상세 정보</h5>
+<button aria-label="닫기" class="btn-close" data-bs-dismiss="offcanvas" type="button"></button>
+</div>
+<div class="offcanvas-body" id="commonDrawerBody"></div>
+</div>
+<script src="/js/api.js"></script><script src="/vendor/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="/js/layout.js"></script>
+<script src="/js/drawer.js"></script>
+<script src="/js/pageDemo.js"></script>
+</body>
+</html>

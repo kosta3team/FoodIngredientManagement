@@ -1,0 +1,17 @@
+<!-- 재고 상세: 재고 정보, 잔여 내역과 폐기 이력을 함께 보여준다. -->
+<div class="bg-light rounded p-3 mb-3">
+  <div class="row g-3"><div class="col-12"><strong>재고일련번호:</strong> <span data-detail-field="number">-</span></div>
+  <div class="col-6"><strong>지점명:</strong> <span data-detail-field="location">-</span></div>
+  <div class="col-6"><strong>담당자:</strong> <span data-detail-field="manager">-</span></div>
+  <div class="col-6"><strong>식재료명:</strong> <span data-detail-field="name">-</span></div>
+  <div class="col-6"><strong>분류:</strong> <span data-detail-field="category">-</span></div>
+  <div class="col-6"><strong>보관유형:</strong> <span data-detail-field="storage">-</span></div>
+  <div class="col-6"><strong>재고량:</strong> <span data-detail-field="quantity">-</span></div>
+  <div class="col-6"><strong>입고일:</strong> <span data-detail-field="received">-</span></div>
+  <div class="col-6"><strong>사용기한:</strong> <span data-detail-field="expiry">-</span></div>
+  <div class="col-12"><strong>공급 단가:</strong> <span data-detail-field="price">-</span></div></div>
+</div>
+<h6 class="fw-bold mt-3">재고 잔여 내역</h6>
+<div class="table-responsive"><table class="table hq-table"><thead><tr><th>식재료명</th><th>현재 재고량</th><th>사용기한</th></tr></thead><tbody><tr><td data-detail-field="name">-</td><td data-detail-field="quantity">-</td><td data-detail-field="expiry">-</td></tr></tbody></table></div>
+<h6 class="fw-bold mt-3">폐기 이력</h6>
+<div class="table-responsive"><table class="table hq-table"><thead><tr><th>폐기일시</th><th>폐기수량</th><th>폐기사유</th></tr></thead><tbody id="inventoryHistoryRows"></tbody></table></div>
