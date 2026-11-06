@@ -1,42 +1,231 @@
 <!DOCTYPE html>
-
 <html lang="ko">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>본사 - 식재료 조회</title>
-<link href="/vendor/bootstrap/bootstrap.min.css" rel="stylesheet"/>
-<!-- 기존 공통 CSS는 그대로 두고, Bootstrap 파일만 로컬로 불러온다. -->
-<link href="/css/common.css" rel="stylesheet"/>
-</head>
-<body>
-<div class="hq-layout d-flex">
-<!-- 기존 sidebar.html을 한 번만 AJAX 로드하여 모든 화면에서 재사용한다. -->
-<div id="sidebar-container"></div>
-<main class="hq-main">
-<header class="hq-header d-flex align-items-center px-4 fw-bold">식재료 · 재고 · 폐기 운영 관리</header>
-<!-- 화면 본문: 카드와 표는 common.css 및 Bootstrap 클래스만 사용한다. -->
-<div class="hq-content p-4">
-<div class="d-flex justify-content-between flex-wrap gap-2 align-items-center mb-3"><h4 class="hq-page-title mb-0">식재료 목록 조회 (본사)</h4><a class="btn btn-primary" href="/ingredients/request">식재료 등록</a></div>
-<div class="card hq-card p-3 mb-3"><!--DB 결과를 AJAX로 채운 다음 현재 화면의 행을 검색 조건에 따라 필터링한다.--><form class="row g-2 align-items-end" data-search-table="ingredientTable">
-<div class="col-md-4"><label class="form-label fw-semibold">검색</label><input class="form-control" name="keyword" placeholder="식재료명 검색"/></div>
-<div class="col-auto"><button class="btn btn-primary" type="submit">검색</button></div>
-</form></div>
-<div class="card hq-card p-3"><div class="table-responsive"><table class="table table-hover align-middle hq-table mb-0" id="ingredientTable"><thead><tr><th>선택</th><th>코드</th><th>식재료명</th><th>분류</th><th>입고 단위</th><th>보관유형</th><th>단가</th><th>상세</th></tr></thead><tbody></tbody></table></div></div>
-</div>
-</main>
-</div>
-<!-- Offcanvas 외형은 목록에 두고, 상세 본문만 fetch로 가져와 오른쪽에서 표시한다. -->
-<div aria-labelledby="commonDrawerTitle" class="offcanvas offcanvas-end w-50" id="commonDetailDrawer" tabindex="-1">
-<div class="offcanvas-header border-bottom">
-<h5 class="offcanvas-title fw-bold" id="commonDrawerTitle">상세 정보</h5>
-<button aria-label="닫기" class="btn-close" data-bs-dismiss="offcanvas" type="button"></button>
-</div>
-<div class="offcanvas-body" id="commonDrawerBody"></div>
-</div>
-<script src="/js/api.js"></script><script src="/vendor/bootstrap/bootstrap.bundle.min.js"></script>
-<script src="/js/layout.js"></script>
-<script src="/js/drawer.js"></script>
-<script src="/js/pageDemo.js"></script>
-</body>
+  <head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <title>
+      식재료 목록 조회 (본사)
+    </title>
+    <!-- 브라우저로 확인을 위한 로컬 링크 -->
+    <link href="../../static/vendor/bootstrap/bootstrap.min.css" rel="stylesheet" th:href="@{/vendor/bootstrap/bootstrap.min.css}"/>
+    <!-- 배포 후 프로젝트 실행하는 링크 -->
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"> -->
+    <!-- 기존 common.css는 수정하지 않고 그대로 사용 -->
+    <link href="../../static/css/common.css" rel="stylesheet" th:href="@{/css/common.css}"/>
+  </head>
+  <body>
+    <div class="hq-layout d-flex">
+
+      <!-- 공통 사이드바: 기존 sidebar.html을 한 번만 불러온다. -->
+      <div id="sidebar-container"></div>
+      <main class="hq-main">
+        <header class="hq-header d-flex align-items-center px-4 fw-bold">
+          식재료 · 재고 · 폐기 운영 관리
+        </header>
+        <div class="hq-content p-4">
+          <!-- 페이지 제목 및 이동 메뉴 -->
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <h4 class="hq-page-title mb-0">
+              식재료 목록 조회 (본사)
+            </h4>
+            <a class="btn btn-primary" href="ingredientRequest.html" th:href="@{/ingredients/request}">
+              식재료 등록
+            </a>
+          </div>
+          <!-- 검색 조건: 화면 구성만 제공하며 데이터는 예시 값 -->
+          <section class="card hq-card p-3 mb-3">
+            <h6 class="fw-bold mb-3">
+              검색 조건
+            </h6>
+            <div class="row g-2 align-items-end">
+              <div class="col-md-3">
+                <label class="form-label">
+                  식재료명
+                </label>
+                <input class="form-control" placeholder="식재료명" type="text"/>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">
+                  분류
+                </label>
+                <select class="form-select">
+                  <option>
+                    전체 분류
+                  </option>
+                  <option>
+                    채소류
+                  </option>
+                  <option>
+                    빵류
+                  </option>
+                  <option>
+                    유제품
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">
+                  보관유형
+                </label>
+                <select class="form-select">
+                  <option>
+                    전체
+                  </option>
+                  <option>
+                    냉장
+                  </option>
+                  <option>
+                    냉동
+                  </option>
+                  <option>
+                    실온
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-auto">
+                <button class="btn btn-primary" disabled="" type="button">
+                  검색
+                </button>
+              </div>
+            </div>
+            <p class="text-secondary small mt-2 mb-0">
+              검색 기능은 DB 연동 후 구현합니다.
+            </p>
+          </section>
+          <!-- 식재료 목록: 화면 구성만 제공하며 데이터는 예시 값 -->
+          <section class="card hq-card p-3 mb-3">
+            <h6 class="fw-bold mb-3">
+              식재료 목록
+            </h6>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle hq-table mb-0">
+                <thead>
+                  <tr>
+                    <th scope="col">
+                      선택
+                    </th>
+                    <th scope="col">
+                      코드
+                    </th>
+                    <th scope="col">
+                      식재료명
+                    </th>
+                    <th scope="col">
+                      분류
+                    </th>
+                    <th scope="col">
+                      입고 단위
+                    </th>
+                    <th scope="col">
+                      보관유형
+                    </th>
+                    <th scope="col">
+                      단가
+                    </th>
+                    <th scope="col">
+                      상세
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <input aria-label="품목 선택" class="form-check-input" type="checkbox"/>
+                    </td>
+                    <td>
+                      0001
+                    </td>
+                    <td>
+                      식빵
+                    </td>
+                    <td>
+                      빵류
+                    </td>
+                    <td>
+                      1봉
+                    </td>
+                    <td>
+                      실온
+                    </td>
+                    <td>
+                      2,000원
+                    </td>
+                    <td>
+                      <a class="btn btn-outline-primary btn-sm" href="ingredientDetail.html" th:href="@{/ingredients/detail/0001}">
+                        상세 보기
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input aria-label="품목 선택" class="form-check-input" type="checkbox"/>
+                    </td>
+                    <td>
+                      0006
+                    </td>
+                    <td>
+                      양배추
+                    </td>
+                    <td>
+                      채소류
+                    </td>
+                    <td>
+                      1kg
+                    </td>
+                    <td>
+                      냉장
+                    </td>
+                    <td>
+                      5,000원
+                    </td>
+                    <td>
+                      <a class="btn btn-outline-primary btn-sm" href="ingredientDetail.html" th:href="@{/ingredients/detail/0001}">
+                        상세 보기
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input aria-label="품목 선택" class="form-check-input" type="checkbox"/>
+                    </td>
+                    <td>
+                      0011
+                    </td>
+                    <td>
+                      슬라이스치즈
+                    </td>
+                    <td>
+                      유제품
+                    </td>
+                    <td>
+                      1팩
+                    </td>
+                    <td>
+                      냉장
+                    </td>
+                    <td>
+                      2,500원
+                    </td>
+                    <td>
+                      <a class="btn btn-outline-primary btn-sm" href="ingredientDetail.html" th:href="@{/ingredients/detail/0001}">
+                        상세 보기
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+          <!-- 하드코딩 예시 화면. 추후 담당자가 MyBatis 연동 기능 구현 -->
+          <p class="text-secondary small mt-3">
+            현재 표시된 데이터는 화면 확인용 예시입니다. 조회·등록·수정·삭제 기능은 연결되지 않았습니다.
+          </p>
+        </div>
+      </main>
+    </div>
+  <!-- IntelliJ 미리보기는 sidebar-local.js, Spring Boot는 기존 layout.js 사용 -->
+  <script src="../../static/js/sidebar-local.js" th:src="@{/js/layout.js}"></script>
+
+  </body>
 </html>
+

@@ -1,4 +1,0 @@
-Bootstrap v5.3.6
-Copyright 2011–2025 The Bootstrap Authors
-MIT License. https://github.com/twbs/bootstrap/blob/v5.3.6/LICENSE
-Bundled CSS/JavaScript retain upstream license headers.

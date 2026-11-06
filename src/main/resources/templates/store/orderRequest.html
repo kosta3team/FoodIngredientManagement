@@ -1,35 +1,180 @@
 <!DOCTYPE html>
-
 <html lang="ko">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>직영점 - 발주 요청</title>
-<link href="/vendor/bootstrap/bootstrap.min.css" rel="stylesheet"/>
-<!-- 기존 공통 CSS는 그대로 두고, Bootstrap 파일만 로컬로 불러온다. -->
-<link href="/css/common.css" rel="stylesheet"/>
-</head>
-<body>
-<div class="hq-layout d-flex">
-<!-- 기존 sidebar.html을 한 번만 AJAX 로드하여 모든 화면에서 재사용한다. -->
-<div id="sidebar-container"></div>
-<main class="hq-main">
-<header class="hq-header d-flex align-items-center px-4 fw-bold">식재료 · 재고 · 폐기 운영 관리</header>
-<!-- 화면 본문: 카드와 표는 common.css 및 Bootstrap 클래스만 사용한다. -->
-<div class="hq-content p-4">
-<div class="d-flex justify-content-between flex-wrap gap-2 align-items-center mb-3"><h4 class="hq-page-title mb-0"><span id="requestTitle">발주 요청 (직영점)</span></h4><span class="badge text-bg-primary fs-6">지점: 서울 한국대점</span></div>
-<form id="orderRequestForm">
-<div class="card hq-card p-3 mb-3"><h6 class="fw-bold mb-3">발주 품목 작성</h6><div class="table-responsive"><table class="table align-middle hq-table mb-0"><thead><tr><th>순번</th><th>품목선택</th><th>발주수량</th><th>단가</th><th>합계금액</th><th>삭제</th></tr></thead><tbody id="itemTbody"></tbody></table></div><div class="text-center mt-3"><button class="btn btn-outline-primary" onclick="addOrderRow()" type="button">+ 품목 추가</button></div></div>
-<div class="card hq-card p-3"><div class="d-flex flex-wrap justify-content-between align-items-center gap-3"><div class="text-secondary">선택된 품목: <strong id="itemCount">0</strong>개</div><div class="d-flex align-items-center gap-3 flex-wrap"><div class="fs-5">총 발주금액: <strong class="text-primary" id="grandTotal">0</strong>원</div><button class="btn btn-primary" id="submitOrderButton" type="submit">발주 요청 완료</button></div></div></div>
-</form>
-<!-- 품목 행 HTML을 한 곳에서만 유지하기 위해 template을 사용한다. -->
-<template id="orderRowTemplate"><tr><td class="row-seq text-center">1</td><td><select class="form-select item-select" required=""><option data-price="0" value="">-- 품목 선택 --</option><option data-price="14000" value="0028">설탕 (14,000원)</option><option data-price="13000" value="0021">소금 (13,000원)</option><option data-price="2500" value="0011">슬라이스치즈 (2,500원)</option><option data-price="5000" value="0006">양배추 (5,000원)</option><option data-price="2000" value="0001">식빵 (2,000원)</option></select></td><td><input class="form-control item-qty" min="1" required="" step="1" type="number" value="1"/></td><td class="item-unit">0원</td><td class="item-total fw-bold">0원</td><td><button class="btn btn-outline-danger btn-sm" onclick="removeOrderRow(this)" type="button">삭제</button></td></tr></template>
-</div>
-</main>
-</div>
-<script src="/js/api.js"></script><script src="/vendor/bootstrap/bootstrap.bundle.min.js"></script>
-<script src="/js/layout.js"></script>
+  <head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <title>
+      발주 요청 (직영점)
+    </title>
+    <!-- 브라우저로 확인을 위한 로컬 링크 -->
+    <link href="../../static/vendor/bootstrap/bootstrap.min.css" rel="stylesheet" th:href="@{/vendor/bootstrap/bootstrap.min.css}"/>
+    <!-- 배포 후 프로젝트 실행하는 링크 -->
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"> -->
+    <!-- 기존 common.css는 수정하지 않고 그대로 사용 -->
+    <link href="../../static/css/common.css" rel="stylesheet" th:href="@{/css/common.css}"/>
+  </head>
+  <body>
+    <div class="hq-layout d-flex">
 
-<script src="/js/orderRequest.js"></script>
-</body>
+      <!-- 공통 사이드바: 기존 sidebar.html을 한 번만 불러온다. -->
+      <div id="sidebar-container"></div>
+      <main class="hq-main">
+        <header class="hq-header d-flex align-items-center px-4 fw-bold">
+          식재료 · 재고 · 폐기 운영 관리
+        </header>
+        <div class="hq-content p-4">
+          <!-- 페이지 제목 및 이동 메뉴 -->
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <h4 class="hq-page-title mb-0">
+              발주 요청 (직영점)
+            </h4>
+            <a class="btn btn-outline-secondary" href="orderList.html" th:href="@{/store/orders/list}">
+              발주요청 조회
+            </a>
+          </div>
+          <!-- 발주 품목 작성: 화면 구성만 제공하며 데이터는 예시 값 -->
+          <section class="card hq-card p-3 mb-3">
+            <h6 class="fw-bold mb-3">
+              발주 품목 작성
+            </h6>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle hq-table mb-0">
+                <thead>
+                  <tr>
+                    <th scope="col">
+                      순번
+                    </th>
+                    <th scope="col">
+                      품목선택
+                    </th>
+                    <th scope="col">
+                      발주수량
+                    </th>
+                    <th scope="col">
+                      단가
+                    </th>
+                    <th scope="col">
+                      합계금액
+                    </th>
+                    <th scope="col">
+                      삭제
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      1
+                    </td>
+                    <td>
+                      <select class="form-select">
+                        <option>
+                          양배추
+                        </option>
+                        <option>
+                          식빵
+                        </option>
+                        <option>
+                          슬라이스치즈
+                        </option>
+                      </select>
+                    </td>
+                    <td>
+                      <input class="form-control" min="1" placeholder="" type="number" value="5"/>
+                    </td>
+                    <td>
+                      5,000원
+                    </td>
+                    <td>
+                      25,000원
+                    </td>
+                    <td>
+                      <button class="btn btn-outline-danger btn-sm" disabled="" type="button">
+                        삭제
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      2
+                    </td>
+                    <td>
+                      <select class="form-select">
+                        <option>
+                          식빵
+                        </option>
+                        <option>
+                          양배추
+                        </option>
+                        <option>
+                          슬라이스치즈
+                        </option>
+                      </select>
+                    </td>
+                    <td>
+                      <input class="form-control" min="1" placeholder="" type="number" value="1"/>
+                    </td>
+                    <td>
+                      2,000원
+                    </td>
+                    <td>
+                      2,000원
+                    </td>
+                    <td>
+                      <button class="btn btn-outline-danger btn-sm" disabled="" type="button">
+                        삭제
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="text-center mt-3">
+              <button class="btn btn-outline-primary" disabled="" type="button">
+                + 품목 추가
+              </button>
+            </div>
+          </section>
+          <!-- 발주 금액: 화면 구성만 제공하며 데이터는 예시 값 -->
+          <section class="card hq-card p-3 mb-3">
+            <h6 class="fw-bold mb-3">
+              발주 금액
+            </h6>
+            <div class="d-flex justify-content-between flex-wrap gap-3 align-items-center">
+              <span>
+                선택된 품목:
+                <strong>
+                  2
+                </strong>
+                개
+              </span>
+              <span class="fs-5">
+                총 발주금액:
+                <strong class="text-primary">
+                  27,000원
+                </strong>
+              </span>
+            </div>
+          </section>
+          <!-- 입력 폼 버튼: 저장 기능을 구현하기 전까지 비활성화 -->
+          <div class="d-flex justify-content-end gap-2 mb-3">
+            <a class="btn btn-outline-secondary" href="orderList.html" th:href="@{/store/orders/list}">
+              취소
+            </a>
+            <button class="btn btn-primary" disabled="" type="button">
+              발주 요청 완료
+            </button>
+          </div>
+          <!-- 하드코딩 예시 화면. 추후 담당자가 MyBatis 연동 기능 구현 -->
+          <p class="text-secondary small mt-3">
+            현재 표시된 데이터는 화면 확인용 예시입니다. 조회·등록·수정·삭제 기능은 연결되지 않았습니다.
+          </p>
+        </div>
+      </main>
+    </div>
+  <!-- IntelliJ 미리보기는 sidebar-local.js, Spring Boot는 기존 layout.js 사용 -->
+  <script src="../../static/js/sidebar-local.js" th:src="@{/js/layout.js}"></script>
+
+  </body>
 </html>
+
