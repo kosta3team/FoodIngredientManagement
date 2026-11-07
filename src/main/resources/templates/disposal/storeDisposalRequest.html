@@ -1,170 +1,105 @@
 <!DOCTYPE html>
 <html lang="ko">
   <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1" name="viewport"/>
-    <title>
-      폐기 등록 (직영점)
-    </title>
-    <!-- 브라우저로 확인을 위한 로컬 링크 -->
-    <link href="../../static/vendor/bootstrap/bootstrap.min.css" rel="stylesheet" th:href="@{/vendor/bootstrap/bootstrap.min.css}"/>
-    <!-- 배포 후 프로젝트 실행하는 링크 -->
-    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"> -->
-    <!-- 기존 common.css는 수정하지 않고 그대로 사용 -->
-    <link href="../../static/css/common.css" rel="stylesheet" th:href="@{/css/common.css}"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>폐기 등록 (직영점) | FoodIngredientManagement</title>
+    <!-- IntelliJ 내장 서버 미리보기 및 Spring Boot 실행: Bootstrap CDN (인터넷 연결 필요) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <!-- 모든 환경에서 동일한 상대경로 CSS 사용 -->
+    <link rel="stylesheet" href="../../static/css/common.css" th:href="@{/css/common.css}">
   </head>
   <body>
     <div class="hq-layout d-flex">
-
-      <!-- 공통 사이드바: 기존 sidebar.html을 한 번만 불러온다. -->
-      <div id="sidebar-container"></div>
+      <!-- 공통 사이드바: 상대경로 iframe. Spring Boot/IntelliJ HTTP/file://에서 동일 -->
+      <iframe class="hq-sidebar-frame" src="../../static/fragments/sidebar.html" th:src="@{/fragments/sidebar.html}" title="공통 메뉴" loading="eager"></iframe>
       <main class="hq-main">
-        <header class="hq-header d-flex align-items-center px-4 fw-bold">
-          식재료 · 재고 · 폐기 운영 관리
-        </header>
+        <!-- 공통 상단 헤더 -->
+        <header class="hq-header d-flex align-items-center px-4 fw-bold">식재료 · 재고 · 폐기 운영 관리</header>
         <div class="hq-content p-4">
-          <!-- 페이지 제목 및 이동 메뉴 -->
+          <!-- 페이지 제목 및 사용자 구분 -->
           <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-            <h4 class="hq-page-title mb-0">
-              폐기 등록 (직영점)
-            </h4>
-            <a class="btn btn-outline-secondary" href="storeDisposalList.html" th:href="@{/store/disposal/list}">
-              폐기 조회
-            </a>
+            <h4 class="hq-page-title mb-0">폐기 등록 (직영점)</h4>
+            <span class="badge text-bg-light border">직영점</span>
           </div>
-          <!-- 폐기 정보 입력: 입력 UI만 작성. 저장 기능은 담당자가 연결 -->
+          <!-- 식재료 및 재고 정보 -->
           <section class="card hq-card p-3 mb-3">
-            <h6 class="fw-bold mb-3">
-              폐기 정보 입력
-            </h6>
+            <h6 class="fw-bold mb-3">식재료 및 재고 정보</h6>
             <div class="row g-3">
-              <div class="col-md-6">
-                <label class="form-label fw-semibold">
-                  폐기 장소
-                </label>
-                <input class="form-control" placeholder="" readonly="" type="text" value="서울 한국대점"/>
+              <div class="col-6 col-lg-3">
+                <div class="small text-secondary">식재료</div>
+                <div class="fw-semibold">식빵</div>
               </div>
-              <div class="col-md-6">
-                <label class="form-label fw-semibold">
-                  식재료명
-                </label>
-                <select class="form-select">
-                  <option>
-                    식재료 선택
-                  </option>
-                  <option>
-                    양배추
-                  </option>
-                  <option>
-                    식빵
-                  </option>
-                  <option>
-                    치즈
-                  </option>
-                </select>
+              <div class="col-6 col-lg-3">
+                <div class="small text-secondary">입고일련번호</div>
+                <div class="fw-semibold">202601100001</div>
               </div>
-              <div class="col-md-6">
-                <label class="form-label fw-semibold">
-                  재고번호
-                </label>
-                <select class="form-select">
-                  <option>
-                    재고 선택
-                  </option>
-                  <option>
-                    INV-101
-                  </option>
-                  <option>
-                    INV-102
-                  </option>
-                </select>
+              <div class="col-6 col-lg-3">
+                <div class="small text-secondary">재고수량</div>
+                <div class="fw-semibold">140개</div>
               </div>
-              <div class="col-md-6">
-                <label class="form-label fw-semibold">
-                  폐기수량
-                </label>
-                <input class="form-control" min="1" placeholder="" type="number" value="1"/>
+              <div class="col-6 col-lg-3">
+                <div class="small text-secondary">기준단위</div>
+                <div class="fw-semibold">개</div>
               </div>
-              <div class="col-md-6">
-                <label class="form-label fw-semibold">
-                  폐기유형
-                </label>
-                <select class="form-select">
-                  <option>
-                    사용기한 경과
-                  </option>
-                  <option>
-                    파손/오염
-                  </option>
-                  <option>
-                    품질 이상
-                  </option>
-                  <option>
-                    식재료규칙
-                  </option>
-                </select>
+              <div class="col-6 col-lg-3">
+                <div class="small text-secondary">입고일자</div>
+                <div class="fw-semibold">2026-11-03</div>
               </div>
-              <div class="col-md-6">
-                <label class="form-label fw-semibold">
-                  처리방식
-                </label>
-                <select class="form-select">
-                  <option>
-                    즉시 폐기
-                  </option>
-                  <option>
-                    현장 폐기
-                  </option>
-                  <option>
-                    반품 처리
-                  </option>
-                </select>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label fw-semibold">
-                  폐기일자
-                </label>
-                <input class="form-control" placeholder="" type="date"/>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label fw-semibold">
-                  등록 담당자
-                </label>
-                <input class="form-control" placeholder="담당자명" type="text"/>
-              </div>
-              <div class="col-12">
-                <label class="form-label fw-semibold">
-                  폐기 상세사유
-                </label>
-                <textarea class="form-control" placeholder="폐기 사유 입력" rows="3"></textarea>
-              </div>
-              <div class="col-12">
-                <label class="form-label fw-semibold">
-                  증빙사진 (선택)
-                </label>
-                <input class="form-control" placeholder="" type="file"/>
+              <div class="col-6 col-lg-3">
+                <div class="small text-secondary">소비기한</div>
+                <div class="fw-semibold">2026-11-10</div>
               </div>
             </div>
           </section>
-          <!-- 입력 폼 버튼: 저장 기능을 구현하기 전까지 비활성화 -->
-          <div class="d-flex justify-content-end gap-2 mb-3">
-            <a class="btn btn-outline-secondary" href="storeDisposalList.html" th:href="@{/store/disposal/list}">
-              취소
-            </a>
-            <button class="btn btn-primary" disabled="" type="button">
-              폐기 등록
-            </button>
-          </div>
-          <!-- 하드코딩 예시 화면. 추후 담당자가 MyBatis 연동 기능 구현 -->
-          <p class="text-secondary small mt-3">
-            현재 표시된 데이터는 화면 확인용 예시입니다. 조회·등록·수정·삭제 기능은 연결되지 않았습니다.
-          </p>
+          <!-- 폐기 요청 등록 -->
+          <section class="card hq-card p-3 mb-3">
+            <h6 class="fw-bold mb-3">폐기 요청 등록</h6>
+            <div class="row g-3">
+              <div class="col-12 col-md-3">
+                <label class="form-label small fw-semibold">폐기요청일시</label>
+                <input class="form-control form-control-sm" type="datetime-local" placeholder="" value="2026-11-06T10:10">
+              </div>
+              <div class="col-12 col-md-3">
+                <label class="form-label small fw-semibold">폐기수량</label>
+                <input class="form-control form-control-sm" type="number" placeholder="" value="100">
+              </div>
+              <div class="col-12 col-md-3">
+                <label class="form-label small fw-semibold">단위</label>
+                <select class="form-select form-select-sm">
+                  <option selected="">개</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-3">
+                <label class="form-label small fw-semibold">폐기유형</label>
+                <select class="form-select form-select-sm">
+                  <option selected="">포장 파손</option>
+                  <option>소비기한 경과</option>
+                  <option>손상</option>
+                  <option>품질불량</option>
+                  <option>조리실수</option>
+                  <option>기타</option>
+                </select>
+              </div>
+            </div>
+            <label class="form-label mt-3">폐기 사유</label>
+            <textarea class="form-control" rows="3">포장 파손</textarea>
+            <div class="d-flex justify-content-end flex-wrap gap-2 mt-3">
+              <button type="button" class="btn btn-primary btn-sm" disabled="">폐기 요청</button>
+              <a
+                class="btn btn-outline-primary btn-sm text-nowrap"
+                href="storeDisposalList.html"
+              >
+                목록
+              </a>
+            </div>
+          </section>
+          <!-- 화면에 표시한 자료는 DB 연결 전 고정 예시 데이터 -->
+          <p class="small text-secondary mt-3">현재는 UI 스켈레톤입니다. 조회·저장·승인·재고 차감은 실제 처리하지 않습니다.</p>
         </div>
       </main>
     </div>
-  <!-- IntelliJ 미리보기는 sidebar-local.js, Spring Boot는 기존 layout.js 사용 -->
-  <script src="../../static/js/sidebar-local.js" th:src="@{/js/layout.js}"></script>
-
+    <!-- 기존 Bootstrap 보조 JS: 사이드바는 iframe으로 공유 -->
+    <script src="../../static/js/layout.js" th:src="@{/js/layout.js}"></script>
   </body>
 </html>
-

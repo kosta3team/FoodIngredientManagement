@@ -1,159 +1,143 @@
 <!DOCTYPE html>
 <html lang="ko">
   <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1" name="viewport"/>
-    <title>
-      발주 상세 (본사)
-    </title>
-    <!-- 브라우저로 확인을 위한 로컬 링크 -->
-    <link href="../../static/vendor/bootstrap/bootstrap.min.css" rel="stylesheet" th:href="@{/vendor/bootstrap/bootstrap.min.css}"/>
-    <!-- 배포 후 프로젝트 실행하는 링크 -->
-    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"> -->
-    <!-- 기존 common.css는 수정하지 않고 그대로 사용 -->
-    <link href="../../static/css/common.css" rel="stylesheet" th:href="@{/css/common.css}"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>발주 상세 조회 (본사) | FoodIngredientManagement</title>
+    <!-- IntelliJ 내장 서버 미리보기 및 Spring Boot 실행: Bootstrap CDN (인터넷 연결 필요) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <!-- 모든 환경에서 동일한 상대경로 CSS 사용 -->
+    <link rel="stylesheet" href="../../static/css/common.css" th:href="@{/css/common.css}">
   </head>
   <body>
     <div class="hq-layout d-flex">
-
-      <!-- 공통 사이드바: 기존 sidebar.html을 한 번만 불러온다. -->
-      <div id="sidebar-container"></div>
+      <!-- 공통 사이드바: 상대경로 iframe. Spring Boot/IntelliJ HTTP/file://에서 동일 -->
+      <iframe class="hq-sidebar-frame" src="../../static/fragments/sidebar.html" th:src="@{/fragments/sidebar.html}" title="공통 메뉴" loading="eager"></iframe>
       <main class="hq-main">
-        <header class="hq-header d-flex align-items-center px-4 fw-bold">
-          식재료 · 재고 · 폐기 운영 관리
-        </header>
+        <!-- 공통 상단 헤더 -->
+        <header class="hq-header d-flex align-items-center px-4 fw-bold">식재료 · 재고 · 폐기 운영 관리</header>
         <div class="hq-content p-4">
-          <!-- 페이지 제목 및 이동 메뉴 -->
+          <!-- 페이지 제목 및 사용자 구분 -->
           <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-            <h4 class="hq-page-title mb-0">
-              발주 상세 (본사)
-            </h4>
-            <a class="btn btn-outline-secondary" href="hqOrderList.html" th:href="@{/orders/list}">
-              목록으로
-            </a>
+            <h4 class="hq-page-title mb-0">발주 상세 조회 (본사)</h4>
+            <span class="badge text-bg-light border">본사</span>
           </div>
-          <!-- 발주 정보: 화면 구성만 제공하며 데이터는 예시 값 -->
+          <!-- 발주 기본 정보 -->
           <section class="card hq-card p-3 mb-3">
-            <h6 class="fw-bold mb-3">
-              발주 정보
-            </h6>
-            <dl class="row mb-0">
-              <dt class="col-sm-3 text-secondary">
-                발주번호
-              </dt>
-              <dd class="col-sm-9">
-                ORD-001
-              </dd>
-              <dt class="col-sm-3 text-secondary">
-                발주일시
-              </dt>
-              <dd class="col-sm-9">
-                2026-11-03 10:30
-              </dd>
-              <dt class="col-sm-3 text-secondary">
-                도착 지점
-              </dt>
-              <dd class="col-sm-9">
-                서울 한국대점
-              </dd>
-              <dt class="col-sm-3 text-secondary">
-                처리 상태
-              </dt>
-              <dd class="col-sm-9">
-                대기
-              </dd>
-              <dt class="col-sm-3 text-secondary">
-                총 발주금액
-              </dt>
-              <dd class="col-sm-9">
-                27,000원
-              </dd>
-            </dl>
+            <h6 class="fw-bold mb-3">발주 기본 정보</h6>
+            <div class="row g-3">
+              <div class="col-6 col-lg-3">
+                <div class="small text-secondary">발주일련번호</div>
+                <div class="fw-semibold"></div> <!-- 승인시 생성 -->
+              </div>
+              <div class="col-6 col-lg-3">
+                <div class="small text-secondary">발주요청일시</div>
+                <div class="fw-semibold">2026-11-03 10:30</div>
+              </div>
+              <div class="col-6 col-lg-3">
+                <div class="small text-secondary">직영점</div>
+                <div class="fw-semibold">강남점</div>
+              </div>
+              <div class="col-6 col-lg-3">
+                <div class="small text-secondary">요청자</div>
+                <div class="fw-semibold">직영점 담당자</div>
+              </div>
+              <div class="col-6 col-lg-3">
+                <div class="small text-secondary">발주상태</div>
+                <div class="fw-semibold">대기</div>
+              </div>
+              <div class="col-6 col-lg-3">
+                <div class="small text-secondary">승인일시</div>
+                <div class="fw-semibold">—</div>
+              </div>
+              <div class="col-6 col-lg-3">
+                <div class="small text-secondary">입고완료일시</div>
+                <div class="fw-semibold">—</div>
+              </div>
+              <div class="col-6 col-lg-3">
+                <div class="small text-secondary">총 발주금액</div>
+                <div class="fw-semibold">101,000원</div>
+              </div>
+            </div>
           </section>
-          <!-- 품목 내역: 화면 구성만 제공하며 데이터는 예시 값 -->
+          <!-- 발주 상세 품목 -->
           <section class="card hq-card p-3 mb-3">
-            <h6 class="fw-bold mb-3">
-              품목 내역
-            </h6>
+            <h6 class="fw-bold mb-3">발주 상세 품목</h6>
             <div class="table-responsive">
-              <table class="table table-hover align-middle hq-table mb-0">
+              <table class="table table-hover align-middle hq-table table-sm mb-0">
+                <!-- 테이블 항목 -->
                 <thead>
                   <tr>
-                    <th scope="col">
-                      순번
-                    </th>
-                    <th scope="col">
-                      코드
-                    </th>
-                    <th scope="col">
-                      식재료명
-                    </th>
-                    <th scope="col">
-                      수량
-                    </th>
-                    <th scope="col">
-                      단가(원)
-                    </th>
-                    <th scope="col">
-                      금액(원)
-                    </th>
+                    <th scope="col">순번</th>
+                    <th scope="col">식재료</th>
+                    <th scope="col">발주수량</th>
+                    <th scope="col">입고단위</th>
+                    <th scope="col">포장당 기준수량</th>
+                    <th scope="col">기준단위</th>
+                    <th scope="col">단가</th>
+                    <th scope="col">금액</th>
                   </tr>
                 </thead>
+                <!-- 목록 예시 데이터 (DB 연동 전) -->
                 <tbody>
                   <tr>
-                    <td>
-                      1
-                    </td>
-                    <td>
-                      0006
-                    </td>
-                    <td>
-                      양배추
-                    </td>
-                    <td>
-                      5
-                    </td>
-                    <td>
-                      5,000
-                    </td>
-                    <td>
-                      25,000
-                    </td>
+                    <td>1</td>
+                    <td>양상추</td>
+                    <td>3</td>
+                    <td>박스</td>
+                    <td>5,000</td>
+                    <td>g</td>
+                    <td>25,000원</td>
+                    <td>75,000원</td>
                   </tr>
                   <tr>
-                    <td>
-                      2
-                    </td>
-                    <td>
-                      0001
-                    </td>
-                    <td>
-                      식빵
-                    </td>
-                    <td>
-                      1
-                    </td>
-                    <td>
-                      2,000
-                    </td>
-                    <td>
-                      2,000
-                    </td>
+                    <td>2</td>
+                    <td>토마토소스</td>
+                    <td>2</td>
+                    <td>팩</td>
+                    <td>1,000</td>
+                    <td>ml</td>
+                    <td>13,000원</td>
+                    <td>26,000원</td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </section>
-          <!-- 하드코딩 예시 화면. 추후 담당자가 MyBatis 연동 기능 구현 -->
-          <p class="text-secondary small mt-3">
-            현재 표시된 데이터는 화면 확인용 예시입니다. 조회·등록·수정·삭제 기능은 연결되지 않았습니다.
-          </p>
+          <!-- 승인 및 공급 처리 -->
+          <section class="card hq-card p-3 mb-3">
+            <h6 class="fw-bold mb-3">승인 및 공급 처리</h6>
+            <div class="row g-3">
+              <div class="col-12 col-md-3">
+                <label class="form-label small fw-semibold">승인 상태</label>
+                <select class="form-select form-select-sm">
+                  <option selected="">대기</option>
+                  <option>승인</option>
+                  <option>거절</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-3">
+                <label class="form-label small fw-semibold">승인자</label>
+                <!-- 승인되면 생성 -->
+              </div>
+              <div class="col-12 col-md-3">
+                <label class="form-label small fw-semibold">제조일자</label>
+                <input class="form-control form-control-sm" type="date" placeholder="" value="">
+              </div>
+            </div>
+            <p class="small text-secondary mt-2">업무 가정: 본사 승인 시 외부업체로부터 제조일이 표시된 물품이 공급됩니다. 승인과 실제 입고확인 시점은 팀에서 확정해야 합니다.</p>
+            <div class="d-flex justify-content-end flex-wrap gap-2 mt-3">
+              <button type="button" class="btn btn-primary btn-sm" disabled="">승인</button>
+              <button type="button" class="btn btn-outline-danger btn-sm" disabled="">거절</button>
+              <a class="btn btn-outline-primary btn-sm text-nowrap" href="hqOrderList.html">목록</a>
+            </div>
+          </section>
+          <!-- 화면에 표시한 자료는 DB 연결 전 고정 예시 데이터 -->
+          <p class="small text-secondary mt-3">현재는 UI 스켈레톤입니다. 조회·저장·승인·재고 차감은 실제 처리하지 않습니다.</p>
         </div>
       </main>
     </div>
-  <!-- IntelliJ 미리보기는 sidebar-local.js, Spring Boot는 기존 layout.js 사용 -->
-  <script src="../../static/js/sidebar-local.js" th:src="@{/js/layout.js}"></script>
-
+    <!-- 기존 Bootstrap 보조 JS: 사이드바는 iframe으로 공유 -->
+    <script src="../../static/js/layout.js" th:src="@{/js/layout.js}"></script>
   </body>
 </html>
-
