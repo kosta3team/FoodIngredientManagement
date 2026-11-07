@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>식재료 등록 | FoodIngredientManagement</title>
+    <!-- IntelliJ 내장 서버 미리보기 및 Spring Boot 실행: Bootstrap CDN (인터넷 연결 필요) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <!-- 모든 환경에서 동일한 상대경로 CSS 사용 -->
+    <link rel="stylesheet" href="../../css/common.css">
+  </head>
+  <body>
+    <div class="hq-layout d-flex">
+      <!-- 공통 사이드바: 상대경로 iframe. Spring Boot/IntelliJ HTTP/file://에서 동일 -->
+      <iframe class="hq-sidebar-frame" src="../../fragments/sidebar.html" title="공통 메뉴" loading="eager"></iframe>
+      <main class="hq-main">
+        <!-- 공통 상단 헤더 -->
+        <header class="hq-header d-flex align-items-center px-4 fw-bold">식재료 · 재고 · 폐기 운영 관리</header>
+        <div class="hq-content p-4">
+          <!-- 페이지 제목 및 사용자 구분 -->
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <h4 class="hq-page-title mb-0">식재료 등록</h4>
+            <span class="badge text-bg-light border">본사</span>
+          </div>
+          <!-- 식재료 기본 정보 -->
+          <section class="card hq-card p-3 mb-3">
+            <h6 class="fw-bold mb-3">식재료 기본 정보</h6>
+            <div class="row g-3">
+              <div class="col-12 col-md-3">
+                <label class="form-label small fw-semibold">식재료명</label>
+                <input class="form-control form-control-sm" type="text" placeholder="예: 양상추" value="">
+              </div>
+              <div class="col-12 col-md-3">
+                <label class="form-label small fw-semibold">대분류</label>
+                <select class="form-select form-select-sm">
+                  <option selected="">채소</option>
+                  <option>육류</option>
+                  <option>소스류</option>
+                  <option>가공식품</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-3">
+                <label class="form-label small fw-semibold">소분류</label>
+                <input class="form-control form-control-sm" type="text" placeholder="예: 잎채소" value="">
+              </div>
+              <div class="col-12 col-md-3">
+                <label class="form-label small fw-semibold">보관방식</label>
+                <select class="form-select form-select-sm">
+                  <option selected="">냉장</option>
+                  <option>냉동</option>
+                  <option>상온</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-3">
+                <label class="form-label small fw-semibold">입고단위</label>
+                <select class="form-select form-select-sm">
+                  <option selected="">박스</option>
+                  <option>팩</option>
+                  <option>봉지</option>
+                  <option>병</option>
+                  <option>개</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-3">
+                <label class="form-label small fw-semibold">포장당 기준수량</label>
+                <input class="form-control form-control-sm" type="number" placeholder="" value="5000">
+              </div>
+              <div class="col-12 col-md-3">
+                <label class="form-label small fw-semibold">재고 기준단위</label>
+                <select class="form-select form-select-sm">
+                  <option selected="">g</option>
+                  <option>ml</option>
+                  <option>개</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-3">
+                <label class="form-label small fw-semibold">공급가격(원)</label>
+                <input class="form-control form-control-sm" type="number" placeholder="" value="25000">
+              </div>
+              <div class="col-12 col-md-3">
+                <label class="form-label small fw-semibold">식재료 이미지</label>
+                <form action="/upload" method="post" enctype="multipart/form-data">
+                  <input type="file" name="filename">
+                  <button type="submit">업로드</button>
+                </form>
+              </div>
+              <div class="col-12 col-md-3">
+                <label class="form-label small fw-semibold">공급업체</label>
+                <input class="form-control form-control-sm" type="text" placeholder="업체명" value="">
+              </div>
+            </div>
+          </section>
+          <!-- 보관·소비 규칙 -->
+          <section class="card hq-card p-3 mb-3">
+            <h6 class="fw-bold mb-3">보관·소비 규칙</h6>
+            <div class="row g-3">
+              <div class="col-12 col-md-3">
+                <label class="form-label small fw-semibold">관리시작일 기준</label>
+                <input class="form-control form-control-sm" type="text" placeholder="입고일" value="">
+              </div>
+              <div class="col-12 col-md-3">
+                <label class="form-label small fw-semibold">소비기한(일)</label>
+                <input class="form-control form-control-sm" type="number" placeholder="" value="8">
+              </div>
+              <div class="col-12 col-md-3">
+                <label class="form-label small fw-semibold">유통기한 알림(일)</label>
+                <input class="form-control form-control-sm" type="number" placeholder="" value="3">
+              </div>
+            </div>
+            <div class="d-flex justify-content-end flex-wrap gap-2 mt-3">
+              <button type="button" class="btn btn-primary btn-sm" disabled="">등록</button>
+              <a
+                class="btn btn-outline-primary btn-sm text-nowrap"
+                href="ingredientList.html"
+              >
+                목록
+              </a>
+            </div>
+          </section>
+          <!-- 화면에 표시한 자료는 DB 연결 전 고정 예시 데이터 -->
+          <p class="small text-secondary mt-3">현재는 UI 스켈레톤입니다. 조회·저장·승인·재고 차감은 실제 처리하지 않습니다.</p>
+        </div>
+      </main>
+    </div>
+    <!-- 기존 Bootstrap 보조 JS: 사이드바는 iframe으로 공유 -->
+    <script src="../../js/layout.js"></script>
+  </body>
+</html>

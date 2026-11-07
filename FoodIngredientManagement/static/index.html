@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>index.html – IntelliJ 미리보기 경로 호환</title>
+</head>
+<body>
+  <!--
+    IntelliJ가 프로젝트명/모듈명 경로를 동시에 넣는 환경에서 사용하는 호환 진입점.
+    업무 화면의 원본은 src/main/resources/static 아래 한 벌만 존재한다.
+    IDEA 접근 토큰(_ijt)을 유지해야 기본 보안 설정에서도 열릴 수 있다.
+  -->
+  <script>
+    const target = new URL("../../src/main/resources/static/index.html", window.location.href);
+    target.search = window.location.search;
+    target.hash = window.location.hash;
+    window.location.replace(target.href);
+  </script>
+  <p>원본 화면으로 이동합니다. 자동 이동하지 않으면
+    <a href="../../src/main/resources/static/index.html">여기를 클릭하세요</a>.
+  </p>
+</body>
+</html>

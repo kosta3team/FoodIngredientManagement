@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### macOS archive metadata ###
+.DS_Store
+__MACOSX/
+._*

@@ -182,3 +182,65 @@ body {
 /*
 사이드바 끝
  */
+
+/* ===============================================================
+   정적 UI 공통 사이드바 (iframe)
+   - 파일로 직접 열기(file://), IntelliJ HTTP, Spring Boot 동일
+   - 브라우저의 부모 뷰포트에서 사이드바 폭을 제어한다.
+   =============================================================== */
+.hq-sidebar-frame {
+  display: block;
+  width: 230px;
+  min-width: 230px;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  border: 0;
+  background: #172b4d;
+  flex-shrink: 0;
+}
+
+/* iframe 자체의 뷰포트는 230px여서 기존 모바일 미디어쿼리가 적용된다.
+   아래 선택자로 iframe 내부의 데스크톱 사이드바를 복원한다. */
+.sidebar-document {
+  margin: 0;
+  background: #172b4d;
+}
+.sidebar-document .hq-sidebar {
+  width: 100%;
+  min-height: 100vh;
+}
+.sidebar-document .hq-sidebar .brand-text,
+.sidebar-document .hq-sidebar .menu-text,
+.sidebar-document .hq-sidebar .nav-heading,
+.sidebar-document .hq-sidebar .nav-sub-link {
+  display: initial;
+}
+.sidebar-document .hq-sidebar .nav-link {
+  justify-content: flex-start;
+  padding: .55rem .7rem;
+}
+
+@media (max-width: 768px) {
+  .hq-sidebar-frame {
+    width: 68px;
+    min-width: 68px;
+  }
+}
+
+/* 좁아진 iframe 내부에서는 메뉴 텍스트를 숨긴다. */
+@media (max-width: 100px) {
+  .sidebar-document .hq-sidebar {
+    padding: .75rem .3rem !important;
+  }
+  .sidebar-document .hq-sidebar .brand-text,
+  .sidebar-document .hq-sidebar .menu-text,
+  .sidebar-document .hq-sidebar .nav-submenu,
+  .sidebar-document .hq-sidebar .sidebar-footer {
+    display: none;
+  }
+  .sidebar-document .hq-sidebar .nav-link {
+    justify-content: center;
+    padding: .65rem .2rem;
+  }
+}

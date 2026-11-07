@@ -1,29 +1,41 @@
+# UI 스켈레톤 실행용 (DB 연결 전)
 server:
   port: 8881
 
 spring:
   application:
     name: FoodIngredientManagement
-  datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://localhost:3306/mydb?characterEncoding=UTF-8
-    username: mydbid
-    password: mydbpw
-  jpa:
-    open-in-view: false
-    generate-ddl: true
-    show-sql: true
-    hibernate:
-      ddl-auto: create
-    properties:
-      hibernate:
-        show_sql: true
-        format_sql: true
+
+  # 현재는 DB 없이 화면만 확인하므로 자동 설정을 제외한다.
+  # 실제 DB를 연동할 때 이 exclude 설정을 제거하고 datasource를 활성화한다.
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration
+      - org.springframework.boot.hibernate.autoconfigure.HibernateJpaAutoConfiguration
+
+  # DB 연동 시 활성화 (실제 자격증명과 접속 대상은 환경에 맞게 지정)
+  # datasource:
+  #   driver-class-name: org.mariadb.jdbc.Driver
+  #   url: jdbc:mariadb://localhost:3306/mydb?characterEncoding=UTF-8
+  #   username: mydbid
+  #   password: mydbpw
+  # jpa:
+  #   open-in-view: false
+  #   generate-ddl: true
+  #   show-sql: true
+  #   hibernate:
+  #     ddl-auto: create
+  #   properties:
+  #     hibernate:
+  #       show_sql: true
+  #       format_sql: true
+
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html
     cache: false
     check-template-location: true
 
-  mybatis:
-    mapper-locations: classpath:mappers/*.xml
+# MyBatis 설정은 spring 아래가 아니라 최상위 속성이다.
+mybatis:
+  mapper-locations: classpath:mappers/*.xml
