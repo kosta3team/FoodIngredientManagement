@@ -26,120 +26,104 @@
           <!-- 페이지 제목 및 이동 메뉴 -->
           <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
             <h4 class="hq-page-title mb-0">
-              재고 상세 조회 (본사)
+              광주점 재고 상세조회
             </h4>
-            <a class="btn btn-outline-secondary" href="inventoryList.html" th:href="@{/inventory/list}">
+            <a class="btn btn-outline-secondary" href="hqInventoryList.html" th:href="@{/inventory/list}">
               목록으로
             </a>
           </div>
           <!-- 재고 상세 정보: 화면 구성만 제공하며 데이터는 예시 값 -->
           <section class="card hq-card p-3 mb-3">
-            <h6 class="fw-bold mb-3">
-              재고 상세 정보
-            </h6>
+            <h4 class="fw-bold mb-3">
+              토마토
+            </h4>
             <dl class="row mb-0">
-              <dt class="col-sm-3 text-secondary">
-                재고번호
-              </dt>
-              <dd class="col-sm-9">
-                INV-101
-              </dd>
-              <dt class="col-sm-3 text-secondary">
-                관리 지점
-              </dt>
-              <dd class="col-sm-9">
-                본사 물류창고
-              </dd>
-              <dt class="col-sm-3 text-secondary">
-                담당관리자
-              </dt>
-              <dd class="col-sm-9">
-                김담당
-              </dd>
-              <dt class="col-sm-3 text-secondary">
-                입고일
-              </dt>
-              <dd class="col-sm-9">
-                2026-11-01
-              </dd>
+              <dt class="col-sm-3 text-secondary">입고단위</dt>
+              <dd class="col-sm-3">박스</dd>
+              <dt class="col-sm-3 text-secondary">용량</dt>
+              <dd class="col-sm-3">1000 g</dd>
+
+              <dt class="col-sm-3 text-secondary">보관유형</dt>
+              <dd class="col-sm-3">냉장</dd>
+              <dt class="col-sm-3 text-secondary">관리방식</dt>
+              <dd class="col-sm-3">개봉</dd>
+
+              <dt class="col-sm-3 text-secondary">입고일시</dt>
+              <dd class="col-sm-3">2026-11-02</dd>
+              <dt class="col-sm-3 text-secondary">입고수량</dt>
+              <dd class="col-sm-3">4 박스</dd>
+
+              <dt class="col-sm-3 text-secondary">유통기한</dt>
+              <dd class="col-sm-3">2026-11-09</dd>
+              <dt class="col-sm-3 text-secondary">담당자</dt>
+              <dd class="col-sm-3">박재현</dd>
             </dl>
           </section>
           <!-- 재고 잔여 내역: 화면 구성만 제공하며 데이터는 예시 값 -->
           <section class="card hq-card p-3 mb-3">
             <h6 class="fw-bold mb-3">
-              재고 잔여 내역
+              사용 이력
             </h6>
             <div class="table-responsive">
               <table class="table table-hover align-middle hq-table mb-0">
                 <thead>
                   <tr>
                     <th scope="col">
-                      식재료명
+                      번호
                     </th>
                     <th scope="col">
-                      현재 재고량
+                      관리시작일시
                     </th>
                     <th scope="col">
-                      사용기한
+                      소비기한
+                    </th>
+                    <th scope="col">
+                      사용개수
+                    </th>
+                    <th scope="col">
+                      사용수량
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>
-                      양배추
+                      1
                     </td>
                     <td>
-                      12kg
+                      2026-11-03 19:09
                     </td>
                     <td>
-                      2026-11-08
+                      2026-11-05
+                    </td>
+                    <td>
+                      2 박스
+                    </td>
+                    <td>
+                      200 g
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      2
+                    </td>
+                    <td>
+                      2026-11-02 11:20
+                    </td>
+                    <td>
+                      2026-11-04
+                    </td>
+                    <td>
+                      2 박스
+                    </td>
+                    <td>
+                      300 g
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </section>
-          <!-- 폐기 이력: 화면 구성만 제공하며 데이터는 예시 값 -->
-          <section class="card hq-card p-3 mb-3">
-            <h6 class="fw-bold mb-3">
-              폐기 이력
-            </h6>
-            <div class="table-responsive">
-              <table class="table table-hover align-middle hq-table mb-0">
-                <thead>
-                  <tr>
-                    <th scope="col">
-                      폐기일시
-                    </th>
-                    <th scope="col">
-                      폐기수량
-                    </th>
-                    <th scope="col">
-                      폐기사유
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      2026-11-03 09:20
-                    </td>
-                    <td>
-                      3kg
-                    </td>
-                    <td>
-                      사용기한 경과
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </section>
-          <!-- 하드코딩 예시 화면. 추후 담당자가 MyBatis 연동 기능 구현 -->
-          <p class="text-secondary small mt-3">
-            현재 표시된 데이터는 화면 확인용 예시입니다. 조회·등록·수정·삭제 기능은 연결되지 않았습니다.
-          </p>
         </div>
       </main>
     </div>

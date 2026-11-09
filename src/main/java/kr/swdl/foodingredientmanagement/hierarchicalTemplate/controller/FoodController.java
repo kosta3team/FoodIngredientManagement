@@ -39,11 +39,11 @@ public class FoodController {
 
     // 재고 목록 조회 - 본사
     @GetMapping("/inventory/list")
-    public String inventoryList() { return "inventory/inventoryList"; }
+    public String inventoryList() { return "hqInventoryList"; }
 
     // 재고 상세 조회 - 본사
     @GetMapping("/inventory/detail/{id}")
-    public String inventoryDetail(@PathVariable Long id) { return "inventory/inventoryDetail"; }
+    public String inventoryDetail(@PathVariable Long id) { return "hqInventoryDetail"; }
 
     // 식재료 목록 조회 - 본사
     @GetMapping("/ingredients/list")
