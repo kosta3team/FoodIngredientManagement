@@ -31,35 +31,30 @@
           </div>
           <!-- 검색 조건: 화면 구성만 제공하며 데이터는 예시 값 -->
           <section class="card hq-card p-3 mb-3">
-            <div class="row g-3">
-              <div class="col-md-3">
-                <label class="form-label" for="ingredient">식재료명</label>
-                <select class="form-select" id="ingredient" name="ingredient">
-                  <option value="">전체</option>
-                  <option>식빵</option>
-                  <option>브리오슈</option>
-                  <option>기타 토스트용 빵</option>
-                  <option>계란</option>
-                </select>
+            <div class="row g-3 align-items-center">
+              <div class="col-md-2">
+                <div class="d-flex align-items-center gap-2">
+                  <label class="form-label mb-0 text-nowrap" for="ingredient">식재료명</label>
+                  <select class="form-select" id="ingredient" name="ingredient">
+                    <option value="">전체</option>
+                    <option>식빵</option>
+                    <option>브리오슈</option>
+                    <option>기타 토스트용 빵</option>
+                    <option>계란</option>
+                  </select>
+                </div>
               </div>
               <div class="col-md-3">
-                <label class="form-label" for="storageType">보관유형</label>
-                <select class="form-select" id="storageType" name="storageType">
-                  <option value="">전체</option>
-                  <option>냉장</option>
-                  <option>냉동</option>
-                  <option>실온</option>
-                </select>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label" for="storeName">직영점명</label>
-                <input class="form-control" id="storeName" name="storeName" type="text" placeholder="직영점명을 입력하세요"/>
+                <div class="d-flex align-items-center gap-2">
+                  <label class="form-label mb-0 text-nowrap" for="storeName">직영점명</label>
+                  <input class="form-control" id="storeName" name="storeName" type="text" placeholder="직영점명을 입력하세요"/>
+                </div>
               </div>
 
               <!-- 기간 조회 -->
-              <div class="row g-3 align-items-end">
-                <div class="col-md-8">
-                  <label class="form-label" for="dateType">기간</label>
+              <div class="col-md">
+                <div class="d-flex align-items-center gap-2">
+                  <label class="form-label mb-0 text-nowrap" for="dateType">기간</label>
                   <div class="input-group">
                     <select class="form-select flex-grow-0" id="dateType" name="dateType" style="width:130px">
                       <option value="">전체 기간</option>
@@ -71,10 +66,9 @@
                     <input class="form-control" id="endDate" name="endDate" type="date"/>
                   </div>
                 </div>
-                <div class="col-md-4 d-flex gap-2 justify-content-md-end">
-                  <button class="btn btn-outline-secondary" type="reset">초기화</button>
-                  <button class="btn btn-primary px-4" type="submit">검색</button>
-                </div>
+              </div>
+              <div class="col-md-2 d-flex gap-2 justify-content-md-end">
+                <button class="btn btn-primary px-4" type="submit">검색</button>
               </div>
             </div>
           </section>
