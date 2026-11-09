@@ -34,160 +34,345 @@
           </div>
           <!-- 재고 상세 정보: 화면 구성만 제공하며 데이터는 예시 값 -->
           <section class="card hq-card p-3 mb-3">
-            <h4 class="fw-bold mb-3">
-              토마토
-            </h4>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h4 class="fw-bold mb-0">토마토</h4>
+              <div class="d-flex align-items-baseline gap-2">
+                <span class="text-secondary">잔여 재고</span>
+                <span class="display-6 fw-bold lh-1">3</span>
+                <span class="fs-5 fw-bold">박스</span>
+              </div>
+            </div>
             <dl class="row mb-0">
               <dt class="col-sm-3 text-secondary">입고단위</dt>
               <dd class="col-sm-3">박스</dd>
-              <dt class="col-sm-3 text-secondary">용량</dt>
+              <dt class="col-sm-3 text-secondary">용량단위</dt>
               <dd class="col-sm-3">1000 g</dd>
 
               <dt class="col-sm-3 text-secondary">보관유형</dt>
               <dd class="col-sm-3">냉장</dd>
               <dt class="col-sm-3 text-secondary">관리방식</dt>
-              <dd class="col-sm-3">개봉</dd>
+              <dd class="col-sm-3">손질</dd>
 
               <dt class="col-sm-3 text-secondary">유통기한</dt>
-              <dd class="col-sm-3">2026-11-02</dd>
+              <dd class="col-sm-3">제조일자 후 + 7일</dd>
               <dt class="col-sm-3 text-secondary">소비기한</dt>
-              <dd class="col-sm-3">4 박스</dd>
+              <dd class="col-sm-3">손질 후 + 2일</dd>
 
-              <dt class="col-sm-3 text-secondary">유통기한</dt>
-              <dd class="col-sm-3">2026-11-09</dd>
               <dt class="col-sm-3 text-secondary">담당자</dt>
               <dd class="col-sm-3">박재현</dd>
+              <dt class="col-sm-3 text-secondary">소비기한 (여름)</dt>
+              <dd class="col-sm-3">손질 후 + 1일</dd>
             </dl>
           </section>
           <!-- 재고 잔여 내역: 화면 구성만 제공하며 데이터는 예시 값 -->
           <section class="card hq-card p-3 mb-3">
-            <h6 class="fw-bold mb-3">
-              사용 이력
-            </h6>
+            <h6 class="fw-bold mb-3">사용 이력</h6>
             <div class="table-responsive">
               <table class="table table-hover align-middle hq-table mb-0">
                 <thead>
                   <tr>
-                    <th scope="col">
-                      번호
-                    </th>
-                    <th scope="col">
-                      소비기한
-                    </th>
-                    <th scope="col">
-                      관리시작일시
-                    </th>
-                    <th scope="col">
-                      사용개수
-                    </th>
-                    <th scope="col">
-                      사용수량
-                    </th>
+                    <th scope="col">번호</th>
+                    <th scope="col">소비기한</th>
+                    <th scope="col">관리시작일시</th>
+                    <th scope="col">유통기한</th>
+                    <th scope="col">제조일자</th>
+                    <th scope="col">입고일자</th>
+                    <th scope="col">입고수량</th>
+                    <th scope="col">사용개수</th>
+                    <th scope="col">사용수량</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>
-                      1
-                    </td>
-                    <td>
-                      2026-11-03 19:09
-                    </td>
-                    <td>
-                      2026-11-05
-                    </td>
-                    <td>
-                      2 박스
-                    </td>
-                    <td>
-                      200 g
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      2
-                    </td>
-                    <td>
-                      2026-11-02 11:20
-                    </td>
-                    <td>
-                      2026-11-04
-                    </td>
-                    <td>
-                      2 박스
-                    </td>
-                    <td>
-                      300 g
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      3
-                    </td>
-                    <td>
-                      2026-11-02 11:20
-                    </td>
-                    <td>
-                      2026-11-04
-                    </td>
-                    <td>
-                      2 박스
-                    </td>
-                    <td>
-                      300 g
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      4
-                    </td>
-                    <td>
-                      2026-11-02 11:20
-                    </td>
-                    <td>
-                      2026-11-04
-                    </td>
-                    <td>
-                      2 박스
-                    </td>
-                    <td>
-                      300 g
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      5
-                    </td>
-                    <td>
-                      2026-11-02 11:20
-                    </td>
-                    <td>
-                      2026-11-04
-                    </td>
-                    <td>
-                      2 박스
-                    </td>
-                    <td>
-                      300 g
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      6
-                    </td>
-                    <td>
-                      2026-11-02 11:20
-                    </td>
-                    <td>
-                      2026-11-04
-                    </td>
-                    <td>
-                      2 박스
-                    </td>
-                    <td>
-                      300 g
-                    </td>
-                  </tr>
+                <tr>
+                  <td>
+                    1
+                  </td>
+                  <td>
+                    2026-11-11
+                  </td>
+                  <td>
+                    2026-11-09 08:40
+                  </td>
+                  <td>
+                    2026-11-13
+                  </td>
+                  <td>
+                    2026-11-06
+                  </td>
+                  <td>
+                    2026-11-08
+                  </td>
+                  <td>
+                    5 박스
+                  </td>
+                  <td>
+                    1 박스
+                  </td>
+                  <td>
+                    850 g
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    2
+                  </td>
+                  <td>
+                    2026-11-10
+                  </td>
+                  <td>
+                    2026-11-08 09:15
+                  </td>
+                  <td>
+                    2026-11-12
+                  </td>
+                  <td>
+                    2026-11-05
+                  </td>
+                  <td>
+                    2026-11-07
+                  </td>
+                  <td>
+                    4 박스
+                  </td>
+                  <td>
+                    2 박스
+                  </td>
+                  <td>
+                    1,600 g
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    3
+                  </td>
+                  <td>
+                    2026-11-09
+                  </td>
+                  <td>
+                    2026-11-07 08:50
+                  </td>
+                  <td>
+                    2026-11-11
+                  </td>
+                  <td>
+                    2026-11-04
+                  </td>
+                  <td>
+                    2026-11-06
+                  </td>
+                  <td>
+                    3 박스
+                  </td>
+                  <td>
+                    1 박스
+                  </td>
+                  <td>
+                    920 g
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    4
+                  </td>
+                  <td>
+                    2026-11-08
+                  </td>
+                  <td>
+                    2026-11-06 14:20
+                  </td>
+                  <td>
+                    2026-11-10
+                  </td>
+                  <td>
+                    2026-11-03
+                  </td>
+                  <td>
+                    2026-11-05
+                  </td>
+                  <td>
+                    4 박스
+                  </td>
+                  <td>
+                    2 박스
+                  </td>
+                  <td>
+                    1,750 g
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    5
+                  </td>
+                  <td>
+                    2026-11-07
+                  </td>
+                  <td>
+                    2026-11-05 09:05
+                  </td>
+                  <td>
+                    2026-11-09
+                  </td>
+                  <td>
+                    2026-11-02
+                  </td>
+                  <td>
+                    2026-11-04
+                  </td>
+                  <td>
+                    3 박스
+                  </td>
+                  <td>
+                    1 박스
+                  </td>
+                  <td>
+                    780 g
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    6
+                  </td>
+                  <td>
+                    2026-11-06
+                  </td>
+                  <td>
+                    2026-11-04 10:30
+                  </td>
+                  <td>
+                    2026-11-08
+                  </td>
+                  <td>
+                    2026-11-01
+                  </td>
+                  <td>
+                    2026-11-03
+                  </td>
+                  <td>
+                    5 박스
+                  </td>
+                  <td>
+                    3 박스
+                  </td>
+                  <td>
+                    2,600 g
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    7
+                  </td>
+                  <td>
+                    2026-11-05
+                  </td>
+                  <td>
+                    2026-11-03 08:45
+                  </td>
+                  <td>
+                    2026-11-07
+                  </td>
+                  <td>
+                    2026-10-31
+                  </td>
+                  <td>
+                    2026-11-02
+                  </td>
+                  <td>
+                    2 박스
+                  </td>
+                  <td>
+                    1 박스
+                  </td>
+                  <td>
+                    1,000 g
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    8
+                  </td>
+                  <td>
+                    2026-11-04
+                  </td>
+                  <td>
+                    2026-11-02 16:10
+                  </td>
+                  <td>
+                    2026-11-06
+                  </td>
+                  <td>
+                    2026-10-30
+                  </td>
+                  <td>
+                    2026-11-01
+                  </td>
+                  <td>
+                    4 박스
+                  </td>
+                  <td>
+                    2 박스
+                  </td>
+                  <td>
+                    1,850 g
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    9
+                  </td>
+                  <td>
+                    2026-11-03
+                  </td>
+                  <td>
+                    2026-11-01 09:20
+                  </td>
+                  <td>
+                    2026-11-05
+                  </td>
+                  <td>
+                    2026-10-29
+                  </td>
+                  <td>
+                    2026-10-31
+                  </td>
+                  <td>
+                    2 박스
+                  </td>
+                  <td>
+                    1 박스
+                  </td>
+                  <td>
+                    900 g
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    10
+                  </td>
+                  <td>
+                    2026-11-02
+                  </td>
+                  <td>
+                    2026-10-31 10:00
+                  </td>
+                  <td>
+                    2026-11-04
+                  </td>
+                  <td>
+                    2026-10-28
+                  </td>
+                  <td>
+                    2026-10-30
+                  </td>
+                  <td>
+                    3 박스
+                  </td>
+                  <td>
+                    2 박스
+                  </td>
+                  <td>
+                    2,000 g
+                  </td>
+                </tr>
                 </tbody>
               </table>
             </div>
