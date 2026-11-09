@@ -31,7 +31,7 @@
                 <select class="form-select form-select-sm">
                   <option selected="">전체</option>
                   <option>식재료명</option>
-                  <option>식재료번호</option>
+                  <option>식재료일련번호</option>
                   <option>소분류</option>
                 </select>
               </div>
@@ -40,7 +40,7 @@
                 <input class="form-control form-control-sm" type="text" placeholder="식재료명" value="">
               </div>
               <div class="col-12 col-md-3">
-                <label class="form-label small fw-semibold">대분류</label>
+                <label class="form-label small fw-semibold">소분류</label>
                 <select class="form-select form-select-sm">
                   <option selected="">전체</option>
                   <option>채소</option>
@@ -79,16 +79,16 @@
                 <thead>
                   <tr>
                     <th scope="col">순번</th>
-                    <th scope="col">식재료번호</th>
+                    <th scope="col">식재료일련번호</th>
                     <th scope="col">식재료명</th>
                     <th scope="col">소분류</th>
-                    <th scope="col">보관방식</th>
+                    <th scope="col">보관유형</th>
                     <th scope="col">입고단위</th>
-                    <th scope="col">포장당 내용량</th>
-                    <th scope="col">기준단위</th>
-                    <th scope="col">관리기준</th>
-                    <th scope="col">소비기한</th>
-                    <th scope="col">공급가격</th>
+                    <th scope="col">용량</th>
+                    <th scope="col">용량단위</th>
+                    <th scope="col">소비기한(일)</th>
+                    <th scope="col">여름소비기한(일)</th>
+                    <th scope="col">공급가액</th>
                     <th scope="col">상세</th>
                   </tr>
                 </thead>
@@ -103,9 +103,9 @@
                     <td>박스</td>
                     <td>5,000</td>
                     <td>g</td>
-                    <td>1일</td>
-                    <td>8일</td>
-                    <td>25,000원</td>
+                    <td>1</td>
+                    <td>8</td>
+                    <td>25,000</td>
                     <td>
                       <a
                         class="btn btn-outline-primary btn-sm text-nowrap"
@@ -124,9 +124,9 @@
                     <td>박스</td>
                     <td>100</td>
                     <td>개</td>
-                    <td>1일</td>
-                    <td>7일</td>
-                    <td>20,000원</td>
+                    <td>1</td>
+                    <td>7</td>
+                    <td>20,000</td>
                     <td>
                       <a
                         class="btn btn-outline-primary btn-sm text-nowrap"
@@ -145,9 +145,9 @@
                     <td>팩</td>
                     <td>1,000</td>
                     <td>ml</td>
-                    <td>1일</td>
-                    <td>14일</td>
-                    <td>8,000원</td>
+                    <td>1</td>
+                    <td>14</td>
+                    <td>8,000</td>
                     <td>
                       <a
                         class="btn btn-outline-primary btn-sm text-nowrap"

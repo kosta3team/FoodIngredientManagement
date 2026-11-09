@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>발주 요청 상세 정보 (직영점) | FoodIngredientManagement</title>
+    <title>발주상세정보(직영점) | FoodIngredientManagement</title>
     <!-- IntelliJ 내장 서버 미리보기 및 Spring Boot 실행: Bootstrap CDN (인터넷 연결 필요) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <!-- 모든 환경에서 동일한 상대경로 CSS 사용 -->
@@ -19,27 +19,23 @@
         <div class="hq-content p-4">
           <!-- 페이지 제목 및 사용자 구분 -->
           <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-            <h4 class="hq-page-title mb-0">발주 요청 상세 정보 (직영점)</h4>
+            <h4 class="hq-page-title mb-0">발주상세정보(직영점)</h4>
             <span class="badge text-bg-light border">직영점</span>
           </div>
           <!-- 발주 요청 정보 -->
           <section class="card hq-card p-3 mb-3">
-            <h6 class="fw-bold mb-3">발주 요청 정보</h6>
+            <h6 class="fw-bold mb-3">발주정보</h6>
             <div class="row g-3">
               <div class="col-6 col-lg-3">
                 <div class="small text-secondary">발주일련번호</div>
                 <div class="fw-semibold">202601100001</div>
               </div>
               <div class="col-6 col-lg-3">
-                <div class="small text-secondary">발주요청일시</div>
+                <div class="small text-secondary">발주일시</div>
                 <div class="fw-semibold">2026-11-03 11:00</div>
               </div>
               <div class="col-6 col-lg-3">
-                <div class="small text-secondary">요청지점</div>
-                <div class="fw-semibold">서울 한국대점</div>
-              </div>
-              <div class="col-6 col-lg-3">
-                <div class="small text-secondary">총 발주금액</div>
+                <div class="small text-secondary">총금액</div>
                 <div class="fw-semibold">140,000원</div>
               </div>
               <div class="col-6 col-lg-3">
@@ -47,16 +43,16 @@
                 <div class="fw-semibold">승인</div>
               </div>
               <div class="col-6 col-lg-3">
-                <div class="small text-secondary">승인일시</div>
+                <div class="small text-secondary">처리일시</div>
                 <div class="fw-semibold">2026-11-03 12:00</div>
               </div>
               <div class="col-6 col-lg-3">
-                <div class="small text-secondary">입고완료일시</div>
+                <div class="small text-secondary">입고일시</div>
                 <div class="fw-semibold">2026-11-03 14:00</div>
               </div>
               <div class="col-6 col-lg-3">
-                <div class="small text-secondary">요청자</div>
-                <div class="fw-semibold">직영점 담당자</div>
+                <div class="small text-secondary">직영점명</div>
+                <div class="fw-semibold">서울 광화문점</div>
               </div>
             </div>
           </section>
@@ -69,19 +65,17 @@
                 <thead>
                   <tr>
                     <th scope="col">순번</th>
-                    <th scope="col">식재료 코드</th>
                     <th scope="col">식재료명</th>
                     <th scope="col">수량</th>
                     <th scope="col">입고단위</th>
-                    <th scope="col">단가</th>
-                    <th scope="col">금액</th>
+                    <th scope="col">공급가액(단가)</th>
+                    <th scope="col">주문금액</th>
                   </tr>
                 </thead>
                 <!-- 목록 예시 데이터 (DB 연동 전) -->
                 <tbody>
                   <tr>
                     <td>1</td>
-                    <td>0002</td>
                     <td>식빵</td>
                     <td>7</td>
                     <td>박스</td>
@@ -96,8 +90,6 @@
           <div class="d-flex justify-content-end flex-wrap gap-2 mt-3">
             <a class="btn btn-outline-primary btn-sm text-nowrap" href="orderList.html">목록</a>
           </div>
-          <!-- 화면에 표시한 자료는 DB 연결 전 고정 예시 데이터 -->
-          <p class="small text-secondary mt-3">현재는 UI 스켈레톤입니다. 조회·저장·승인·재고 차감은 실제 처리하지 않습니다.</p>
         </div>
       </main>
     </div>

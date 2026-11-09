@@ -1,143 +1,138 @@
 <!DOCTYPE html>
-<html lang="ko">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>발주 상세 조회 (본사) | FoodIngredientManagement</title>
-    <!-- IntelliJ 내장 서버 미리보기 및 Spring Boot 실행: Bootstrap CDN (인터넷 연결 필요) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <!-- 모든 환경에서 동일한 상대경로 CSS 사용 -->
-    <link rel="stylesheet" href="../../static/css/common.css" th:href="@{/css/common.css}">
-  </head>
-  <body>
-    <div class="hq-layout d-flex">
-      <!-- 공통 사이드바: 상대경로 iframe. Spring Boot/IntelliJ HTTP/file://에서 동일 -->
-      <iframe class="hq-sidebar-frame" src="../../static/fragments/sidebar.html" th:src="@{/fragments/sidebar.html}" title="공통 메뉴" loading="eager"></iframe>
-      <main class="hq-main">
-        <!-- 공통 상단 헤더 -->
-        <header class="hq-header d-flex align-items-center px-4 fw-bold">식재료 · 재고 · 폐기 운영 관리</header>
-        <div class="hq-content p-4">
-          <!-- 페이지 제목 및 사용자 구분 -->
-          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-            <h4 class="hq-page-title mb-0">발주 상세 조회 (본사)</h4>
-            <span class="badge text-bg-light border">본사</span>
-          </div>
-          <!-- 발주 기본 정보 -->
-          <section class="card hq-card p-3 mb-3">
-            <h6 class="fw-bold mb-3">발주 기본 정보</h6>
-            <div class="row g-3">
-              <div class="col-6 col-lg-3">
-                <div class="small text-secondary">발주일련번호</div>
-                <div class="fw-semibold"></div> <!-- 승인시 생성 -->
-              </div>
-              <div class="col-6 col-lg-3">
-                <div class="small text-secondary">발주요청일시</div>
-                <div class="fw-semibold">2026-11-03 10:30</div>
-              </div>
-              <div class="col-6 col-lg-3">
-                <div class="small text-secondary">직영점</div>
-                <div class="fw-semibold">강남점</div>
-              </div>
-              <div class="col-6 col-lg-3">
-                <div class="small text-secondary">요청자</div>
-                <div class="fw-semibold">직영점 담당자</div>
-              </div>
-              <div class="col-6 col-lg-3">
-                <div class="small text-secondary">발주상태</div>
-                <div class="fw-semibold">대기</div>
-              </div>
-              <div class="col-6 col-lg-3">
-                <div class="small text-secondary">승인일시</div>
-                <div class="fw-semibold">—</div>
-              </div>
-              <div class="col-6 col-lg-3">
-                <div class="small text-secondary">입고완료일시</div>
-                <div class="fw-semibold">—</div>
-              </div>
-              <div class="col-6 col-lg-3">
-                <div class="small text-secondary">총 발주금액</div>
-                <div class="fw-semibold">101,000원</div>
-              </div>
-            </div>
-          </section>
-          <!-- 발주 상세 품목 -->
-          <section class="card hq-card p-3 mb-3">
-            <h6 class="fw-bold mb-3">발주 상세 품목</h6>
-            <div class="table-responsive">
-              <table class="table table-hover align-middle hq-table table-sm mb-0">
-                <!-- 테이블 항목 -->
-                <thead>
-                  <tr>
-                    <th scope="col">순번</th>
-                    <th scope="col">식재료</th>
-                    <th scope="col">발주수량</th>
-                    <th scope="col">입고단위</th>
-                    <th scope="col">포장당 기준수량</th>
-                    <th scope="col">기준단위</th>
-                    <th scope="col">단가</th>
-                    <th scope="col">금액</th>
-                  </tr>
-                </thead>
-                <!-- 목록 예시 데이터 (DB 연동 전) -->
-                <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>양상추</td>
-                    <td>3</td>
-                    <td>박스</td>
-                    <td>5,000</td>
-                    <td>g</td>
-                    <td>25,000원</td>
-                    <td>75,000원</td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>토마토소스</td>
-                    <td>2</td>
-                    <td>팩</td>
-                    <td>1,000</td>
-                    <td>ml</td>
-                    <td>13,000원</td>
-                    <td>26,000원</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </section>
-          <!-- 승인 및 공급 처리 -->
-          <section class="card hq-card p-3 mb-3">
-            <h6 class="fw-bold mb-3">승인 및 공급 처리</h6>
-            <div class="row g-3">
-              <div class="col-12 col-md-3">
-                <label class="form-label small fw-semibold">승인 상태</label>
-                <select class="form-select form-select-sm">
-                  <option selected="">대기</option>
-                  <option>승인</option>
-                  <option>거절</option>
-                </select>
-              </div>
-              <div class="col-12 col-md-3">
-                <label class="form-label small fw-semibold">승인자</label>
-                <!-- 승인되면 생성 -->
-              </div>
-              <div class="col-12 col-md-3">
-                <label class="form-label small fw-semibold">제조일자</label>
-                <input class="form-control form-control-sm" type="date" placeholder="" value="">
-              </div>
-            </div>
-            <p class="small text-secondary mt-2">업무 가정: 본사 승인 시 외부업체로부터 제조일이 표시된 물품이 공급됩니다. 승인과 실제 입고확인 시점은 팀에서 확정해야 합니다.</p>
-            <div class="d-flex justify-content-end flex-wrap gap-2 mt-3">
-              <button type="button" class="btn btn-primary btn-sm" disabled="">승인</button>
-              <button type="button" class="btn btn-outline-danger btn-sm" disabled="">거절</button>
-              <a class="btn btn-outline-primary btn-sm text-nowrap" href="hqOrderList.html">목록</a>
-            </div>
-          </section>
-          <!-- 화면에 표시한 자료는 DB 연결 전 고정 예시 데이터 -->
-          <p class="small text-secondary mt-3">현재는 UI 스켈레톤입니다. 조회·저장·승인·재고 차감은 실제 처리하지 않습니다.</p>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>발주 상세 조회 (본사) | FoodIngredientManagement</title>
+  <!-- 기존 공통 디자인: 브라우저 미리보기 및 Spring Boot 겸용 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../static/css/common.css" th:href="@{/css/common.css}">
+</head>
+<body>
+<div class="hq-layout d-flex">
+  <!-- 공통 sidebar.html을 한 번만 참조한다. -->
+  <iframe class="hq-sidebar-frame" src="../../static/fragments/sidebar.html"
+          th:src="@{/fragments/sidebar.html}" title="공통 메뉴" loading="eager"></iframe>
+
+  <main class="hq-main">
+    <header class="hq-header d-flex align-items-center px-4 fw-bold">식재료 · 재고 · 폐기 운영 관리</header>
+    <div class="hq-content p-4">
+      <!-- 페이지 제목 -->
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <h4 class="hq-page-title mb-0">발주상세조회(본사)</h4>
+        <span class="badge text-bg-light border">본사</span>
+      </div>
+
+      <!-- 발주 기본 정보 (DB 연동 전 예시 데이터) -->
+      <section class="card hq-card p-3 mb-3">
+        <h6 class="fw-bold mb-3">발주 기본 정보</h6>
+        <div class="row g-3">
+          <div class="col-6 col-lg-3"><div class="small text-secondary">발주일련번호</div><div class="fw-semibold">승인 시 생성</div></div>
+          <div class="col-6 col-lg-3"><div class="small text-secondary">발주일시</div><div class="fw-semibold">2026-11-03 10:30</div></div>
+          <div class="col-6 col-lg-3"><div class="small text-secondary">직영점명</div><div class="fw-semibold">강남점</div></div>
+          <div class="col-6 col-lg-3"><div class="small text-secondary">현재 상태</div><div class="fw-semibold">대기</div></div>
+          <div class="col-6 col-lg-3"><div class="small text-secondary">처리일시</div><div class="fw-semibold">—</div></div>
+          <div class="col-6 col-lg-3"><div class="small text-secondary">입고일시</div><div class="fw-semibold">—</div></div>
+          <div class="col-6 col-lg-3"><div class="small text-secondary">총 발주금액</div><div class="fw-semibold">101,000원</div></div>
+          <div class="col-6 col-lg-3"><div class="small text-secondary">승인 담당자</div><div class="fw-semibold">본사 관리자</div></div>
         </div>
-      </main>
+      </section>
+
+      <!-- 선택 품목 일괄 처리: 입력 UI만 제공하며 자동 적용은 추후 연결 -->
+      <section class="card hq-card p-3 mb-3">
+        <h6 class="fw-bold mb-3">선택 품목 일괄 처리</h6>
+        <div class="row g-2 align-items-end">
+          <div class="col-12 col-md-3">
+            <label for="bulkDecision" class="form-label small fw-semibold">변경 상태</label>
+            <select id="bulkDecision" class="form-select form-select-sm">
+              <option value="APPROVE">승인</option>
+              <option value="REJECT">거절</option>
+              <option value="PARTIAL">부분 승인</option>
+              <option value="PENDING" selected>대기</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-6">
+            <label for="bulkReason" class="form-label small fw-semibold">공통 거절·조정 사유</label>
+            <input id="bulkReason" type="text" maxlength="200" class="form-control form-control-sm"
+                   placeholder="거절 또는 부분 승인 사유를 입력하세요">
+          </div>
+          <div class="col-12 col-md-3">
+            <button type="button" class="btn btn-outline-primary btn-sm" disabled
+                    title="일괄 변경 기능 연동 전">선택 품목 적용</button>
+          </div>
+        </div>
+        <p class="small text-secondary mt-2 mb-0">현재는 입력 화면입니다. 체크박스 연동과 일괄 변경은 추후 구현합니다.</p>
+      </section>
+
+      <!-- 품목별 선택 / 처리 상태 / 승인 수량 / 거절 사유 -->
+      <section class="card hq-card p-3 mb-3">
+        <h6 class="fw-bold mb-3">발주 상세 품목</h6>
+        <div class="table-responsive">
+          <table id="hqOrderItemTable" class="table table-hover align-middle hq-table table-sm mb-0">
+            <thead>
+            <tr>
+              <!-- 전체선택 UI: JS 연동 전에는 개별 체크박스를 자동 변경하지 않음 -->
+              <th scope="col" class="text-center"><input id="selectAllItems" type="checkbox" class="form-check-input m-0" aria-label="모든 품목 선택"></th>
+              <th scope="col">순번</th>
+              <th scope="col">식재료</th>
+              <th scope="col">요청수량</th>
+              <th scope="col">입고단위</th>
+              <th scope="col">단가</th>
+              <th scope="col">요청금액</th>
+              <th scope="col">변경 상태</th>
+              <th scope="col">승인수량</th>
+              <th scope="col">거절·조정 사유</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td class="text-center"><input type="checkbox" class="form-check-input item-check m-0" aria-label="양상추 선택"></td>
+              <td>1</td><td>양상추</td><td>3</td><td>박스</td><td>25,000원</td><td>75,000원</td>
+              <td><select name="items[0].decision" class="form-select form-select-sm item-decision" aria-label="양상추 변경 상태">
+                <option value="PENDING" selected>대기</option><option value="APPROVE">승인</option>
+                <option value="PARTIAL">부분 승인</option><option value="REJECT">거절</option>
+              </select></td>
+              <td><input name="items[0].approvedQuantity" type="number" class="form-control form-control-sm item-quantity"
+                         min="0" max="3" step="1" value="0" aria-label="양상추 승인수량"></td>
+              <td><input name="items[0].reason" type="text" maxlength="200" class="form-control form-control-sm item-reason"
+                         placeholder="사유" aria-label="양상추 거절·조정 사유"></td>
+            </tr>
+            <tr>
+              <td class="text-center"><input type="checkbox" class="form-check-input item-check m-0" aria-label="토마토소스 선택"></td>
+              <td>2</td><td>토마토소스</td><td>2</td><td>팩</td><td>13,000원</td><td>26,000원</td>
+              <td><select name="items[1].decision" class="form-select form-select-sm item-decision" aria-label="토마토소스 변경 상태">
+                <option value="PENDING" selected>대기</option><option value="APPROVE">승인</option>
+                <option value="PARTIAL">부분 승인</option><option value="REJECT">거절</option>
+              </select></td>
+              <td><input name="items[1].approvedQuantity" type="number" class="form-control form-control-sm item-quantity"
+                         min="0" max="2" step="1" value="0" aria-label="토마토소스 승인수량"></td>
+              <td><input name="items[1].reason" type="text" maxlength="200" class="form-control form-control-sm item-reason"
+                         placeholder="사유" aria-label="토마토소스 거절·조정 사유"></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 공급 관련 정보 및 화면 이동 -->
+      <section class="card hq-card p-3 mb-3">
+        <h6 class="fw-bold mb-3">승인 및 공급 처리</h6>
+        <div class="row g-2 align-items-end">
+          <div class="col-12 col-md-3">
+            <label for="manufactureDate" class="form-label small fw-semibold">제조일자</label>
+            <input id="manufactureDate" type="date" class="form-control form-control-sm">
+          </div>
+          <div class="col-12 col-md-9">
+            <p class="small text-secondary mb-0">승인·거절·부분 승인 결과의 실제 저장은 서버 연동 이후 가능합니다.</p>
+          </div>
+        </div>
+        <div class="d-flex justify-content-end flex-wrap gap-2 mt-3">
+          <button type="button" class="btn btn-primary btn-sm" disabled title="저장 API 연동 전">처리 결과 저장</button>
+          <a class="btn btn-outline-secondary btn-sm" href="hqOrderList.html" th:href="@{/hq/orders/list}">목록</a>
+        </div>
+      </section>
     </div>
-    <!-- 기존 Bootstrap 보조 JS: 사이드바는 iframe으로 공유 -->
-    <script src="../../static/js/layout.js" th:src="@{/js/layout.js}"></script>
-  </body>
+  </main>
+</div>
+</body>
 </html>

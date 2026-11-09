@@ -20,7 +20,7 @@
 
       <!-- 페이지 제목 / 현재 직영점 -->
       <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-        <h4 class="hq-page-title mb-0">발주 요청 (직영점)</h4>
+        <h4 class="hq-page-title mb-0">발주요청(직영점)</h4>
         <span class="badge text-bg-light border">지점: 서울 한국대점</span>
       </div>
 
@@ -34,9 +34,9 @@
               <tr>
                 <th scope="col" class="text-center">순번</th>
                 <th scope="col">품목선택</th>
-                <th scope="col">발주수량</th>
-                <th scope="col">단가</th>
-                <th scope="col">합계금액</th>
+                <th scope="col">수량</th>
+                <th scope="col">공급가액(단가)</th>
+                <th scope="col">주문금액</th>
                 <th scope="col">삭제</th>
               </tr>
               </thead>
@@ -56,8 +56,26 @@
                   <input name="quantity" type="number" class="form-control form-control-sm" min="1" step="1" value="1" aria-label="발주수량">
                 </td>
                 <!-- 가격 자동 계산은 JS/API 담당자가 연동할 예정 -->
-                <td class="text-nowrap">0원</td>
-                <td class="text-nowrap fw-semibold">0원</td>
+                <td class="text-nowrap">9,000원</td>
+                <td class="text-nowrap fw-semibold">18,000원</td>
+                <td><button type="button" class="btn btn-outline-danger btn-sm" disabled>삭제</button></td>
+              </tr>
+              <tr>
+                <td class="text-center">2</td>
+                <td>
+                  <select name="ingredient" class="form-select form-select-sm" aria-label="발주 품목 선택" required>
+                    <option value="" selected>-- 품목 선택 --</option>
+                    <option value="sugar">설탕</option>
+                    <option value="salt">소금</option>
+                    <option value="cheese">슬라이스치즈</option>
+                  </select>
+                </td>
+                <td>
+                  <input name="quantity" type="number" class="form-control form-control-sm" min="1" step="1" value="1" aria-label="발주수량">
+                </td>
+                <!-- 가격 자동 계산은 JS/API 담당자가 연동할 예정 -->
+                <td class="text-nowrap">13,000원</td>
+                <td class="text-nowrap fw-semibold">26,000원</td>
                 <td><button type="button" class="btn btn-outline-danger btn-sm" disabled>삭제</button></td>
               </tr>
               </tbody>
@@ -72,9 +90,9 @@
         <!-- 발주 금액 요약 / 등록 버튼 -->
         <section class="card hq-card p-3 mb-3">
           <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <span class="text-secondary">선택된 품목: <strong class="text-dark">0</strong>개</span>
+            <span class="text-secondary">선택된 품목: <strong class="text-dark">2</strong>개</span>
             <div class="d-flex align-items-center gap-2 flex-wrap">
-              <span class="small">총 발주금액: <strong>0</strong>원</span>
+              <span class="small">총 발주금액: <strong>44,000</strong>원</span>
               <!-- 저장 API가 없으므로 실제 요청 전송을 하지 않음 -->
               <button type="button" class="btn btn-primary btn-sm" disabled>발주 요청 완료</button>
             </div>
@@ -82,9 +100,6 @@
         </section>
       </form>
 
-      <p class="small text-secondary mb-3">
-        현재는 UI 시안입니다. 품목 추가·삭제, 금액 자동 계산, 요청 저장은 기능 연동 후 사용할 수 있습니다.
-      </p>
       <a href="orderList.html" class="btn btn-outline-secondary btn-sm">발주 목록으로</a>
     </div>
   </main>
