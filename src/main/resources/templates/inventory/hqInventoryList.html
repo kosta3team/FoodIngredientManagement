@@ -429,8 +429,34 @@
         </div>
       </main>
     </div>
+
+    <div class="modal" id="hqInventoryDetailModal" tabindex="-1" aria-labelledby="hqInventoryDetailModalLabel"
+         aria-hidden="true" role="dialog">
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title hq-page-title mb-0" id="hqInventoryDetailModalLabel">
+              재고 상세조회
+            </h4>
+            <button type="button" class="btn-close" data-modal-close aria-label="닫기"></button>
+          </div>
+          <div class="modal-body" id="hqInventoryDetailModalBody"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-modal-close>
+              닫기
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-backdrop show d-none" id="hqInventoryDetailBackdrop"></div>
+
+
+
   <!-- IntelliJ 미리보기는 sidebar-local.js, Spring Boot는 기존 layout.js 사용 -->
   <script src="../../static/js/sidebar-local.js" th:src="@{/js/layout.js}"></script>
+    <script src="../../static/js/hqInventoryDetail.js" th:src="@{/js/hqInventoryDetail.js}"></script>
+
 
   </body>
 </html>
