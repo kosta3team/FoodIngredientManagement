@@ -80,7 +80,6 @@
               <th scope="col">단가</th>
               <th scope="col">요청금액</th>
               <th scope="col">변경 상태</th>
-              <th scope="col">승인수량</th>
               <th scope="col">거절·조정 사유</th>
             </tr>
             </thead>
@@ -92,8 +91,6 @@
                 <option value="PENDING" selected>대기</option><option value="APPROVE">승인</option>
                 <option value="PARTIAL">부분 승인</option><option value="REJECT">거절</option>
               </select></td>
-              <td><input name="items[0].approvedQuantity" type="number" class="form-control form-control-sm item-quantity"
-                         min="0" max="3" step="1" value="0" aria-label="양상추 승인수량"></td>
               <td><input name="items[0].reason" type="text" maxlength="200" class="form-control form-control-sm item-reason"
                          placeholder="사유" aria-label="양상추 거절·조정 사유"></td>
             </tr>
@@ -104,8 +101,6 @@
                 <option value="PENDING" selected>대기</option><option value="APPROVE">승인</option>
                 <option value="PARTIAL">부분 승인</option><option value="REJECT">거절</option>
               </select></td>
-              <td><input name="items[1].approvedQuantity" type="number" class="form-control form-control-sm item-quantity"
-                         min="0" max="2" step="1" value="0" aria-label="토마토소스 승인수량"></td>
               <td><input name="items[1].reason" type="text" maxlength="200" class="form-control form-control-sm item-reason"
                          placeholder="사유" aria-label="토마토소스 거절·조정 사유"></td>
             </tr>
