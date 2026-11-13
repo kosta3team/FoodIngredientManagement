@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.foodingredientmanagement.mapper.store.StoreOrderRequestMapper">
+
+    <!-- 식재료 및 공급단가 조회 -->
+    <select id="selectOrderableIngredients" resultType="map">
+        SELECT ingredient_id, ingredient_name, order_unit, supply_price
+        FROM ingredients
+        WHERE usable_flag = 'Y'
+        ORDER BY ingredient_name
+    </select>
+
+    <!-- 발주기본정보 등록 -->
+    <insert id="insertOrder">
+        INSERT INTO orders (order_id, order_at, app_at, total_price, user_id, store_id)
+            SELECT #{orderId}, NOW(), NULL, 0, s.user_id, s.store_id
+            FROM stores s
+            WHERE s.store_id = #{storeId}
+    </insert>
+
+    <!-- 발주 품목 등록 -->
+    <insert id="insertOrderItem">
+        INSERT INTO order_details (
+            order_detail_id, order_quantity, supply_price,
+            manufacture_at, store_at, app_at, order_status,
+            order_price, reject_reason, current_quantity, order_id, ingredient_id
+        )
+        SELECT #{detailId}, #{quantity}, i.supply_price,
+            NULL, NULL, NULL, '대기',
+            #{quantity} * i.supply_price, NULL, 0, #{orderId}, i.ingredient_id
+        FROM ingredients i
+        WHERE i.ingredient_id = #{ingredientId}
+            AND i.usable_flag = 'Y'
+            AND #{quantity} > 0
+    </insert>
+
+    <!-- 총 발주 금액 갱신 -->
+    <update id="updateOrderTotal">
+        UPDATE orders
+        SET total_price = (
+            SELECT COALESCE(SUM(order_price), 0)
+            FROM order_details
+            WHERE order_id = #{orderId}
+        )
+        WHERE order_id = #{orderId} AND store_id = #{storeId}
+    </update>
+</mapper>

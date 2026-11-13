@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.foodingredientmanagement.mapper.store.StoreOrderDetailMapper">
+    <!-- 발주정보 조회 -->
+    <select id="selectStoreOrderHeader" resultType="map">
+        SELECT o.order_id, o.order_at, o.total_price,
+            <include refid="com.example.foodingredientmanagement.mapper.orders.OrderSqlFragments.orderStatusCase"/> AS display_status,
+            o.app_at,
+            MAX(od.store_at) AS store_at
+        FROM orders o
+        JOIN order_details od ON o.order_id = od.order_id
+        WHERE o.order_id = #{orderId} AND o.store_id = #{storeId}
+        GROUP BY o.order_id, o.order_at, o.total_price, o.app_at
+    </select>
+
+    <!-- 품목 내역 조회 -->
+    <select id="selectStoreOrderItems" resultType="map">
+        SELECT ROW_NUMBER() OVER (ORDER BY od.orer_detail_id) AS row_no,
+            od.order_detail_id,
+            i.ingredient_name,
+            od.order_quantity,
+            i.order_unit,
+            od.supply_price,
+            od.order_price,
+            u.user_name
+        FROM orders o
+        JOIN order_details od ON o.order_id = od.order_id
+        JOIN ingredients i ON od.ingredient_id = i.ingredient_id
+        LEFT JOIN users u ON o.user_id = u.user_id
+        WHERE o.order_id = #{orderId} AND o.store_id = #{storeId}
+        ORDER BY od.order_detail_id
+    </select>
+</mapper>

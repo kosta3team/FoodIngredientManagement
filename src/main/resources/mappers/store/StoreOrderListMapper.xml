@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.foodingredientmanagement.mapper.store.StoreOrderListMapper">
+    <!-- 전체 조회 -->
+    <select id="selectStoreOrders" resultType="map">
+        SELECT
+            ROW_NUMBER() OVER (ORDER BY o.order_id) AS row_no,
+            o.order_id,
+            o.order_at,
+            <include refid="com.example.foodingredientmanagement.mapper.orders.OrderSqlFragments.orderSummary"/> AS order_summary,
+            o.total_price,
+            <include refid="com.example.foodingredientmanagement.mapper.orders.OrderSqlFragments.orderStatusCase"/> AS display_status,
+            MAX(od.store_at) AS store_at
+        FROM orders o
+        JOIN order_details od ON o.order_id = od.order_id
+        JOIN ingredients i ON od.ingredient_id = i.ingredient_id
+        WHERE o.store_id = #{storeId}
+        GROUP BY o.order_id, o.order_at, o.total_price
+        ORDER BY o.order_id
+    </select>
+
+    <!-- 입고 일시 조건 -->
+    <if test="dateType == 'RECEIVED'">
+        <if test="startDate != null">AND MAX(od.store_at) >= #{startDate}</if>
+        <if test="endDate != null">AND MAX(od.store_at) < DATE_ADD(#{endDate}, INTERVAL 1 DAY)</if>
+    </if>
+    ORDER BY o.order_id
+</mapper>
