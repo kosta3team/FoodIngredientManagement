@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mabatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.foodingredientmanagement.mapper.orders.OrderSqlFragments">
+
+    <!-- 주문요약-->
+    <sql id="orderSummary">
+        CONCAT(
+            SUBSTRING_INDEX(
+                GROUP_CONCAT(i.ingredient_name ORDER BY od.order_detail_id), ',', 1
+        ),
+        IF(COUNT(*) > 1, CONCAT(' 외 ', COUNT(*) - 1, '종'), '')
+    </sql>
+
+    <!-- 상태 표시 -->
+    <sql id="orderStatusCase">
+        CASE
+            WHEN SUM(od.order_status = '대기') > 0 THEN '대기'
+            WHEN COUNT(*) = SUM(od.order_status = '승인') THEN '승인'
+            WHEN COUNT(*) = SUM(od.order_status = '거절') THEN '거절'
+            ELSE '부분승인'
+        END
+    </sql>

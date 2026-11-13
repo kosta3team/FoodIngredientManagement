@@ -39,3 +39,6 @@ spring:
 # MyBatis 설정은 spring 아래가 아니라 최상위 속성이다.
 mybatis:
   mapper-locations: classpath:mappers/*.xml
+  # order_id -> orderId 처럼 자동매핑 설정
+#  configuration:
+#    map-underscore-to-camel-case: true

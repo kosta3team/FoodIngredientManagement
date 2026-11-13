@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.foodingredientmanagement.mapper.orders.HqOrderListMapper">
+
+    <!--    대기조회-->
+    <select id="countHqPending" resultType="int">
+        SELECT COUNT(DISTINCT od.order_id)
+        FROM order_details od
+        JOIN order o ON od.order_id = o.order_id
+        JOIN stores s ON o.store_id = s.store_id
+        WHERE od.order_status = '대기'
+            AND s.user_id = #{userId}
+    </select>
+
+    <!-- 승인조회 -->
+    <select>
+        SELECT COUNT(DISTINCT od.order_id)
+        FROM order_details od
+        JOIN orders o ON od.order_id = o.order_id
+        JOIN stores s ON o.store_id = s.store_id
+        WHERE od.order_stauts = '승인'
+            AND s.user_id = #{userId}
+    </select>
+
+    <!-- 거절조회 -->
+    <select>
+        SELECT COUNT(DISTINCT od.order_id)
+        FROM order_details od
+        JOIN orders o ON od.order_id = o.order_id
+        JOIN stores s ON o.store_id = s.store_id
+        WHERE od.order_stauts = '거절'
+        AND s.user_id = #{userId}
+    </select>
+
+    <!-- 전체조회 -->
+    <select id="selectHqOrders" resultType="map">
+        SELECT
+            ROW_NUMBER() OVER (ORDER BY o.order_id) AS row_no,
+            o.order_id,
+            o.order_at,
+            s.store_name,
+            <include refid="com.example.foodingredientmanagement.mapper.orders.OrderSqlFragments.orderSummary"/> AS order_summary,
+            o.total_price,
+            <include refid="com.example.foodingredientmanagement.mapper.orders.OrderSqlFragments.orderStatusCase"/> AS display_status,
+            MAX(od.store_at) AS store_at
+        FROM orders o
+        JOIN stores s ON o.store_id = s.store_id
+        JOIN order_details od ON o.order_id = od.order_id
+        JOIN ingredients i ON od.ingredient_id = i.ingredient_id
+        WHERE s.user_id = #{userId}
+        GROUP BY o.order_id, o.order_at, s.store_name, o.total_price
+        ORDER BY o.order_id
+    </select>
+
+    <!-- 조건조회 -->
+    <select id="searchHqOrders" resultType="map">
+        SELECT
+            ROW_NUMBER() OVER (ORDER BY o.order_id) AS row_no,
+            o.order_id,
+            o.order_at,
+            s.store_name,
+            <include refid="com.example.foodingredientmanagement.mapper.orders.OrderSqlFragments.orderSummary"/> AS order_summary,
+            o.total_price,
+            <include refid="com.example.foodingredientmanagement.mapper.orders.OrderSqlFragments.orderStatusCase"/> AS display_status,
+            MAX(od.store_at) AS store_at
+        FROM orders o
+        JOIN stores s ON o.store_id = s.store_id
+        JOIN order_details od ON o.order_id = od.order_id
+        JOIN ingredients i ON od.ingredient_id = i.ingredient_id
+        WHERE s.user_id = #{userId}
+
+        <!-- 검색어 조건 -->
+        <if test="keyword != null and keyword != ''">
+            <choose>
+                <when test="searchType == 'ORDER_ID'">
+                    AND CAST(o.order_id AS CHAR) LIKE CONCAT('%', #{keyword}, '%')
+                </when>
+                <when test="searchType == 'STORE'">
+                    AND s.store_name LIKE CONCAT('%', #{keyword}, '%')
+                </when>
+                <otherwise>
+                    AND (CAST(o.order_id AS CHAR) LIKE CONCAT('%', #{keyword}, '%')
+                </otherwise>
+            </choose>
+        </if>
+
+        <!-- 발주일시 조건 -->
+        <if test="dateType == 'ORDER'">
+            <if test="startDate != null">AND o.order_at >= #{startDate}</if>
+            <if test="endDate != null">AND o.order_at < DATE_ADD(#{endDate}, INTERVAL 1 DAY)</if>
+        </if>
+        GROUP BY o.order_id, o.order_at, s.store_name, o.total_price
+        HAVING 1 = 1
+
+        <!-- 상태 조건 -->
+        <if test="displayStatus != null and displayStatus != '' and displayStatus != '전체'">
+            AND display_status = #{displayStatus}
+        </if>
+
+        <!--  입고일시 조건 -->
+        <if test="dateType == 'RECEIVED'">
+            <if test="startDate != null">AND MAX(od.store_at) >= #{startDate}</if>
+            <if test="endDate != null">AND MAX(od.store_at) < DATE_ADD(#{endDate}, INTERVAL 1 DAY)</if>
+        </if>
+        ORDER BY o.order_id
+    </select>
+
+    <!-- 선택내역 상태 변경 -->
+    <update id="updateHqOrderPendingItems">
+        UPDATE order o
+        JOIN order_details od ON o.order_id = od.order_id
+        JOIN stores s ON o.store_id = s.store_id
+        SET od.order_status = #{status},
+            od.reject_reason = #{reason, jdbcType=VARCHAR},
+            od.app_at = NOW(),
+            o.app_at = NOW()
+        WHERE o.order_id = #{orderId}
+            AND od.order_status = '대기'
+            AND s.user_id = #{userId}
+            AND #{status} IN ('승인', '거절')
+    </update>
+</mapper>

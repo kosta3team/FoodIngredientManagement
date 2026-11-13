@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.foodingredientmanagement.mapper.orders.HqOrderDetailMapper">
+
+    <!-- 발주 기본정보 조회 -->
+    <select id="selectHqOrderHeader" resultType="map">
+        SELECT
+            o.order_id, o.order_at, s.store_name,
+            <include refid="com.example.foodingredientmanagement.mapper.orders.OrderSqlFragments.orderStatusCase"/> AS display_status,
+            o.app_at,
+            MAX(od.store_at) AS store_at,
+            o.total_price,
+            u.user_name
+        FROM orders o
+        JOIN stores s ON o.store_id = s.store_id
+        JOIN order_details od ON o.order_id = od.order_id
+        LEFT JOIN users u ON o.user_id = u.user_id
+        WHERE o.order_id = #{orderId}
+            AND s.user_id = #{userId}
+        GROUP BY o.order_id, o.order_at, s.store_name,
+            o.app_at, o.total_price, u.user_name
+    </select>
+
+    <!-- 발주 상세 품목 조회 -->
+    <select id="selectHqOrderItems" resultType="map">
+        SELECT ROW_NUMBER() OVER (ORDER BY od.order_detail_id) AS row_no,
+            od.order_detail_id,
+            i.ingredient_name,
+            od.order_quantity,
+            i.order_unit,
+            od.supply_price,
+            od.order_price,
+            od.order_status,
+            od.reject_reason
+        FROM orders o
+        JOIN order_details od On o.order_id = od.order_id
+        JOIN ingredients i ON od.ingredient_id = i.ingredient_id
+        JOIN stores s ON o.store_id = s.store_id
+        WHERE o.order_id = #{orderId} AND s.user_id = #{userId}
+        ORDER BY od.order_detail_id
+    </select>
+
+    <!-- 선택 품목 상태 변경 -->
+    <update id="updateHqOrderItem">
+        UPDATE orders o
+        JOIN order_details od ON o.order_id = od.order_id
+        JOIN stores s ON o.store_id = s.store_id
+        SET od.order_status = #{status},
+            od.reject_reason = #{reason, jdbcType=VARCHAR},
+            od.app_at = NOW(),
+            od.manufacture_at = COALESCE(#{manufactureAt, jdbcType=TIMESTAMP}, od.manufacture_at),
+            o.app_at = NOW()
+        WHERE o.order_id = #{orderId}
+            AND od.order_detail_id = #{detailId}
+            AND od.order_status = '대기'
+            AND s.user_id = #{userId}
+            AND #{status} IN ('승인', '거절')
+    </update>
+
+    <!-- 제조일자 등록 -->
+    <update id="updateManufactureAt">
+        UPDATE order_details od
+        JOIN orders o ON od.order_id = o.order_id
+        JOIN stores s ON o.store_id = s.store_id
+        SET od.manufacture_at = #{manufactureAt, jdbcType=TIMESTAMP}
+        WHERE o.order_id = #{orderId}
+            AND od.order_detail_id = #{detailId}
+            AND od.order_status = '승인'
+            AND s.user_id = #{userId}
+    </update>
+</mapper>
