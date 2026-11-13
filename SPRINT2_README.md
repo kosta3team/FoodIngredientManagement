@@ -74,7 +74,7 @@ Windows CMD에서는 `mvnw.cmd spring-boot:run` 실행.
 ## 프런트/API 연결
 
 - `api.js`: 공통 fetch(JSON)와 화면 표시 함수
-- `drawer.js`: 기존 상세 HTML 조각을 fetch → API로 실제 데이터 조회 → Offcanvas 내용 채우기
+- `ingredientDetailModal.js`: 기존 상세 HTML 조각을 fetch → API로 실제 데이터 조회 → Offcanvas 내용 채우기
 - `orderRequest.js`: 발주 품목 선택·합계와 POST/PUT
 - `orderReview.js`: 본사 목록·일괄 상태 변경 PATCH
 - `storeOrder.js`: 직영점 목록·수정 및 삭제

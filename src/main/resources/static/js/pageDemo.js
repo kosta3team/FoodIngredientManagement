@@ -48,28 +48,60 @@ function makeDetailButton(row, type, id, urlBase, apiBase, title) {
     button.dataset.urlBase = urlBase;
     button.dataset.apiBase = apiBase;
     button.dataset.title = title;
-    button.onclick = function () { loadDetailDrawer(button); };
+    button.onclick = function () {
+        loadDetailModal(button);
+    };
     cell.appendChild(button);
 }
 
 async function renderIngredients() {
     const body = document.querySelector("#ingredientTable tbody");
+
     body.replaceChildren();
+
     try {
         const items = await apiRequest("/api/ingredients");
+
         items.forEach(function (item) {
             const row = document.createElement("tr");
+
+            // 체크박스
             const select = addTextCell(row, "");
+
             const input = document.createElement("input");
             input.type = "checkbox";
             input.className = "form-check-input";
+            input.value = item.code;
+
             select.appendChild(input);
-            [item.code, item.name, item.category, item.unit, item.storageType,
-                formatMoney(item.price)].forEach(function (value) { addTextCell(row, value); });
-            makeDetailButton(row, "ingredient", item.code, "/ingredients/detail/", "/api/ingredients/", "식재료 상세");
+
+            // 식재료 목록 컬럼
+            [
+                item.name,
+                item.category,
+                item.unit,
+                item.storageType,
+                formatMoney(item.price)
+            ].forEach(function (value) {
+                addTextCell(row, value);
+            });
+
+            // 상세 버튼
+            makeDetailButton(
+                row,
+                "ingredient",
+                item.code,
+                "/ingredients/detail/",
+                "/api/ingredients/",
+                "식재료 상세 정보"
+            );
+
             body.appendChild(row);
         });
-    } catch (error) { showLoadError(body, error); }
+
+    } catch (error) {
+        showLoadError(body, error);
+    }
 }
 
 async function renderInventory() {
@@ -83,11 +115,15 @@ async function renderInventory() {
             row.dataset.date = item.receivedDate;
             [item.id, item.location, item.name, item.storageType,
                 item.quantity + " " + item.unit, item.receivedDate,
-                item.expiryDate, item.manager].forEach(function (value) { addTextCell(row, value); });
+                item.expiryDate, item.manager].forEach(function (value) {
+                addTextCell(row, value);
+            });
             makeDetailButton(row, "inventory", item.id, "/inventory/detail/", "/api/inventory/", "재고 상세");
             body.appendChild(row);
         });
-    } catch (error) { showLoadError(body, error); }
+    } catch (error) {
+        showLoadError(body, error);
+    }
 }
 
 async function renderDisposals() {
@@ -102,7 +138,9 @@ async function renderDisposals() {
             row.dataset.date = item.datetime.slice(0, 10);
             [index + 1, "D-" + item.id, item.datetime, item.location, item.name,
                 item.quantity + " " + item.unit, item.type, item.method, item.manager]
-                .forEach(function (value) { addTextCell(row, value); });
+                .forEach(function (value) {
+                    addTextCell(row, value);
+                });
             makeDetailButton(row, "disposal", item.id,
                 store ? "/store/disposal/detail/" : "/hq/disposal/detail/",
                 "/api/disposals/", "폐기 상세");
@@ -111,7 +149,9 @@ async function renderDisposals() {
         // 단위(kg/개/팩)가 다르므로 단순 수량합이 아닌 건수만 통계에 사용한다.
         const summary = document.getElementById("disposalCount");
         if (summary) summary.textContent = list.length + "건";
-    } catch (error) { showLoadError(body, error); }
+    } catch (error) {
+        showLoadError(body, error);
+    }
 }
 
 function showLoadError(body, error) {
@@ -161,6 +201,7 @@ async function setupDisposalForm() {
     } catch (error) {
         return alert("재고 조회 실패: " + error.message);
     }
+
     function refreshInventoryOptions() {
         const location = store ? "서울 한국대점" : locationSelect.value;
         const available = inventory.filter(function (item) {
@@ -170,20 +211,27 @@ async function setupDisposalForm() {
         ingredientSelect.replaceChildren(new Option("식재료 선택", ""));
         available.forEach(function (item) {
             inventorySelect.add(new Option(item.id + " / " + item.name + " / 잔여 " + item.quantity + " " + item.unit, item.id));
-            if (!Array.from(ingredientSelect.options).some(function (opt) { return opt.value === item.code; })) {
+            if (!Array.from(ingredientSelect.options).some(function (opt) {
+                return opt.value === item.code;
+            })) {
                 ingredientSelect.add(new Option(item.name, item.code));
             }
         });
     }
+
     if (!store && locationSelect) locationSelect.addEventListener("change", refreshInventoryOptions);
     ingredientSelect.addEventListener("change", function () {
         const selectedCode = ingredientSelect.value;
         const location = store ? "서울 한국대점" : locationSelect.value;
-        const chosen = inventory.find(function (item) { return item.location === location && item.code === selectedCode; });
+        const chosen = inventory.find(function (item) {
+            return item.location === location && item.code === selectedCode;
+        });
         if (chosen) inventorySelect.value = chosen.id;
     });
     inventorySelect.addEventListener("change", function () {
-        const chosen = inventory.find(function (item) { return String(item.id) === inventorySelect.value; });
+        const chosen = inventory.find(function (item) {
+            return String(item.id) === inventorySelect.value;
+        });
         if (chosen) ingredientSelect.value = chosen.code;
     });
     refreshInventoryOptions();
@@ -202,7 +250,9 @@ async function setupDisposalForm() {
             manager: document.getElementById("disposalManager").value.trim(),
             disposedAt: document.getElementById("disposedAt").value
         };
-        const chosen = inventory.find(function (item) { return item.id === payload.inventoryId; });
+        const chosen = inventory.find(function (item) {
+            return item.id === payload.inventoryId;
+        });
         if (!chosen || Number(chosen.quantity) < payload.quantity || payload.quantity <= 0) {
             return alert("폐기수량이 남은 재고보다 많습니다.");
         }

@@ -47,7 +47,7 @@ async function renderHqOrders() {
             detail.dataset.detailType = "order";
             detail.dataset.id = order.id;
             detail.dataset.title = "본사 발주 상세";
-            detail.onclick = function () { loadDetailDrawer(detail); };
+            detail.onclick = function () { loadDetailModal(detail); };
             detailCell.appendChild(detail);
             body.appendChild(row);
         });

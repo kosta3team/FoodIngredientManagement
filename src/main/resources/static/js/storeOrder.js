@@ -33,7 +33,7 @@ async function renderStoreOrders() {
             detail.dataset.detailType = "order";
             detail.dataset.id = order.id;
             detail.dataset.title = "직영점 발주 상세";
-            detail.onclick = function () { loadDetailDrawer(detail); };
+            detail.onclick = function () { loadDetailModal(detail); };
             detailCell.appendChild(detail);
             const editCell = addTextCell(row, "");
             const edit = document.createElement("button");

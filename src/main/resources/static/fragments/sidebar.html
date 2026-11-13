@@ -86,15 +86,19 @@
   <div class="sidebar-footer pt-3 border-top border-secondary">
 
     <div class="small mb-2 d-flex align-items-center justify-content-between text-light">
-      <span>👤 본사 관리자</span>
-      <span>2026.11.03</span>
+      <span>
+        👤 <span sec:authentication="principal.name">사용자</span>
+      </span>
+      <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy.MM.dd')}">
+        2026.11.03
+      </span>
     </div>
 
-    <a href="#" aria-disabled="true" title="로그인은 아직 구현되지 않았습니다" onclick="return false"
-       class="btn btn-outline-light btn-sm w-100 d-flex align-items-center justify-content-center gap-1">
-      <span>🚪</span>
-      <span>로그아웃</span>
-    </a>
+    <form th:action="@{/logout}" method="post">
+      <button type="submit" class="btn btn-outline-light btn-sm w-100">
+        로그아웃
+      </button>
+    </form>
 
   </div>
 
