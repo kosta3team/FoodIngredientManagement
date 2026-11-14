@@ -1,0 +1,118 @@
+:root { --disposal-border:#e7ebf1; --disposal-muted:#667085; --disposal-bg:#f7f9fc; }
+        .hq-main { flex:1; min-width:0; background:var(--disposal-bg); min-height:100vh; }
+        .disposal-content { max-width:1500px; margin:0 auto; }
+        .disposal-card { border:1px solid var(--disposal-border); border-radius:14px; box-shadow:0 2px 12px rgba(16,24,40,.035); }
+        .section-heading { font-size:1rem; font-weight:700; margin:0; }
+        .page-description { color:var(--disposal-muted); font-size:.875rem; }
+        .pending-strip { display:flex; align-items:center; gap:12px; padding:13px 18px; background:#fff; border:1px solid var(--disposal-border); border-left:3px solid #d99a25; border-radius:10px; }
+        .pending-strip .pending-count { font-size:1.15rem; font-weight:750; color:#a36a0a; }
+        .filter-label { font-size:.82rem; font-weight:650; color:#344054; margin-bottom:6px; }
+        .form-control,.form-select { border-color:#dce2ea; }
+        .form-control:focus,.form-select:focus { border-color:#8aa8e9; box-shadow:0 0 0 .2rem rgba(44,105,204,.10); }
+        .advanced-toggle { color:#375e9f; text-decoration:none; font-weight:600; font-size:.875rem; }
+        .advanced-panel { background:#f8fafd; border:1px solid #e9edf4; border-radius:10px; padding:18px; }
+        .filter-note { font-size:.75rem; color:#8993a4; margin-top:5px; }
+        .table thead th { white-space:nowrap; background:#f8fafc; font-size:.8rem; font-weight:700; color:#475467; padding:13px 12px; border-bottom:1px solid #e5eaf0; }
+        .table tbody td { font-size:.86rem; padding:13px 12px; vertical-align:middle; border-color:#eef1f5; }
+        .table tbody tr:hover { background:#f9fbff; }
+        .status { display:inline-block; border-radius:6px; padding:5px 10px; font-size:.76rem; font-weight:650; white-space:nowrap; }
+        .status-pending { background:#fff4d8; color:#986400; }
+        .status-approved { background:#e5f6ee; color:#167451; }
+        .status-rejected { background:#fcebed; color:#ae3742; }
+        .table-check { width:38px; }
+        .text-subtle { color:#8792a2; }
+        .list-toolbar { gap:10px; }
+        .nowrap { white-space:nowrap; }
+        .disposal-table-scroll { overflow:auto; max-height: min(680px, 70vh); border:1px solid var(--disposal-border); border-radius:9px; }
+        .disposal-table-scroll table { min-width:1180px; }
+        .disposal-table-scroll thead { position:sticky; top:0; z-index:2; }
+        .disposal-table-scroll thead th { box-shadow:inset 0 -1px 0 #e5eaf0; }
+        .cost-cell { font-weight:700; color:#263b60; text-align:right; white-space:nowrap; }
+        .pagination-center { display:flex; justify-content:center; align-items:center; margin-top:18px; }
+        .search-actions { display:flex; justify-content:flex-end; gap:8px; border-top:1px solid #e9edf4; padding-top:18px; margin-top:18px; }
+        .page-size-select { width:110px; }
+
+        @media (max-width:767.98px) { .disposal-content { padding:16px !important; } .pending-strip { padding:12px; } }
+
+/* ===== 높이 고정 / 기존 디자인 유지 / 검색과 목록 공간 분배 ===== */
+html, body { height:100%; overflow:hidden; }
+.hq-layout { height:100dvh; min-height:0; overflow:hidden; }
+.hq-main { height:100%; min-height:0; overflow:hidden; display:flex; flex-direction:column; }
+.disposal-content { width:100%; height:100%; min-height:0; display:flex; flex-direction:column; padding-top:20px !important; padding-bottom:20px !important; }
+.disposal-content > .pending-strip { flex:0 0 auto; padding-top:10px; padding-bottom:10px; }
+/* 검색 영역은 상세 조건을 펼쳐도 지정된 화면 높이 안에서 스크롤 */
+.disposal-search-card { flex:0 1 auto; min-height:0; max-height: min(51dvh, 440px); overflow-y:auto; overscroll-behavior:contain; }
+.disposal-search-card .filter-label { margin-bottom:4px; }
+.disposal-search-card .search-actions { margin-top:10px; padding-top:10px; }
+.disposal-search-card .advanced-panel { padding:12px; }
+/* 목록 영역에 실제 높이를 반드시 배정하고, 내부에서만 스크롤 */
+.disposal-list-card { flex:1 1 0; min-height:190px; display:flex; flex-direction:column; overflow:hidden; }
+.disposal-list-card > .card-body { flex:1 1 0; min-height:0; display:flex; flex-direction:column; overflow:hidden; }
+.disposal-list-card .list-toolbar, .disposal-list-card .pagination-center, .disposal-list-card .list-footer { flex-shrink:0; }
+.disposal-list-card .pagination-center { margin-top:8px; }
+.disposal-table-scroll { flex:1 1 0; min-height:55px; max-height:none; overflow-y:auto; overflow-x:hidden; overscroll-behavior:contain; }
+.disposal-table-scroll table { width:100%; min-width:0; table-layout:fixed; }
+.disposal-table-scroll th, .disposal-table-scroll td { overflow-wrap:anywhere; }
+.disposal-table-scroll thead th { position:sticky; top:0; z-index:2; }
+/* 기존 12개 컬럼 비율 유지 */
+.disposal-table-scroll th:nth-child(1) { width:3%; }
+.disposal-table-scroll th:nth-child(2) { width:10%; }
+.disposal-table-scroll th:nth-child(3) { width:12%; }
+.disposal-table-scroll th:nth-child(4) { width:9%; }
+.disposal-table-scroll th:nth-child(5) { width:9%; }
+.disposal-table-scroll th:nth-child(6) { width:8%; }
+.disposal-table-scroll th:nth-child(7) { width:9%; }
+.disposal-table-scroll th:nth-child(8) { width:9%; }
+.disposal-table-scroll th:nth-child(9) { width:7%; }
+.disposal-table-scroll th:nth-child(10) { width:7%; }
+.disposal-table-scroll th:nth-child(11) { width:12%; }
+.disposal-table-scroll th:nth-child(12) { width:5%; }
+.disposal-table-scroll .nowrap, .disposal-table-scroll .cost-cell { white-space:normal; }
+@media (max-width:1100px) {
+    .disposal-table-scroll thead th { font-size:.7rem; padding:9px 4px; white-space:normal; }
+    .disposal-table-scroll tbody td { font-size:.75rem; padding:9px 4px; }
+    .disposal-table-scroll .btn { padding:3px 5px; font-size:.7rem; white-space:normal; }
+    .disposal-table-scroll .status { padding:4px 5px; white-space:normal; }
+}
+@media (max-height:700px) {
+    .disposal-content { padding-top:12px !important; padding-bottom:12px !important; }
+    .disposal-search-card { max-height:45dvh; }
+    .disposal-list-card { min-height:160px; }
+}
+@media (max-width:767.98px) {
+    .disposal-content { padding:12px !important; }
+    .pending-strip { padding:10px; }
+    .disposal-search-card { max-height:48dvh; }
+    .disposal-list-card > .card-body { padding:10px !important; }
+}
+
+/* ===== 목록 우선 배치: 검색 영역 압축, 목록 높이 확대 ===== */
+.disposal-content { padding-top:12px !important; padding-bottom:12px !important; }
+.disposal-content > .pending-strip { margin-bottom:10px !important; padding-top:8px; padding-bottom:8px; }
+.disposal-search-card { flex:0 1 auto; max-height:36dvh; margin-bottom:10px !important; overflow-y:auto; overflow-x:hidden; }
+.disposal-search-card > .card-body { padding:12px 16px !important; }
+.disposal-search-card .card-body > .d-flex { margin-bottom:8px !important; }
+.disposal-search-card form > .row { --bs-gutter-y:8px; --bs-gutter-x:12px; }
+.disposal-search-card .filter-label { margin-bottom:3px; }
+.disposal-search-card .border-top { margin-top:9px !important; padding-top:7px !important; }
+.disposal-search-card #advancedFilters { margin-top:8px !important; }
+.disposal-search-card .advanced-panel { padding:10px; }
+.disposal-search-card .advanced-panel .row { --bs-gutter-y:8px; }
+.disposal-search-card .search-actions { margin-top:8px; padding-top:8px; }
+.disposal-list-card { flex:1 1 0; min-height:40dvh; }
+.disposal-list-card > .card-body { padding:12px 16px !important; }
+.disposal-list-card .list-toolbar { margin-bottom:8px !important; }
+.disposal-list-card .pagination-center { margin-top:6px; }
+.disposal-list-card .list-footer { margin-top:4px !important; }
+@media (min-width:1200px) {
+    /* 기본 검색 필드 5개를 한 줄에 배치 */
+    .disposal-search-card form > .row > [class*="col-"] { flex:0 0 20%; width:20%; }
+}
+@media (max-height:700px) {
+    .disposal-search-card { max-height:32dvh; }
+    .disposal-list-card { min-height:38dvh; }
+}
+@media (max-width:767.98px) {
+    .disposal-search-card { max-height:34dvh; }
+    .disposal-list-card { min-height:38dvh; }
+}

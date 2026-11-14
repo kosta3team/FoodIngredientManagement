@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <title>
+        재고 목록 조회 (직영점)
+    </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/common.css">
+</head>
+<body>
+<div class="hq-layout d-flex">
+
+    <div th:replace="~{fragment/sidebar :: sidebarFragment}"></div>
+    <main class="hq-main">
+        <div class="hq-content p-4">
+            <!-- 페이지 제목 및 이동 메뉴 -->
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                <h4 class="hq-page-title mb-0">
+                    전체 재고 목록 조회 (직영점)
+                </h4>
+            </div>
+            <!-- 검색 조건: 화면 구성만 제공하며 데이터는 예시 값 -->
+            <section class="card hq-card p-3 mb-3">
+                <div class="row g-3 align-items-center">
+                    <div class="col-md-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <label class="form-label mb-0 text-nowrap" for="ingredientCategories">분류</label>
+                            <select class="form-select" id="ingredientCategories" name="ingredientCategories">
+                                <option value="">전체</option>
+                                <option>계란류</option>
+                                <option>채소류</option>
+                                <option>가공품</option>
+                                <option>육가공품</option>
+                                <option>유제품</option>
+                                <option>소스류</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <label class="form-label mb-0 text-nowrap" for="ingredient">식재료명</label>
+                            <select class="form-select" id="ingredient" name="ingredient">
+                                <option value="">전체</option>
+                                <option>식빵</option>
+                                <option>브리오슈</option>
+                                <option>기타 토스트용 빵</option>
+                                <option>계란</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-primary px-4" type="submit">검색</button>
+                    </div>
+
+                </div>
+            </section>
+            <!-- 재고 목록: 화면 구성만 제공하며 데이터는 예시 값 -->
+            <section class="card hq-card p-3 mb-3">
+                <h6 class="fw-bold mb-3">
+                    재고 목록
+                </h6>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle hq-table mb-0">
+                        <thead>
+                        <tr>
+                            <th scope="col">
+                                번호
+                            </th>
+                            <th scope="col">
+                                분류
+                            </th>
+                            <th scope="col">
+                                식재료명
+                            </th>
+                            <th scope="col">
+                                보관유형
+                            </th>
+                            <th scope="col">
+                                잔여수량
+                            </th>
+                            <th scope="col">
+                                담당자
+                            </th>
+                            <th scope="col">
+                                상세
+                            </th>
+                            <th scope="col">
+                                폐기
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>
+                                1
+                            </td>
+                            <td>
+                                계란류
+                            </td>
+                            <td>
+                                계란
+                            </td>
+                            <td>
+                                냉장
+                            </td>
+                            <td>
+                                3 판
+                            </td>
+                            <td>
+                                김담당
+                            </td>
+                            <td>
+                                <a class="btn btn-outline-primary btn-sm" href="storeInventoryDetail.html"
+                                   th:href="@{/inventory/detail/101}">
+                                    상세 보기
+                                </a>
+                            </td>
+                            <td>
+                                <a class="btn btn-outline-secondary btn-sm" href="#" th:href="@{/inventory/disposal-request/101}">
+                                    폐기 요청
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                채소류
+                            </td>
+                            <td>
+                                양배추
+                            </td>
+                            <td>
+                                냉장
+                            </td>
+                            <td>
+                                3 통
+                            </td>
+                            <td>
+                                이담당
+                            </td>
+                            <td>
+                                <a class="btn btn-outline-primary btn-sm" href="storeInventoryDetail.html"
+                                   th:href="@{/inventory/detail/101}">
+                                    상세 보기
+                                </a>
+                            </td>
+                            <td>
+                                <a class="btn btn-outline-secondary btn-sm" href="#" th:href="@{/inventory/disposal-request/101}">
+                                    폐기 요청
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                3
+                            </td>
+                            <td>
+                                채소류
+                            </td>
+                            <td>
+                                양파
+                            </td>
+                            <td>
+                                냉장
+                            </td>
+                            <td>
+                                2 망
+                            </td>
+                            <td>
+                                이담당
+                            </td>
+                            <td>
+                                <a class="btn btn-outline-primary btn-sm" href="storeInventoryDetail.html"
+                                   th:href="@{/inventory/detail/101}">
+                                    상세 보기
+                                </a>
+                            </td>
+                            <td>
+                                <a class="btn btn-outline-secondary btn-sm" href="#" th:href="@{/inventory/disposal-request/101}">
+                                    폐기 요청
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                4
+                            </td>
+                            <td>
+                                채소류
+                            </td>
+                            <td>
+                                양상추
+                            </td>
+                            <td>
+                                냉장
+                            </td>
+                            <td>
+                                3 통
+                            </td>
+                            <td>
+                                이담당
+                            </td>
+                            <td>
+                                <a class="btn btn-outline-primary btn-sm" href="storeInventoryDetail.html"
+                                   th:href="@{/inventory/detail/101}">
+                                    상세 보기
+                                </a>
+                            </td>
+                            <td>
+                                <a class="btn btn-outline-secondary btn-sm" href="#" th:href="@{/inventory/disposal-request/101}">
+                                    폐기 요청
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                5
+                            </td>
+                            <td>
+                                채소류
+                            </td>
+                            <td>
+                                토마토
+                            </td>
+                            <td>
+                                냉장
+                            </td>
+                            <td>
+                                1 박스
+                            </td>
+                            <td>
+                                이담당
+                            </td>
+                            <td>
+                                <a class="btn btn-outline-primary btn-sm" href="storeInventoryDetail.html"
+                                   th:href="@{/inventory/detail/101}">
+                                    상세 보기
+                                </a>
+                            </td>
+                            <td>
+                                <a class="btn btn-outline-secondary btn-sm" href="#" th:href="@{/inventory/disposal-request/101}">
+                                    폐기 요청
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                6
+                            </td>
+                            <td>
+                                빵류
+                            </td>
+                            <td>
+                                식빵
+                            </td>
+                            <td>
+                                실온
+                            </td>
+                            <td>
+                                4 봉
+                            </td>
+                            <td>
+                                이담당
+                            </td>
+                            <td>
+                                <a class="btn btn-outline-primary btn-sm" href="storeInventoryDetail.html"
+                                   th:href="@{/inventory/detail/101}">
+                                    상세 보기
+                                </a>
+                            </td>
+                            <td>
+                                <a class="btn btn-outline-secondary btn-sm" href="#" th:href="@{/inventory/disposal-request/101}">
+                                    폐기 요청
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                7
+                            </td>
+                            <td>
+                                빵류
+                            </td>
+                            <td>
+                                브리오슈
+                            </td>
+                            <td>
+                                실온
+                            </td>
+                            <td>
+                                2 봉
+                            </td>
+                            <td>
+                                이담당
+                            </td>
+                            <td>
+                                <a class="btn btn-outline-primary btn-sm" href="storeInventoryDetail.html"
+                                   th:href="@{/inventory/detail/101}">
+                                    상세 보기
+                                </a>
+                            </td>
+                            <td>
+                                <a class="btn btn-outline-secondary btn-sm" href="#" th:href="@{/inventory/disposal-request/101}">
+                                    폐기 요청
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                8
+                            </td>
+                            <td>
+                                빵류
+                            </td>
+                            <td>
+                                기타 토스트용 빵
+                            </td>
+                            <td>
+                                실온
+                            </td>
+                            <td>
+                                1 봉
+                            </td>
+                            <td>
+                                이담당
+                            </td>
+                            <td>
+                                <a class="btn btn-outline-primary btn-sm" href="storeInventoryDetail.html"
+                                   th:href="@{/inventory/detail/101}">
+                                    상세 보기
+                                </a>
+                            </td>
+                            <td>
+                                <a class="btn btn-outline-secondary btn-sm" href="#" th:href="@{/inventory/disposal-request/101}">
+                                    폐기 요청
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                9
+                            </td>
+                            <td>
+                                통조림
+                            </td>
+                            <td>
+                                피클 캔
+                            </td>
+                            <td>
+                                냉장
+                            </td>
+                            <td>
+                                3 캔
+                            </td>
+                            <td>
+                                이담당
+                            </td>
+                            <td>
+                                <a class="btn btn-outline-primary btn-sm" href="storeInventoryDetail.html"
+                                   th:href="@{/inventory/detail/101}">
+                                    상세 보기
+                                </a>
+                            </td>
+                            <td>
+                                <a class="btn btn-outline-secondary btn-sm" href="#" th:href="@{/inventory/disposal-request/101}">
+                                    폐기 요청
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                10
+                            </td>
+                            <td>
+                                통조림
+                            </td>
+                            <td>
+                                옥수수 캔
+                            </td>
+                            <td>
+                                냉장
+                            </td>
+                            <td>
+                                2 캔
+                            </td>
+                            <td>
+                                이담당
+                            </td>
+                            <td>
+                                <a class="btn btn-outline-primary btn-sm" href="storeInventoryDetail.html"
+                                   th:href="@{/inventory/detail/101}">
+                                    상세 보기
+                                </a>
+                            </td>
+                            <td>
+                                <a class="btn btn-outline-secondary btn-sm" href="#" th:href="@{/inventory/disposal-request/101}">
+                                    폐기 요청
+                                </a>
+                            </td>
+                        </tr>
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+
+<!-- 재고 상세 모달: storeInventoryDetail.html -->
+<div class="modal" id="storeInventoryDetailModal" tabindex="-1" aria-labelledby="storeInventoryDetailModalLabel"
+     aria-hidden="true" role="dialog">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title hq-page-title mb-0" id="storeInventoryDetailModalLabel">
+                    재고 상세조회
+                </h4>
+                <button type="button" class="btn-close" data-modal-close aria-label="닫기"></button>
+            </div>
+            <div class="modal-body" id="storeInventoryDetailModalBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-modal-close>
+                    닫기
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-backdrop show d-none" id="storeInventoryDetailBackdrop"></div>
+
+<script src="/js/storeInventoryDetail.js" defer></script>
+</body>
+</html>

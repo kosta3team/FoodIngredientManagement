@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>폐기 통계</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <style>
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            color: #17283b;
+            background: #f1f5f8;
+            font: 15px/1.55 "Pretendard", "Malgun Gothic", sans-serif
+        }
+
+        .hq-layout {
+            display: flex
+        }
+
+        .stats {
+            min-width: 0;
+            flex: 1;
+            padding: clamp(18px, 4vw, 54px);
+            max-width: 1440px;
+            margin: auto
+        }
+
+        h1, h2, p {
+            margin: 0
+        }
+
+        h1 {
+            font-size: 36px;
+            letter-spacing: -.05em
+        }
+
+        h2 {
+            font-size: 19px
+        }
+
+        header {
+            padding: 24px 28px;
+            border-radius: 18px;
+            background: #142c43;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            gap: 12px;
+            flex-wrap: wrap
+        }
+
+        header p {
+            color: #c4d6e6;
+            margin-top: 6px
+        }
+
+        .demo {
+            background: #29465f;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 13px
+        }
+
+        .panel, .metric {
+            background: white;
+            border: 1px solid #dce6ee;
+            border-radius: 14px;
+            padding: 19px;
+            margin-top: 16px
+        }
+
+        .filters, .summary {
+            display: grid;
+            grid-template-columns:repeat(auto-fit, minmax(155px, 1fr));
+            gap: 12px
+        }
+
+        .filters {
+            margin-top: 12px
+        }
+
+        label {
+            display: grid;
+            gap: 5px;
+            font-weight: 600;
+            font-size: 13px
+        }
+
+        select, input, button {
+            min-width: 0;
+            width: 100%;
+            height: 39px;
+            border: 1px solid #cbd8e2;
+            border-radius: 7px;
+            background: white;
+            color: inherit;
+            padding: 0 8px;
+            font: inherit
+        }
+
+        button {
+            background: #126a63;
+            color: white;
+            border: 0;
+            cursor: pointer
+        }
+
+        .actions {
+            display: flex;
+            align-items: end
+        }
+
+        .metric {
+            margin-top: 12px
+        }
+
+        .metric strong {
+            display: block;
+            font-size: 25px;
+            margin-top: 5px
+        }
+
+        .muted {
+            color: #50647a;
+            font-size: 13px
+        }
+
+        #criteria {
+            margin-top: 12px
+        }
+
+        .plot {
+            display: grid;
+            gap: 10px;
+            margin-top: 14px
+        }
+
+        .bar-row {
+            display: grid;
+            grid-template-columns:minmax(76px, 140px) minmax(45px, 1fr) minmax(72px, auto);
+            gap: 10px;
+            align-items: center
+        }
+
+        .track {
+            background: #e9f1f3;
+            height: 12px;
+            border-radius: 10px;
+            overflow: hidden
+        }
+
+        .fill {
+            background: #168477;
+            height: 100%;
+            border-radius: 10px
+        }
+
+        .table-wrap {
+            overflow: auto
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            white-space: nowrap;
+            margin-top: 9px
+        }
+
+        th, td {
+            text-align: right;
+            padding: 10px;
+            border-bottom: 1px solid #e6edf2
+        }
+
+        th {
+            background: #f4f7fa
+        }
+
+        th:first-child, td:first-child {
+            text-align: left
+        }
+
+        #error {
+            color: #a52626;
+            margin-top: 8px
+        }
+    </style>
+</head>
+<body>
+<div class="hq-layout">
+    <div th:replace="~{fragment/sidebar :: sidebarFragment}"></div>
+    <main class="stats">
+        <header>
+            <div><h1>폐기 통계</h1>
+                <p>직영점과 식재료 조건에 따라 폐기 규모와 비율을 비교합니다.</p></div>
+            <span class="demo">예시 데이터</span></header>
+        <form class="panel" id="filters">
+            <h2>통계 조건</h2>
+            <div class="filters">
+                <label>집계 기준<select id="basis">
+                    <option value="receipt">입고일 기준</option>
+                    <option value="disposal">폐기일 기준</option>
+                </select></label>
+                <label>시작일<input type="date" id="start" value="2026-06-01" required></label>
+                <label>종료일<input type="date" id="end" value="2026-11-12" required></label>
+                <label>직영점<select id="store">
+                    <option value="">전체</option>
+                </select></label>
+                <label>식재료<select id="ingredient">
+                    <option value="">전체</option>
+                </select></label>
+                <label>비교 기준<select id="group"></select></label>
+                <label>표시 지표<select id="metric"></select></label>
+                <label>폐기 유형<select id="type">
+                    <option value="">전체</option>
+                    <option>통폐기</option>
+                    <option>부분폐기</option>
+                </select></label>
+                <div class="actions">
+                    <button>통계 조회</button>
+                </div>
+            </div>
+            <p class="muted" id="criteria"></p>
+            <p id="error" role="alert" hidden></p>
+        </form>
+        <section class="summary" id="summary" aria-label="집계 요약" aria-live="polite"></section>
+        <section class="panel" aria-labelledby="chartTitle"><h2 id="chartTitle">비교 차트</h2>
+            <p class="muted" id="chartNote"></p>
+            <div class="plot" id="chart"></div>
+        </section>
+        <section class="panel"><h2>상세 집계</h2>
+            <div class="table-wrap">
+                <table id="details"></table>
+            </div>
+        </section>
+    </main>
+</div>
+<script>
+    'use strict';
+    const byId = id => document.getElementById(id);
+    const number = new Intl.NumberFormat('ko-KR');
+    const cutoff = '2026-11-12';
+    const ingredients = [
+        {
+            name: '양상추',
+            category: '채소류',
+            processing: '비가공',
+            storage: '냉장',
+            management: '손질',
+            shelfDays: 7,
+            unit: 'g',
+            size: 5000,
+            price: 12000
+        },
+        {
+            name: '브리오슈',
+            category: '빵류',
+            processing: '가공',
+            storage: '냉동',
+            management: '해동',
+            shelfDays: 45,
+            unit: '개',
+            size: 20,
+            price: 9000
+        },
+        {
+            name: '피클',
+            category: '캔류',
+            processing: '가공',
+            storage: '실온',
+            management: '개봉',
+            shelfDays: 180,
+            unit: 'g',
+            size: 3000,
+            price: 7800
+        }
+    ];
+    const stores = ['강남점', '홍대점', '잠실점'];
+    // 연동 시 입고 로트와 해당 로트에 연결된 최종 처리 폐기 내역을 공급합니다.
+    const lots = [6, 7, 8, 9, 10, 11].flatMap(month => stores.flatMap((store, storeIndex) =>
+        ingredients.map((food, foodIndex) => {
+            const ym = '2026-' + String(month).padStart(2, '0');
+            const packages = 12 + (month + storeIndex * 2 + foodIndex) % 8;
+            const received = packages - (month + foodIndex) % 3;
+            const expires = new Date(ym + '-02T00:00:00Z');
+            expires.setUTCDate(expires.getUTCDate() + food.shelfDays);
+            const expiresOn = expires.toISOString().slice(0, 10);
+            const events = [];
+            if ((month + storeIndex + foodIndex) % 4 !== 0) {
+                events.push({date: ym + '-07', type: '부분폐기', quantity: food.size * (month % 3 + 1) / 4});
+            }
+            if ((month + storeIndex + foodIndex) % 3 === 0) {
+                events.push({date: ym + '-09', type: '통폐기', quantity: food.size});
+            }
+            return {
+                store, food, expiresOn, receivedAt: ym + '-03', orderedQty: packages * food.size,
+                receivedQty: received * food.size, events
+            };
+        })
+    ));
+    const season = date => Number(date.slice(5, 7)) >= 6 && Number(date.slice(5, 7)) <= 8 ? '여름' : '그 외';
+    const shelf = days => days <= 7 ? '7일 이하' : days <= 30 ? '8~30일' : '31일 이상';
+    const groups = {
+        month: ['월별', (_, date) => date.slice(0, 7)],
+        day: ['일별', (_, date) => date],
+        store: ['직영점별', lot => lot.store],
+        ingredient: ['식재료별', lot => lot.food.name],
+        category: ['식재료 소분류별', lot => lot.food.category],
+        processing: ['가공·비가공별', lot => lot.food.processing],
+        storage: ['보관 유형별', lot => lot.food.storage],
+        shelf: ['유통기한 길이별', lot => shelf(lot.food.shelfDays)],
+        management: ['관리 방식별', lot => lot.food.management],
+        season: ['여름·그 외', (_, date) => season(date)],
+        expiry: ['유통기한 대비 폐기 시점별', (lot, date) => date < lot.expiresOn ? '만료 전' : date === lot.expiresOn ? '만료 당일' : '만료 후'],
+        type: ['폐기 유형별', (_, date, event) => event.type]
+    };
+    const metrics = {
+        cost: ['폐기 금액', a => a.cost, '원'],
+        count: ['폐기 건수', a => a.count, '건'],
+        rate: ['입고 대비 폐기율', a => ratio(a.waste, a.received), '%'],
+        orderRate: ['발주 대비 폐기율', a => ratio(a.waste, a.ordered), '%'],
+        fulfillment: ['발주 대비 입고율', a => ratio(a.received, a.ordered), '%'],
+        quantity: ['폐기량', a => a.waste, '']
+    };
+    const ratio = (part, total) => total > 0 ? 100 * part / total : null;
+    const amount = (value, unit) => value === null ? '—' : unit === '%' ? value.toFixed(2) + '%' : number.format(Math.round(value)) + unit;
+    const empty = () => ({cost: 0, count: 0, waste: 0, received: 0, ordered: 0});
+
+    function options(select, entries, preferred) {
+        select.replaceChildren(...entries.map(([value, label]) => new Option(label, value)));
+        if (entries.some(([value]) => value === preferred)) select.value = preferred;
+    }
+
+    stores.forEach(store => byId('store').add(new Option(store, store)));
+    ingredients.forEach(food => byId('ingredient').add(new Option(food.name, food.name)));
+
+    function settings() {
+        const receipt = byId('basis').value === 'receipt';
+        const food = ingredients.find(item => item.name === byId('ingredient').value);
+        const selectedGroup = byId('group').value;
+        options(byId('group'), Object.entries(groups).filter(([key]) => !receipt || !['type', 'expiry'].includes(key))
+            .map(([key, [label]]) => [key, label]), selectedGroup);
+        options(byId('metric'), Object.entries(metrics).filter(([key]) => key === 'cost' || key === 'count'
+            || (food && (receipt || key === 'quantity'))).map(([key, [label]]) => [key, label]), byId('metric').value);
+        byId('criteria').textContent = (receipt
+                ? '선택 기간에 입고된 로트의 발주량·입고량과 연결된 폐기를 집계합니다. 폐기는 조회 종료일까지 최종 처리된 내역을 포함합니다.'
+                : '선택 기간에 최종 처리된 폐기를 폐기일로 집계합니다.')
+            + ' 여름은 6~8월입니다. 유통기한 길이는 식재료에 설정된 일수입니다.'
+            + (food ? ' 수량 지표 단위는 ' + food.unit + '입니다.' : ' 수량·비율 지표를 보려면 식재료를 하나 선택하세요.');
+    }
+
+    function addEvent(bucket, lot, event) {
+        bucket.count++;
+        bucket.waste += event.quantity;
+        bucket.cost += event.quantity * lot.food.price / lot.food.size;
+    }
+
+    function render() {
+        const receipt = byId('basis').value === 'receipt';
+        const start = byId('start').value;
+        const end = byId('end').value;
+        const error = byId('error');
+        if (!start || !end || start > end || end > cutoff) {
+            error.textContent = '시작일 ≤ 종료일 ≤ ' + cutoff + ' 조건으로 조회하세요.';
+            error.hidden = false;
+            return;
+        }
+        error.hidden = true;
+        const store = byId('store').value;
+        const ingredient = byId('ingredient').value;
+        const type = byId('type').value;
+        const group = byId('group').value;
+        const metric = byId('metric').value;
+        const unit = ingredients.find(food => food.name === ingredient)?.unit;
+        const getGroup = groups[group][1];
+        const grouped = new Map();
+        const total = empty();
+        const within = date => start <= date && date <= end;
+
+        function bucketFor(key) {
+            if (!grouped.has(key)) grouped.set(key, empty());
+            return grouped.get(key);
+        }
+
+        for (const lot of lots) {
+            if ((store && lot.store !== store) || (ingredient && lot.food.name !== ingredient)) continue;
+            const events = lot.events.filter(event => (!type || type === event.type) && event.date <= end);
+            if (receipt) {
+                if (!within(lot.receivedAt)) continue;
+                const bucket = bucketFor(getGroup(lot, lot.receivedAt));
+                for (const target of [bucket, total]) {
+                    target.ordered += lot.orderedQty;
+                    target.received += lot.receivedQty;
+                    events.forEach(event => addEvent(target, lot, event));
+                }
+            } else {
+                for (const event of events.filter(event => within(event.date))) {
+                    addEvent(bucketFor(getGroup(lot, event.date, event)), lot, event);
+                    addEvent(total, lot, event);
+                }
+            }
+        }
+        const rows = [...grouped].sort(([a], [b]) => group === 'shelf'
+            ? ['7일 이하', '8~30일', '31일 이상'].indexOf(a) - ['7일 이하', '8~30일', '31일 이상'].indexOf(b)
+            : a.localeCompare(b, 'ko'));
+        const columns = ['count', 'cost'];
+        if (unit) {
+            columns.push('quantity');
+            if (receipt) columns.push('ordered', 'received', 'rate', 'orderRate', 'fulfillment');
+        }
+        const extra = {ordered: ['발주량', a => a.ordered, unit], received: ['입고량', a => a.received, unit]};
+        const definition = key => extra[key] || metrics[key];
+        const format = (key, row) => {
+            const [, value, suffix] = definition(key);
+            return amount(value(row), key === 'quantity' ? unit : suffix);
+        };
+        const cards = ['count', 'cost'];
+        if (unit) cards.push('quantity');
+        if (unit && receipt) cards.push('rate', 'orderRate', 'fulfillment');
+        byId('summary').innerHTML = cards.map(key => '<div class="metric"><span class="muted">' + definition(key)[0]
+            + '</span><strong>' + format(key, total) + '</strong></div>').join('');
+        byId('chartTitle').textContent = groups[group][0] + ' ' + metrics[metric][0];
+        byId('chartNote').textContent = metric === 'rate' ? '폐기량 ÷ 입고량 × 100'
+            : metric === 'orderRate' ? '폐기량 ÷ 발주량 × 100'
+                : metric === 'fulfillment' ? '입고량 ÷ 발주량 × 100'
+                    : metric === 'cost' ? '폐기량 × 입고 로트의 단위당 원가' : '';
+        const metricValue = metrics[metric][1];
+        const max = Math.max(1, metrics[metric][2] === '%' ? 100 : 0, ...rows.map(([, row]) => metricValue(row) ?? 0));
+        byId('chart').innerHTML = rows.length ? rows.map(([label, row]) => '<div class="bar-row"><span>' + label
+            + '</span><div class="track" aria-hidden="true"><div class="fill" style="width:' + ((metricValue(row) ?? 0) / max * 100)
+            + '%"></div></div><strong>' + format(metric, row) + '</strong></div>').join('') : '<p>조회 조건에 해당하는 데이터가 없습니다.</p>';
+        const dataRows = rows.length ? [...rows, ['합계', total]] : [];
+        byId('details').innerHTML = '<thead><tr><th scope="col">구분</th>' + columns.map(key => '<th scope="col">' + definition(key)[0] + '</th>').join('')
+            + '</tr></thead><tbody>' + dataRows.map(([label, row]) => '<tr><th scope="row">' + label + '</th>'
+                + columns.map(key => '<td>' + format(key, row) + '</td>').join('') + '</tr>').join('')
+            + (rows.length ? '' : '<tr><td colspan="' + (columns.length + 1) + '">집계 결과가 없습니다.</td></tr>') + '</tbody>';
+    }
+
+    for (const id of ['basis', 'ingredient']) byId(id).addEventListener('change', settings);
+    byId('filters').addEventListener('submit', event => {
+        event.preventDefault();
+        settings();
+        render();
+    });
+    settings();
+    render();
+</script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<aside th:fragment="sidebarFragment"
+       class="hq-sidebar p-3 d-flex flex-column justify-content-between">
+
+  <div>
+    <a th:href="@{/index.html}"
+       class="hq-brand d-flex align-items-center gap-2 mb-4 text-decoration-none">
+      <span class="brand-text fw-bold fs-5 text-white">프랜차이즈 재고 관리</span>
+    </a>
+
+    <nav class="nav flex-column gap-1" aria-label="업무 메뉴">
+
+      <!-- 폐기관리 -->
+      <div class="nav-group">
+        <a th:href="@{/hqDisposalList}" class="nav-link nav-parent">
+          <span aria-hidden="true">♻</span>
+          <span class="ms-2">폐기관리</span>
+          <span class="ms-auto" aria-hidden="true">⌄</span>
+        </a>
+
+        <div class="nav-submenu">
+          <a th:href="@{/hqDisposalList}">본사 폐기 목록 조회</a>
+          <a th:href="@{/storeDisposalList}">직영점 폐기 목록 조회</a>
+          <a th:href="@{/hqDisposalStatistics}">본사 폐기 통계</a>
+        </div>
+      </div>
+
+      <!-- 재고관리 -->
+      <div class="nav-group">
+        <a th:href="@{/hqInventoryList}" class="nav-link nav-parent">
+          <span aria-hidden="true">▣</span>
+          <span class="ms-2">재고관리</span>
+          <span class="ms-auto" aria-hidden="true">⌄</span>
+        </a>
+
+        <div class="nav-submenu">
+          <a th:href="@{/hqInventoryList}">본사 재고 목록 조회</a>
+          <a th:href="@{/storeInventoryList}">직영점 재고 목록 조회</a>
+        </div>
+      </div>
+
+      <!-- 식재료 관리 -->
+      <div class="nav-group">
+        <a th:href="@{/ingredientList}" class="nav-link nav-parent">
+          <span aria-hidden="true">🥬</span>
+          <span class="ms-2">식재료 관리</span>
+          <span class="ms-auto" aria-hidden="true">⌄</span>
+        </a>
+
+        <div class="nav-submenu">
+          <a th:href="@{/ingredientList}">식재료 목록 조회</a>
+        </div>
+      </div>
+
+      <!-- 발주관리 -->
+      <div class="nav-group">
+        <a th:href="@{/hqOrderList}" class="nav-link nav-parent">
+          <span aria-hidden="true">🛒</span>
+          <span class="ms-2">발주관리</span>
+          <span class="ms-auto" aria-hidden="true">⌄</span>
+        </a>
+
+        <div class="nav-submenu">
+          <a th:href="@{/hqOrderList}">본사 발주 목록 조회</a>
+          <a th:href="@{/hqOrderDetail}">본사 발주 상세 조회</a>
+          <a th:href="@{/storeOrderList}">직영점 발주 목록 조회</a>
+          <a th:href="@{/storeOrderDetail}">직영점 발주 상세 조회</a>
+          <a th:href="@{/storeOrderRequest}">직영점 발주 요청</a>
+          <a th:href="@{/storeOrderDetailAdd}">직영점 발주 품목 추가</a>
+        </div>
+      </div>
+
+    </nav>
+  </div>
+
+  <div class="sidebar-footer pt-3 border-top border-secondary">
+    <div class="small mb-2 d-flex align-items-center justify-content-between text-light">
+      <span>👤 본사 관리자</span>
+      <span>2026.11.03</span>
+    </div>
+
+    <a th:href="@{/logout}"
+       class="btn btn-outline-light btn-sm w-100 d-flex align-items-center justify-content-center gap-1">
+      <span aria-hidden="true">🚪</span>
+      <span>로그아웃</span>
+    </a>
+  </div>
+
+</aside>
+
+</body>
+</html>

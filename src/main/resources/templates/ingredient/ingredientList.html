@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>본사 - 식재료 조회</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/common.css">
+</head>
+<body>
+<div class="hq-layout d-flex">
+    <div th:replace="~{fragment/sidebar :: sidebarFragment}"></div>
+    <main class="hq-main ingredient-main">
+        <div class="hq-content p-4 p-xl-5">
+            <h4 class="hq-page-title mb-3">식재료 목록 조회 (본사)</h4>
+
+            <section class="card hq-card mb-3" aria-label="식재료 검색">
+                <div class="card-body px-3 py-2">
+                    <form class="row g-2 align-items-end" data-search-table="ingredientTable">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold mb-1" for="ingredientKeyword">검색</label>
+                            <input type="text" class="form-control form-control-sm" id="ingredientKeyword"
+                                   name="keyword" placeholder="식재료명을 입력하세요">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold mb-1" for="ingredientCategory">분류</label>
+                            <select class="form-select form-select-sm" id="ingredientCategory" name="category">
+                                <option value="">전체 분류</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold mb-1" for="ingredientStorageType">보관유형</label>
+                            <select class="form-select form-select-sm" id="ingredientStorageType" name="storageType">
+                                <option value="">전체 보관유형</option>
+                            </select>
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary btn-sm">검색</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <section class="card hq-card" aria-label="식재료 목록">
+                <div class="card-body p-3">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle text-center mb-0" id="ingredientTable">
+                            <thead class="table-light">
+                            <tr>
+                                <th scope="col" style="width: 5%;">
+                                    <input type="checkbox" class="form-check-input" id="selectAllIngredients"
+                                           aria-label="현재 목록 전체 선택">
+                                </th>
+                                <th scope="col">식재료명</th>
+                                <th scope="col">분류</th>
+                                <th scope="col">용량 단위</th>
+                                <th scope="col">보관유형</th>
+                                <th scope="col">단가</th>
+                                <th scope="col">상세</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <!-- 기존 목록 스크립트의 렌더링 영역 -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-2">
+                        <small class="text-muted" id="ingredientPageInfo">총 0개 품목 / 0/0 페이지</small>
+                    </div>
+                    <nav class="d-flex justify-content-center mt-3" aria-label="식재료 목록 페이지">
+                        <ul class="pagination flex-wrap justify-content-center mb-0" id="ingredientPagination"></ul>
+                    </nav>
+                    <div class="d-flex flex-wrap justify-content-end gap-2 mt-3">
+                        <button type="button" class="btn btn-outline-danger" id="deleteSelectedIngredients">
+                            선택항목 삭제
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="openIngredientRegisterModal()">
+                            식재료 등록
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+
+<div class="modal fade" id="commonDetailModal" tabindex="-1"
+     aria-labelledby="commonModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="commonModalTitle">상세 정보</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+            </div>
+            <div class="modal-body" id="commonModalBody">상세 정보를 불러오는 중입니다.</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/ingredientDetailModal.js"></script>
+<script src="/js/ingredientRegister.js"></script>
+</body>
+</html>
