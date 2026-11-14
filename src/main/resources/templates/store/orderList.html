@@ -1,47 +1,195 @@
-<!DOCTYPE html>
 
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>직영점 - 발주 요청 조회</title>
-<link href="/vendor/bootstrap/bootstrap.min.css" rel="stylesheet"/>
-<!-- 기존 공통 CSS는 그대로 두고, Bootstrap 파일만 로컬로 불러온다. -->
-<link href="/css/common.css" rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>발주요청조회 (본사) | FoodIngredientManagement</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/common.css">
 </head>
 <body>
 <div class="hq-layout d-flex">
-<!-- 기존 sidebar.html을 한 번만 AJAX 로드하여 모든 화면에서 재사용한다. -->
-<div id="sidebar-container"></div>
-<main class="hq-main">
-<header class="hq-header d-flex align-items-center px-4 fw-bold">식재료 · 재고 · 폐기 운영 관리</header>
-<!-- 화면 본문: 카드와 표는 common.css 및 Bootstrap 클래스만 사용한다. -->
-<div class="hq-content p-4">
-<div class="d-flex justify-content-between flex-wrap gap-2 align-items-center mb-3"><h4 class="hq-page-title mb-0">발주요청 조회 (직영점)</h4><span class="badge text-bg-primary fs-6">지점: 서울 한국대점</span></div>
-<div class="card hq-card p-3 mb-3"><!--DB 결과를 AJAX로 채운 다음 현재 화면의 행을 검색 조건에 따라 필터링한다.--><form class="row g-2 align-items-end" data-search-table="storeOrderTable">
-<div class="col-md-4"><label class="form-label fw-semibold">검색</label><input class="form-control" name="keyword" placeholder="발주번호 또는 품목명"/></div>
-<div class="col-md-2"><label class="form-label fw-semibold">상태</label><select class="form-select" name="status"><option value="">전체</option><option value="REQUESTED">요청접수</option><option value="PENDING">대기</option><option value="APPROVED">승인</option><option value="REJECTED">거절</option></select></div>
-<div class="col-md-2"><label class="form-label fw-semibold">시작일</label><input class="form-control" name="startDate" type="date"/></div><div class="col-md-2"><label class="form-label fw-semibold">종료일</label><input class="form-control" name="endDate" type="date"/></div>
-<div class="col-auto"><button class="btn btn-primary" type="submit">검색</button></div>
-</form></div>
-<div class="card hq-card p-3"><div class="table-responsive"><table class="table table-hover align-middle hq-table mb-0" id="storeOrderTable"><thead><tr><th>순번</th><th>발주일시</th><th>주문요약</th><th class="text-end">총 발주금액</th><th>처리 상태</th><th>상세보기</th><th>수정</th><th>삭제</th></tr></thead><!--MariaDB에서 가져온 데이터로 목록을 구성한다.--><tbody></tbody></table></div></div>
-<div class="text-end fs-5 fw-bold mt-3">총 발주 누계 금액: <span class="text-primary" id="storeOrderTotal">0원</span></div>
-<div class="text-secondary mt-2">※ MariaDB에 저장된 데이터를 조회합니다. 인증·권한 기능은 아직 구현되지 않았습니다.</div>
+    <div th:replace="~{fragment/sidebar :: sidebarFragment}"></div>
+    <main class="hq-main">
+        <!-- 공통 상단 헤더 -->
+        <header class="hq-header d-flex align-items-center px-4 fw-bold">식재료 · 재고 ·  운영 관리</header>
+
+        <div class="hq-content p-4">
+            <!-- 페이지 제목 및 사용자 구분 -->
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                <h4 class="hq-page-title mb-0">발주조회 (본사)</h4>
+                <span class="badge text-bg-light border">본사</span>
+            </div>
+
+            <!-- 요약 현황 (화면 확인용 예시 데이터) -->
+            <div class="row g-3 mb-3">
+                <div class="col-6 col-lg-3">
+                    <div class="card hq-card p-3 h-100">
+                        <div class="small text-secondary">승인 대기</div>
+                        <div class="fw-bold fs-4">1건</div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <div class="card hq-card p-3 h-100">
+                        <div class="small text-secondary">승인</div>
+                        <div class="fw-bold fs-4">1건</div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <div class="card hq-card p-3 h-100">
+                        <div class="small text-secondary">거절</div>
+                        <div class="fw-bold fs-4">0건</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 조회 조건 -->
+            <section class="card hq-card p-3 mb-3">
+                <h6 class="fw-bold mb-3">조회 조건</h6>
+                <div class="row g-2 align-items-end">
+                    <div class="col-12 col-md-3">
+                        <label class="form-label small fw-semibold">검색 구분</label>
+                        <select class="form-select form-select-sm">
+                            <option selected>전체</option>
+                            <option>발주번호</option>
+                            <option>지점명</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <label class="form-label small fw-semibold">검색어</label>
+                        <input class="form-control form-control-sm" type="text" placeholder="번호/지점" value="">
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <label class="form-label small fw-semibold">일자 구분</label>
+                        <select class="form-select form-select-sm">
+                            <option selected>발주일시</option>
+                            <option>입고완료일시</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <label class="form-label small fw-semibold">시작일</label>
+                        <input class="form-control form-control-sm" type="date" value="2026-11-01">
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <label class="form-label small fw-semibold">종료일</label>
+                        <input class="form-control form-control-sm" type="date" value="2026-11-06">
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <label class="form-label small fw-semibold">발주상태</label>
+                        <select class="form-select form-select-sm">
+                            <option selected>전체</option>
+                            <option>대기</option>
+                            <option>승인</option>
+                            <option>거절</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-auto">
+                        <button type="button" class="btn btn-primary btn-sm" disabled>검색</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 발주 목록 -->
+            <section class="card hq-card p-3 mb-3">
+                <h6 class="fw-bold mb-3">발주 목록</h6>
+                <div class="table-responsive">
+                    <table id="hqOrderTable" class="table table-hover align-middle hq-table table-sm mb-0">
+                        <!-- 테이블 항목 -->
+                        <thead>
+                        <tr>
+                            <!-- 전체선택 / 전체해제 -->
+                            <th scope="col" class="text-center align-middle">
+                                <input type="checkbox" id="selectAllOrders" class="form-check-input m-0" aria-label="발주 전체 선택">
+                            </th>
+                            <th scope="col">순번</th>
+                            <th scope="col">발주일련번호</th>
+                            <th scope="col">발주일시</th>
+                            <th scope="col">직영점명</th>
+                            <th scope="col">발주요약</th>
+                            <th scope="col">총금액</th>
+                            <th scope="col">상태</th>
+                            <th scope="col">입고일시</th>
+                            <th scope="col">상세</th>
+                        </tr>
+                        </thead>
+
+                        <!-- 목록 예시 데이터 (DB 연동 전) -->
+                        <tbody>
+                        <!-- 발주 1: 승인 대기 -->
+                        <tr>
+                            <td class="text-center align-middle">
+                                <input type="checkbox" class="form-check-input order-checkbox m-0" aria-label="발주 1 선택">
+                            </td>
+                            <td>1</td>
+                            <td>202601100002</td>
+                            <td>2026-11-03 10:30</td>
+                            <td>강남점</td>
+                            <td>양상추 외 1종</td>
+                            <td>101,000원</td>
+                            <td>
+                                <span class="badge text-bg-warning">대기</span>
+                            </td>
+                            <td>—</td>
+                            <td>
+                                <a class="btn btn-outline-primary btn-sm text-nowrap" href="hqOrderDetail.html">
+                                    상세
+                                </a>
+                            </td>
+                        </tr>
+
+                        <!-- 발주 2: 승인 완료 -->
+                        <tr>
+                            <td class="text-center align-middle">
+                                <input type="checkbox" class="form-check-input order-checkbox m-0" aria-label="발주 2 선택">
+                            </td>
+                            <td>2</td>
+                            <td>202601100001</td>
+                            <td>2026-11-03 11:00</td>
+                            <td>서울 한국대점</td>
+                            <td>식빵</td>
+                            <td>140,000원</td>
+                            <td>
+                                <span class="badge text-bg-success">승인</span>
+                            </td>
+                            <td>2026-11-03 14:00</td>
+                            <td>
+                                <a class="btn btn-outline-primary btn-sm text-nowrap" href="hqOrderDetail.html">
+                                    상세
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="small text-secondary mt-2 mb-0">
+                    발주수량은 입고단위(박스·팩 등), 재고 차감은 재고 기준단위(개/g/ml)를 사용합니다.
+                </p>
+            </section>
+
+            <!-- 선택 발주 처리 -->
+            <section class="card hq-card p-3 mb-3">
+                <h6 class="fw-bold mb-3">선택 발주 처리</h6>
+                <div class="row g-3">
+                    <div class="col-12 col-md-3">
+                        <label class="form-label small fw-semibold">변경 상태</label>
+                        <select class="form-select form-select-sm">
+                            <option selected>대기</option>
+                            <option>승인</option>
+                            <option>거절</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <label class="form-label small fw-semibold">공통 사유</label>
+                        <input class="form-control form-control-sm" type="text" placeholder="처리 사유" value="">
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end flex-wrap gap-2 mt-3">
+                    <button type="button" class="btn btn-primary btn-sm" disabled>일괄 처리</button>
+                </div>
+            </section>
+        </div>
+    </main>
 </div>
-</main>
-</div>
-<!-- Offcanvas 외형은 목록에 두고, 상세 본문만 fetch로 가져와 오른쪽에서 표시한다. -->
-<div aria-labelledby="commonDrawerTitle" class="offcanvas offcanvas-end w-50" id="commonDetailDrawer" tabindex="-1">
-<div class="offcanvas-header border-bottom">
-<h5 class="offcanvas-title fw-bold" id="commonDrawerTitle">상세 정보</h5>
-<button aria-label="닫기" class="btn-close" data-bs-dismiss="offcanvas" type="button"></button>
-</div>
-<div class="offcanvas-body" id="commonDrawerBody"></div>
-</div>
-<script src="/js/api.js"></script><script src="/vendor/bootstrap/bootstrap.bundle.min.js"></script>
-<script src="/js/layout.js"></script>
-<script src="/js/ingredientDetailModal.js"></script>
-<script src="/js/storeOrder.js"></script>
-<script src="/js/pageDemo.js"></script>
 </body>
 </html>

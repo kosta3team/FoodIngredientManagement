@@ -1,12 +1,30 @@
 <!-- AJAX 상세 조회 조각: 버튼의 예시 데이터를 drawer.js가 채운다. -->
 <div class="bg-light rounded p-3 mb-3">
-  <div class="row g-2"><div class="col-12"><strong>발주번호:</strong> <span data-detail-field="number">-</span></div>
-  <div class="col-12"><strong>요청 지점:</strong> <span data-detail-field="location">-</span></div>
-  <div class="col-12"><strong>발주일시:</strong> <span data-detail-field="datetime">-</span></div>
-  <div class="col-12"><strong>상태:</strong> <span data-detail-field="status">-</span></div>
-  <div class="col-12"><strong>총 발주금액:</strong> <span class="fw-bold text-primary" data-detail-field="total">-</span></div></div>
+    <div class="row g-2">
+        <div class="col-12"><strong>발주번호:</strong> <span data-detail-field="number">-</span></div>
+        <div class="col-12"><strong>요청 지점:</strong> <span data-detail-field="location">-</span></div>
+        <div class="col-12"><strong>발주일시:</strong> <span data-detail-field="datetime">-</span></div>
+        <div class="col-12"><strong>상태:</strong> <span data-detail-field="status">-</span></div>
+        <div class="col-12"><strong>총 발주금액:</strong> <span class="fw-bold text-primary"
+                                                           data-detail-field="total">-</span></div>
+    </div>
 </div>
 <!-- 본사가 대기/거절을 결정한 경우 사유를 상세 화면에서 확인한다. -->
-<div id="orderReasonBox" class="alert alert-warning" hidden><strong>처리 사유:</strong> <span id="orderReasonText"></span></div>
+<div id="orderReasonBox" class="alert alert-warning" hidden><strong>처리 사유:</strong> <span id="orderReasonText"></span>
+</div>
 <h6 class="fw-bold">품목 내역</h6>
-<div class="table-responsive"><table class="table hq-table align-middle"><thead><tr><th>순번</th><th>코드</th><th>식재료명</th><th>수량</th><th>단가(원)</th><th>금액(원)</th></tr></thead><tbody id="detailItemRows"></tbody></table></div>
+<div class="table-responsive">
+    <table class="table hq-table align-middle">
+        <thead>
+        <tr>
+            <th>순번</th>
+            <th>코드</th>
+            <th>식재료명</th>
+            <th>수량</th>
+            <th>단가(원)</th>
+            <th>금액(원)</th>
+        </tr>
+        </thead>
+        <tbody id="detailItemRows"></tbody>
+    </table>
+</div>
