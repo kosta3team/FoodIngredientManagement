@@ -23,9 +23,8 @@ public interface MBDisposalStatisticsRepository {
 
     List<DisposalCostByIngredientDTO> getDisposalCostsByIngredientForStore(@Param("storeId") Long storeId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
-    List<DisposalCostRankingStoreInfoDTO> getStoreDisposalCostRanking(@Param("startDate") LocalDate startDate,
-                                                                      @Param("endDate") LocalDate endDate);
+    List<DisposalCostRankingStoreInfoDTO> getStoreDisposalCostRanking(@Param("date") LocalDate date);
 
-    List<DailyDisposalTotalDTO> getDailyDisposalTotalsForPeriod(@Param("startDate") LocalDate startDate,
-                                                                @Param("endDate") LocalDate endDate);
+    List<DailyDisposalTotalDTO> getDailyDisposalTotalsForPeriod(@Param("today") LocalDate today,
+                                                                @Param("day") int day);
 }

@@ -249,7 +249,10 @@ ex) 도메인_업무_성공여부
    chore     설정, 빌드 등 기타 작업
              예시: chore:Maven 설정 수정
 
-   chore     폴더 구조 및 파일 이름 변경
+   folder    폴더 구조 및 파일 이름 변경
              예시: folder:xxx파일명 -> xxxx로 수정
 
    team      팀 관련 규칙 수정 사항 코드x
+
+   delete    삭제 관련
+             ex) delete:xx파일삭제

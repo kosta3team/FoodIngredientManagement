@@ -22,5 +22,19 @@ public class InventoryListResponse {
     private Timestamp managementStartAt;
 
     private String userName;
+    private String subCategoryName;
+
+
+
+    private String managementMethod;
+
+
+    private int capacity;
+
+    private String capacityUnit;
+    private int expirationPeriod;
+    private int consumptionPeriod;
+    private int summerConsumptionPeriod;
+
 
 }

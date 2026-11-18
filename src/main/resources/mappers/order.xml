@@ -138,7 +138,7 @@
     </select>
 
     <select id="findIngredients"
-            resultType="kr.swdl.foodingredientmanagement.dto.IngredientDTO">
+            resultType="kr.swdl.foodingredientmanagement.dto.IngredientListDTO">
         SELECT
         ingredient_name AS ingredientName,
         supply_price AS supplyPrice,

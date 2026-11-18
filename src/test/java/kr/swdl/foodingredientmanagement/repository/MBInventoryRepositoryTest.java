@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @SpringBootTest
-public class InventoryTest {
+public class MBInventoryRepositoryTest {
 
     @Autowired
     MBInventoryRepository mbInventoryRepository;
@@ -22,13 +22,13 @@ public class InventoryTest {
 
     @Test
     void 본사_식재료명_재고_목록_조회(){
-        List<InventoryListResponse> list = mbInventoryRepository.findInventoryList(3L, null, null, null, null, null);
+        List<InventoryListResponse> list = mbInventoryRepository.findInventoryList(1L, null, null, null, null, null);
         list.forEach(System.out::println);
     }
 
     @Test
     void 본사_직영점명_재고_목록_조회(){
-        List<InventoryListResponse> list = mbInventoryRepository.findInventoryList(null, 7L, null, null, null, null);
+        List<InventoryListResponse> list = mbInventoryRepository.findInventoryList(null, 9L, null, null, null, null);
         list.forEach(System.out::println);
     }
 
@@ -87,17 +87,12 @@ public class InventoryTest {
     }
 
     @Test
-    void 본사_특정_직영점_특정_재고_상세_조회_잔여수량(){
-        InventoryListResponse inventoryListResponse = mbInventoryRepository.findInventoryCurrentQuantity(6L, 13L);
+    void 본사_특정_직영점_특정_재고_상세_조회(){
+        InventoryListResponse inventoryListResponse = mbInventoryRepository.findInventoryDetail(1L, 1L);
         System.out.println(inventoryListResponse);
     }
 
-    @Test
-    void 본사_특정_직영점_특정_재고_상세_조회_식재료정보(){
-        InventoryIngredientResponse inventoryIngredientResponse = mbInventoryRepository.findInventoryIngredient(6L, 13L);
-        System.out.println(inventoryIngredientResponse);
 
-    }
 
     @Test
     void 본사_특정_직영점_특정_재고_상세_조회_입고정보(){
@@ -114,47 +109,40 @@ public class InventoryTest {
     @Test
     void 직영점_전체_재고_목록_조회(){
 
-        List<StoreInventoryListResponse> list = mbInventoryRepository.findStoreInventoryList(1L, null, null);
+        List<InventoryListResponse> list = mbInventoryRepository.findStoreInventoryList(1L, null, null);
         list.forEach(System.out::println);
     }
 
     @Test
     void 직영점_분류_재고_목록_조회(){
-        List<StoreInventoryListResponse> list = mbInventoryRepository.findStoreInventoryList(1L, "소스류", null);
+        List<InventoryListResponse> list = mbInventoryRepository.findStoreInventoryList(1L, "소스류", null);
         list.forEach(System.out::println);
     }
 
     @Test
     void 직영점_식재료명_재고_목록_조회(){
-        List<StoreInventoryListResponse> list = mbInventoryRepository.findStoreInventoryList(1L, null, 12L);
+        List<InventoryListResponse> list = mbInventoryRepository.findStoreInventoryList(1L, null, 12L);
         list.forEach(System.out::println);
     }
 
     @Test
     void 직영점_분류_식재료명_재고_목록_조회(){
-        List<StoreInventoryListResponse> list = mbInventoryRepository.findStoreInventoryList(5L, "육가공류", 14L);
+        List<InventoryListResponse> list = mbInventoryRepository.findStoreInventoryList(5L, "육가공류", 14L);
         list.forEach(System.out::println);
 
     }
 
     @Test
-    void 직영점__재고_상세_조회_잔여수량(){
-        InventoryListResponse inventoryListResponse = mbInventoryRepository.findInventoryCurrentQuantity(5L, 14L);
+    void 직영점_재고_상세_조회_잔여수량_식재료(){
+        InventoryListResponse inventoryListResponse = mbInventoryRepository.findInventoryDetail(5L, 14L);
         System.out.println(inventoryListResponse);
 
     }
 
     @Test
-    void 직영점__재고_상세_조회_식재료정보(){
-        InventoryIngredientResponse inventoryIngredientResponse = mbInventoryRepository.findInventoryIngredient(5L, 14L);
-        System.out.println(inventoryIngredientResponse);
-
-    }
-
-    @Test
     void 직영점_재고_상세_조회_사용이력(){
-        InventoryOrderResponse inventoryOrderResponse = mbInventoryRepository.findInventoryOrder(5L, 14L);
-        System.out.println(inventoryOrderResponse);
+        List <InventoryUsageListResponse> list  = mbInventoryRepository.findInventoryUsageList(5L, 14L);
+        list.forEach(System.out::println);
 
     }
 

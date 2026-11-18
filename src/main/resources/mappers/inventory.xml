@@ -42,29 +42,23 @@
         ORDER BY s.store_name, i.ingredient_name, od.store_at, iu.management_start_at
     </select>
 
-    <select id="findInventoryCurrentQuantity" resultType="kr.swdl.foodingredientmanagement.controller.responseDTO.InventoryListResponse">
+
+
+    <select id="findInventoryDetail"
+            resultType="kr.swdl.foodingredientmanagement.controller.responseDTO.InventoryListResponse">
         SELECT
-            s.store_name      AS storeName,
-            i.ingredient_name AS ingredientName,
+            s.store_name                AS storeName,
+            i.ingredient_name           AS ingredientName,
             COALESCE((
                          SELECT SUM(od.current_quantity)
                          FROM order_details od
                                   JOIN orders o ON od.order_id = o.order_id
                          WHERE o.store_id        = s.store_id
                            AND od.ingredient_id  = i.ingredient_id
+                           AND od.current_quantity > 0
                            AND od.order_status   = '승인'
                            AND od.store_at IS NOT NULL
-                     ), 0)             AS currentQuantity,
-            i.order_unit      AS orderUnit
-        FROM stores s, ingredients i
-        WHERE s.store_id      = #{storeId}
-          AND i.ingredient_id = #{ingredientId};
-    </select>
-
-    <select id="findInventoryIngredient" resultType="kr.swdl.foodingredientmanagement.controller.responseDTO.InventoryIngredientResponse">
-        SELECT
-            s.store_name                AS storeName,
-            i.ingredient_name           AS ingredientName,
+                     ), 0)                       AS currentQuantity,
             i.order_unit                AS orderUnit,
             i.capacity                  AS capacity,
             i.capacity_unit             AS capacityUnit,
@@ -74,10 +68,11 @@
             i.consumption_period        AS consumptionPeriod,
             i.summer_consumption_period AS summerConsumptionPeriod
         FROM stores s
-                 JOIN users u       ON s.user_id = u.user_id
-                 JOIN ingredients i ON i.ingredient_id = #{ingredientId}
-        WHERE s.store_id = #{storeId};
+                 CROSS JOIN ingredients i
+        WHERE s.store_id      = #{storeId}
+          AND i.ingredient_id = #{ingredientId}
     </select>
+
 
         <select id="findInventoryOrder"
                 resultType="kr.swdl.foodingredientmanagement.controller.responseDTO.InventoryOrderResponse">
@@ -122,7 +117,7 @@
 
 
     <select id="findStoreInventoryList"
-            resultType="kr.swdl.foodingredientmanagement.controller.responseDTO.StoreInventoryListResponse">
+            resultType="kr.swdl.foodingredientmanagement.controller.responseDTO.InventoryListResponse">
         SELECT
         s.store_name        AS storeName,
         i.sub_category_name AS subCategoryName,

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.swdl.foodingredientmanagement.repository.MBIngredientRepository">
+
+<!--    // 1. 식재료 목록 전체 조회-->
+    <select id="findIngredientList" resultType="kr.swdl.foodingredientmanagement.dto.IngredientListDTO">
+        SELECT
+        ingredient_name   AS ingredientName,
+        sub_category_name AS subCategoryName,
+        capacity          AS capacity,
+        capacity_unit     AS capacityUnit,
+        storage_type      AS storageType,
+        supply_price      AS supplyPrice
+        FROM ingredients
+        <where>
+            <if test="storageType != null and storageType != ''">
+                AND storage_type = #{storageType}
+            </if>
+            <if test="subCategoryName != null and subCategoryName != ''">
+                AND sub_category_name = #{subCategoryName}
+            </if>
+            <if test="ingredientName != null and ingredientName != ''">
+                AND ingredient_name LIKE CONCAT('%', #{ingredientName}, '%')
+            </if>
+        </where>
+    </select>
+
+    <!--    // 2. 식재료 상세 정보-->
+    <select id="findIngredientDetail" resultType="kr.swdl.foodingredientmanagement.dto.IngredientDetailDTO">
+        SELECT
+        ingredient_id AS ingredientId,
+        ingredient_name AS ingredientName,
+        major_category_name AS majorCategoryName,
+        sub_category_name AS subCategoryName,
+        order_unit AS orderUnit,
+        capacity AS capacity,
+        capacity_unit AS capacityUnit,
+        storage_type AS storageType,
+        supply_price AS supplyPrice,
+        supply_quantity AS supplyQuantity,
+        management_method AS managementMethod,
+        expiration_period AS expirationPeriod,
+        consumption_period AS consumptionPeriod,
+        summer_consumption_period AS summerConsumptionPeriod,
+        usable_flag AS usableFlag,
+        regist_at AS registAt
+        FROM ingredients
+        WHERE ingredient_id = #{ingredientId}
+    </select>
+
+
+    <!--    // 3. 식재료 정보 등록-->
+    <insert id="addIngredientDetail"
+            parameterType="kr.swdl.foodingredientmanagement.dto.IngredientInsertDTO"
+            useGeneratedKeys="true" keyProperty="ingredientId">
+        INSERT INTO ingredients (
+        ingredient_name,
+        major_category_name,
+        sub_category_name,
+        storage_type,
+        order_unit,
+        capacity,
+        capacity_unit,
+        management_method,
+        consumption_period,
+        summer_consumption_period,
+        expiration_period,
+        supply_price,
+        supply_quantity,
+        usable_flag,
+        regist_at
+        ) VALUES (
+        #{ingredientName},
+        #{majorCategoryName},
+        #{subCategoryName},
+        #{storageType},
+        #{orderUnit},
+        #{capacity},
+        #{capacityUnit},
+        #{managementMethod},
+        #{consumptionPeriod},
+        #{summerConsumptionPeriod},
+        #{expirationPeriod},
+        #{supplyPrice},
+        #{supplyQuantity},
+        'Y',
+        NOW()
+        )
+    </insert>
+
+    <!--    // 4. 식재료 수정-->
+    <update id="updateIngredientDetail">
+        UPDATE ingredients
+        <set>
+            <if test="ingredientName != null">ingredient_name = #{ingredientName},</if>
+            <if test="majorCategoryName != null">major_category_name = #{majorCategoryName},</if>
+            <if test="subCategoryName != null">sub_category_name = #{subCategoryName},</if>
+            <if test="storageType != null">storage_type = #{storageType},</if>
+            <if test="orderUnit != null">order_unit = #{orderUnit},</if>
+            <if test="capacity != null">capacity = #{capacity},</if>
+            <if test="capacityUnit != null">capacity_unit = #{capacityUnit},</if>
+            <if test="managementMethod != null">management_method = #{managementMethod},</if>
+            <if test="consumptionPeriod != null">consumption_period = #{consumptionPeriod},</if>
+            <if test="summerConsumptionPeriod != null">summer_consumption_period = #{summerConsumptionPeriod},</if>
+            <if test="expirationPeriod != null">expiration_period = #{expirationPeriod},</if>
+            <if test="supplyPrice != null">supply_price = #{supplyPrice},</if>
+            <if test="supplyQuantity != null">supply_quantity = #{supplyQuantity},</if>
+        </set>
+        WHERE ingredient_id = #{ingredientId}
+    </update>
+
+
+<!--    // 4. 식재료삭제 (단일, 다중)-->
+    <delete id="deleteIngredientDetail">
+        DELETE FROM ingredients WHERE ingredient_id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

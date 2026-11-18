@@ -29,7 +29,7 @@ public interface MBOrderRepository {
             @Param("orderId") Long orderId
     );
 
-    List<IngredientDTO> findIngredients();
+    List<IngredientListDTO> findIngredients();
 
     int insertOrderDetail(OrderDetailRequestDTO detail);
 

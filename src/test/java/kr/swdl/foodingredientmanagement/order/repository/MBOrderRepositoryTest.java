@@ -214,10 +214,10 @@ public class MBOrderRepositoryTest {
     @Test
     void 직영점_식자재_목록_조회() {
 
-        List<IngredientDTO> result =
+        List<IngredientListDTO> result =
                 mbOrderRepository.findIngredients();
 
-        for (IngredientDTO i : result) {
+        for (IngredientListDTO i : result) {
             log.info("식자재명: {}", i.getIngredientName());
             log.info("공급가격: {}", i.getSupplyPrice());
             log.info("공급수량: {}", i.getSupplyQuantity());
