@@ -12,7 +12,7 @@
             od.current_quantity AS currentQuantity,
             i.order_unit AS orderUnit,
             od.store_at AS storeAt,
-            iu.management_start_at AS managementStartAt,
+            iu.consumption_at AS consumptionAt,
             u.user_name AS userName
         FROM order_details od
                  JOIN orders o                 ON od.order_id = o.order_id
@@ -34,12 +34,12 @@
             AND od.store_at &lt; DATE_ADD(#{storeEndDate}, INTERVAL 1 DAY)
         </if>
         <if test="manageStartDate != null">
-            AND iu.management_start_at &gt;= #{manageStartDate}
+            AND iu.consumption_at &gt;= #{manageStartDate}
         </if>
         <if test="manageEndDate != null">
-            AND iu.management_start_at &lt; DATE_ADD(#{manageEndDate}, INTERVAL 1 DAY)
+            AND iu.consumption_at &lt; DATE_ADD(#{manageEndDate}, INTERVAL 1 DAY)
         </if>
-        ORDER BY s.store_name, i.ingredient_name, od.store_at, iu.management_start_at
+        ORDER BY s.store_name, i.ingredient_name, od.store_at, iu.consumption_at
     </select>
 
 
@@ -47,6 +47,8 @@
     <select id="findInventoryDetail"
             resultType="kr.swdl.foodingredientmanagement.dto.InventoryListResponseDTO">
         SELECT
+            s.store_id                  AS storeId,
+            i.ingredient_id             AS ingredientId,
             s.store_name                AS storeName,
             i.ingredient_name           AS ingredientName,
             COALESCE((
@@ -77,6 +79,8 @@
         <select id="findInventoryOrder"
                 resultType="kr.swdl.foodingredientmanagement.dto.InventoryOrderResponseDTO">
             SELECT
+                o.store_id                  AS storeId,
+                i.ingredient_id             AS ingredientId,
                 od.manufacture_at                                          AS manufactureAt,
                 DATE_ADD(od.manufacture_at, INTERVAL i.expiration_period DAY) AS expirationDate,
                 od.store_at                                                AS storeAt,
