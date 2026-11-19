@@ -5,28 +5,37 @@
 
 <mapper namespace="kr.swdl.foodingredientmanagement.repository.MBOrderRepository">
 
-    <select id="countOrderStatus"
-            resultType="kr.swdl.foodingredientmanagement.dto.OrderStatusCountDTO">
-        SELECT
-        (SELECT COUNT(*) FROM order_details
-        WHERE order_status = '대기') AS waitingCount,
+    <insert id="insertOrder"
+            parameterType="kr.swdl.foodingredientmanagement.dto.OrderRequestDTO"
+            useGeneratedKeys="true"
+            keyProperty="orderId"
+    >
+        INSERT INTO orders (
+        order_at,
+        app_at,
+        total_price,
+        user_id,
+        store_id
+        )
+        VALUES (
+        NOW(),
+        NULL,
+        0,
+        NULL,
+        #{storeId}
+        );
+    </insert>
 
-        (SELECT COUNT(*) FROM order_details
-        WHERE order_status = '승인') AS approvedCount,
-
-        (SELECT COUNT(*) FROM order_details
-        WHERE order_status = '거절') AS rejectedCount
-    </select>
 
     <select id="findOrderStatusList"
-            resultType="kr.swdl.foodingredientmanagement.dto.OrderStatusDTO">
+            resultType="kr.swdl.foodingredientmanagement.repository.vo.OrderStatusVO">
         SELECT
         o.order_id AS orderId,
         od.order_detail_id AS orderDetailId,
         od.order_status AS orderStatus
 
         FROM orders o
-        LEFT JOIN order_details od
+        JOIN order_details od
         ON o.order_id = od.order_id
 
         ORDER BY o.order_id
@@ -34,33 +43,34 @@
     </select>
 
     <select id="findOrderList"
-            resultType="kr.swdl.foodingredientmanagement.dto.OrderDTO">
+            resultType="kr.swdl.foodingredientmanagement.dto.OrderRequestDTO">
+
         SELECT
         o.order_id AS orderId,
         o.order_at AS orderAt,
+        s.store_id AS storeId,
         s.store_name AS storeName,
         MIN(i.ingredient_name) AS firstIngredientName,
         COUNT(DISTINCT od.ingredient_id) AS ingredientCount,
         o.total_price AS totalPrice,
         MAX(od.store_at) AS storeAt
-
-        FROM orders o
-
-        JOIN stores s
+        FROM stores s
+        JOIN users u
+        ON s.user_id = u.user_id
+        JOIN orders o
         ON o.store_id = s.store_id
-
         JOIN order_details od
         ON o.order_id = od.order_id
-
         JOIN ingredients i
         ON od.ingredient_id = i.ingredient_id
 
-        <where>
-            <if test="startDate != null and startDate != ''">
-                AND o.order_at >= #{startDate}
-            </if>
 
-            <if test="endDate != null and endDate != ''">
+        <where>
+            s.user_id = 2
+
+            <if test="startDate != null and startDate != ''
+          and endDate != null and endDate != ''">
+                AND o.order_at >= #{startDate}
                 AND o.order_at &lt; DATE_ADD(#{endDate}, INTERVAL 1 DAY)
             </if>
 
@@ -84,9 +94,10 @@
         o.total_price
 
         ORDER BY o.order_at DESC
+
     </select>
 
-    <select id="selectOrderInfo" resultType="kr.swdl.foodingredientmanagement.dto.OrderInfoDTO">
+    <select id="selectOrderInfo" resultType="kr.swdl.foodingredientmanagement.repository.vo.OrderInfoVO">
         SELECT
         o.order_id AS orderId,
         o.order_at AS orderAt,
@@ -114,7 +125,7 @@
 
     <select id="selectOrderDetailList"
             parameterType="long"
-            resultType="kr.swdl.foodingredientmanagement.dto.OrderDetailDTO">
+            resultType="kr.swdl.foodingredientmanagement.repository.vo.OrderDetailVO">
         SELECT
         i.ingredient_name AS ingredientName,
         od.order_quantity AS orderQuantity,
@@ -137,70 +148,13 @@
         ORDER BY od.ingredient_id
     </select>
 
-    <select id="findIngredients"
-            resultType="kr.swdl.foodingredientmanagement.dto.IngredientListDTO">
-        SELECT
-        ingredient_name AS ingredientName,
-        supply_price AS supplyPrice,
-        supply_quantity AS supplyQuantity
-        FROM ingredients
-        ORDER BY ingredient_id
-    </select>
-
-    <insert id="insertOrderDetail"
-            parameterType="kr.swdl.foodingredientmanagement.dto.OrderDetailRequestDTO"
-            useGeneratedKeys="true"
-            keyProperty="orderDetailId">
-        INSERT INTO order_details (
-        order_quantity,
-        supply_price,
-        manufacture_at,
-        store_at ,
-        app_at,
-        order_status,
-        order_price,
-        reject_reason,
-        current_quantity,
-        order_id,
-        ingredient_id
-        ) VALUES (
-        #{orderQuantity},
-        #{supplyPrice},
-        NULL,
-        NULL,
-        NULL,
-        '대기',
-        #{orderPrice},
-        NULL,
-        0,
-        #{orderId},
-        #{ingredientId}
-        )
-    </insert>
-
-    <update id="updateOrderTotalPrice">
-        UPDATE orders
-        SET total_price = (
-        SELECT COALESCE(SUM(order_price), 0)
-        FROM order_details
-        WHERE order_id = #{orderId}
-        )
-        WHERE order_id = #{orderId}
-    </update>
-
-    <select id="countOrderDetails" resultType="int">
-        SELECT COUNT(*)
-        FROM order_details
-        WHERE order_id = #{orderId}
-    </select>
-
     <select id="selectOrderTotalPrice" resultType="long">
         SELECT total_price
         FROM orders
         WHERE order_id = #{orderId}
     </select>
 
-    <select id="findOrderDetail" resultType="kr.swdl.foodingredientmanagement.dto.OrderListDTO">
+    <select id="findOrderDetail" resultType="kr.swdl.foodingredientmanagement.repository.vo.OrderListVO">
         SELECT
         o.order_id AS orderId,
         o.order_at AS orderAt,
@@ -218,10 +172,14 @@
         JOIN ingredients i
         ON od.ingredient_id = i.ingredient_id
 
-        WHERE o.store_id = #{storeId}
+        WHERE o.store_id IN (
+        SELECT s.store_id
+        FROM stores s
+        WHERE s.user_id = #{userId}
+        )
 
         <if test="startDate != null and startDate != ''
-              and endDate != null and endDate != ''">
+          and endDate != null and endDate != ''">
 
             <choose>
                 <when test="dateType == 'ORDER'">
@@ -241,9 +199,11 @@
         o.order_id,
         o.order_at,
         o.total_price
+
+        ORDER BY o.order_at DESC
     </select>
 
-    <select id="findOrderProgress" resultType="kr.swdl.foodingredientmanagement.dto.OrderProgressDTO">
+    <select id="findOrderProgress" resultType="kr.swdl.foodingredientmanagement.repository.vo.OrderProgressVO">
         SELECT
         o.order_id AS orderId,
         o.order_at AS orderAt,
@@ -264,49 +224,5 @@
         o.order_at,
         o.total_price
     </select>
-
-    <select id="findOrderDetailItems" resultType="map">
-        SELECT
-        i.ingredient_name,
-        od.order_quantity,
-        i.order_unit,
-        od.supply_price,
-        od.order_price,
-        u.user_name
-        FROM order_details od
-        JOIN orders o
-        ON o.order_id = od.order_id
-        JOIN ingredients i
-        ON od.ingredient_id = i.ingredient_id
-        JOIN users u
-        ON o.user_id = u.user_id
-        WHERE o.order_id = #{orderId}
-        AND o.store_id = #{storeId}
-    </select>
-
-    <update id="approveOrderDetail">
-        UPDATE order_details
-        SET
-        order_status = '승인',
-        app_at = NOW()
-        WHERE order_detail_id = #{orderDetailId}
-    </update>
-
-    <update id="rejectOrderDetail">
-        UPDATE order_details
-        SET
-        order_status = '거절',
-        app_at = NOW(),
-        reject_reason = #{rejectReason}
-        WHERE order_detail_id = #{orderDetailId}
-    </update>
-
-    <update id="updateOrderDetailsDates">
-        UPDATE order_details
-        SET
-        manufacture_at = #{manufactureAt},
-        store_at = #{storeAt}
-        WHERE order_detail_id = #{orderDetailId}
-    </update>
 
 </mapper>

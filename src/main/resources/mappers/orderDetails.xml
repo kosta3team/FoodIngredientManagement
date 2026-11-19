@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.swdl.foodingredientmanagement.repository.MBOrderDetailsRepository">
+    <select id="countOrderStatus"
+            resultType="kr.swdl.foodingredientmanagement.dto.OrderStatusCountDTO">
+        SELECT
+        (SELECT COUNT(*) FROM order_details
+        WHERE order_status = '대기') AS waitingCount,
+
+        (SELECT COUNT(*) FROM order_details
+        WHERE order_status = '승인') AS approvedCount,
+
+        (SELECT COUNT(*) FROM order_details
+        WHERE order_status = '거절') AS rejectedCount
+    </select>
+
+
+    <insert id="insertOrderDetail"
+            parameterType="kr.swdl.foodingredientmanagement.repository.vo.OrderDetailRequestVO"
+            useGeneratedKeys="true"
+            keyProperty="orderDetailId">
+        INSERT INTO order_details (
+        order_quantity,
+        supply_price,
+        manufacture_at,
+        store_at ,
+        app_at,
+        order_status,
+        order_price,
+        reject_reason,
+        current_quantity,
+        order_id,
+        ingredient_id
+        ) VALUES (
+        #{orderQuantity},
+        #{supplyPrice},
+        NULL,
+        NULL,
+        NULL,
+        '대기',
+        #{orderPrice},
+        NULL,
+        0,
+        #{orderId},
+        #{ingredientId}
+        )
+    </insert>
+
+    <update id="updateOrderTotalPrice">
+        UPDATE orders
+        SET total_price = (
+        SELECT COALESCE(SUM(order_price), 0)
+        FROM order_details
+        WHERE order_id = #{orderId}
+        )
+        WHERE order_id = #{orderId}
+    </update>
+
+    <select id="countOrderDetails" resultType="int">
+        SELECT COUNT(*)
+        FROM order_details
+        WHERE order_id = #{orderId}
+    </select>
+
+    <select id="findOrderDetailItems" resultType="map">
+        SELECT
+        i.ingredient_name,
+        od.order_quantity,
+        i.order_unit,
+        od.supply_price,
+        od.order_price,
+        u.user_name
+        FROM order_details od
+        JOIN orders o
+        ON o.order_id = od.order_id
+        JOIN ingredients i
+        ON od.ingredient_id = i.ingredient_id
+        JOIN users u
+        ON o.user_id = u.user_id
+        WHERE o.store_id = #{storeId}
+        AND o.order_id = #{orderId}
+    </select>
+
+    <update id="approveOrderDetail">
+        UPDATE order_details
+        SET
+        order_status = '승인',
+        app_at = NOW()
+        WHERE order_detail_id = #{orderDetailId}
+        and order_status ='대기'
+    </update>
+
+    <update id="rejectOrderDetail">
+        UPDATE order_details
+        SET
+        order_status = '거절',
+        app_at = NOW(),
+        reject_reason = #{rejectReason}
+        WHERE order_detail_id = #{orderDetailId}
+        and order_status ='대기'
+    </update>
+
+    <update id="updateOrderDetailsDates">
+        UPDATE order_details
+        SET
+        manufacture_at = #{manufactureAt},
+        store_at = #{storeAt}
+        WHERE order_detail_id = #{orderDetailId}
+    </update>
+</mapper>

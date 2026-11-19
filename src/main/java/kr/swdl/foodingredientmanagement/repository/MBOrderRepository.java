@@ -1,7 +1,7 @@
 package kr.swdl.foodingredientmanagement.repository;
 
-import kr.swdl.foodingredientmanagement.dto.*;
-import kr.swdl.foodingredientmanagement.dto.OrderDetailRequestDTO;
+import kr.swdl.foodingredientmanagement.dto.OrderRequestDTO;
+import kr.swdl.foodingredientmanagement.repository.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -9,56 +9,35 @@ import java.util.List;
 
 @Mapper
 public interface MBOrderRepository {
-    OrderStatusCountDTO countOrderStatus();
+    int insertOrder(OrderRequestDTO orderRequestDTO);
 
-    List<OrderDTO> findOrderList();
+    List<OrderStatusVO> findOrderStatusList();
 
-    List<OrderStatusDTO> findOrderStatusList();
-
-    List<OrderDTO> findOrderList(
+    List<OrderRequestDTO> findOrderList(
             @Param("startDate") String startDate,
             @Param("endDate") String endDate,
             @Param("orderStatus") String orderStatus,
             @Param("storeName") String storeName,
-            @Param("orderId") Long orderId
-    );
+            @Param("orderId") Long orderId,
+            String dateType);
 
-    List<OrderInfoDTO> selectOrderInfo();
-
-    List<OrderDetailDTO> selectOrderDetailList(
-            @Param("orderId") Long orderId
-    );
-
-    List<IngredientListDTO> findIngredients();
-
-    int insertOrderDetail(OrderDetailRequestDTO detail);
-
-    int updateOrderTotalPrice(@Param("orderId") Long orderId);
-
-    int countOrderDetails(@Param("orderId") Long orderId);
-
-    Long selectOrderTotalPrice(@Param("orderId") Long orderId);
-
-    List<OrderListDTO> findOrderDetail(
-            @Param("storeId") Long storeId,
+    List<OrderListVO> findOrderDetail(
+            @Param("userId") Long userId,
             @Param("startDate") String startDate,
             @Param("endDate") String endDate,
             @Param("dateType") String dateType
     );
 
-    List<OrderProgressDTO> findOrderProgress(@Param("storeId") Long storeId);
+    List<OrderInfoVO> selectOrderInfo();
 
-    int approveOrderDetail(
-            @Param("orderDetailId") Long orderDetailId);
-
-    int rejectOrderDetail(
-            @Param("orderDetailId") Long orderDetailId,
-            @Param("rejectReason") String rejectReaseon
+    List<OrderDetailVO> selectOrderDetailList(
+            @Param("orderId") Long orderId
     );
 
-    int updateOrderDetailsDates(
-            @Param("orderDetailId") Long orderDetailId,
-            @Param("manufactureAt") String manufactureAt,
-            @Param("storeAt") String storeAt
-    );
+
+    Long selectOrderTotalPrice(@Param("orderId") Long orderId);
+
+
+    List<OrderProgressVO> findOrderProgress(@Param("storeId") Long storeId);
+
 }
