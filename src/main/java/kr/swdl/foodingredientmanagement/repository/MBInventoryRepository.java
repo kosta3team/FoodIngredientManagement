@@ -1,6 +1,7 @@
 package kr.swdl.foodingredientmanagement.repository;
 
 import kr.swdl.foodingredientmanagement.controller.responseDTO.*;
+import kr.swdl.foodingredientmanagement.repository.vo.OrderDetailVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -40,6 +41,8 @@ public interface MBInventoryRepository {
     List<InventoryListResponse> findStoreInventoryList(@Param("storeId") Long storeId,
                                                             @Param("subCategoryName") String subCategoryName,
                                                             @Param("ingredientId") Long ingredientId);
+
+    OrderDetailVO findById(@Param("orderDetailId")Long orderDetailId);
 }
 
 

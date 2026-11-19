@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface JPAIngredientCategoriesRepository extends JpaRepository<IngredientCategories, Long> {
+public interface IngredientCategoriesRepository extends JpaRepository<IngredientCategories, Long> {
     List<IngredientCategories> findAllByMajorCategoryName(String majorCategoryName);
     @Query("SELECT DISTINCT majorCategoryName  FROM IngredientCategories")
     List<String> findMajorCategoryName();

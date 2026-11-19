@@ -143,7 +143,24 @@
     </select>
 
 
-
+    <select id="findById" resultType="kr.swdl.foodingredientmanagement.repository.vo.OrderDetailVO">
+        SELECT
+            order_detail_id AS orderDetailId,
+            order_quantity AS orderQuantity,
+            supply_price AS supplyPrice,
+            manufacture_at AS manufactureAt,
+            store_at AS storeAt,
+            app_at AS appAt,
+            order_status AS orderStatus,
+            order_price AS orderPrice,
+            reject_reason AS rejectReason,
+            current_quantity AS currentQuantity,
+            order_id AS orderId,
+            ingredient_id AS ingredientId
+        FROM order_details
+        WHERE order_detail_id = #{orderDetailId}
+          AND order_status = '승인'
+    </select>
 
 
 
