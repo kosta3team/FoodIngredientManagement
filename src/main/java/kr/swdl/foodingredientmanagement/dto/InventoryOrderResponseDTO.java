@@ -18,4 +18,6 @@ public class InventoryOrderResponseDTO {
     private int orderQuantity;
     private String orderUnit;
 
+    private Long orderDetailId;
+
 }

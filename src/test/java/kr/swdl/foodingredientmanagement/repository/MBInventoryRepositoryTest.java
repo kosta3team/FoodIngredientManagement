@@ -247,55 +247,58 @@ public class MBInventoryRepositoryTest {
 
     }
 
-//    @Test
-//    void 본사_특정_직영점_특정_재고_상세_조회_입고정보(){
-//        InventoryOrderResponseDTO inventoryOrderResponseDTO = mbInventoryRepository.findInventoryOrder(6L, 13L);
-//        System.out.println(inventoryOrderResponseDTO);
-//    }
-
-    // 이거 하다가 말았음 여기부터 하자 
     @Test
     void 본사_특정_직영점_특정_재고_상세_조회_입고정보(){
-        InventoryOrderResponseDTO inventoryOrderResponseDTO = mbInventoryRepository.findInventoryOrder(6L, 13L);
+        InventoryOrderResponseDTO inventoryOrderResponseDTO = mbInventoryRepository.findInventoryOrder(1L);
 
+        assertThat(inventoryOrderResponseDTO).isNotNull();
+        assertThat(inventoryOrderResponseDTO.getOrderDetailId()).isEqualTo(1L);
 
-        assertThat(inventoryOrderResponseDTO)
-                .isNotNull()
-                .extracting("storeId", "ingredientId")
-                .containsExactly(1L, 1L);
-
-        log.info("상세: {}", inventoryOrderResponseDTO);
+        log.info("입고정보: {}", inventoryOrderResponseDTO);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//    @Test
+//    void 본사_특정_직영점_특정_재고_상세_조회_사용이력(){
+//        List <InventoryUsageListResponseDTO> list = mbInventoryRepository.findInventoryUsageList(1L, 12L);
+//        list.forEach(System.out::println);
+//    }
 
     @Test
     void 본사_특정_직영점_특정_재고_상세_조회_사용이력(){
-       List <InventoryUsageListResponseDTO> list = mbInventoryRepository.findInventoryUsageList(1L, 12L);
-        list.forEach(System.out::println);
+        List <InventoryUsageListResponseDTO> list = mbInventoryRepository.findInventoryUsageList(1L, 12L);
+
+        assertThat(list).isNotEmpty();
+        
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Test
     void 직영점_전체_재고_목록_조회(){
