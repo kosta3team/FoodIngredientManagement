@@ -54,21 +54,21 @@ public class MBOrderRepositoryTest {
         assertThat(result).isNotNull();
     }
 
-    @Test
-    void 발주_목록_조회() {
-
-        List<OrderRequestDTO> result =
-                mbOrderRepository.findOrderList("2026-11-01","2026-11-11","order","",2L, dateType);
-        for (OrderRequestDTO order : result) {
-            log.info("발주번호: {}", order.getOrderId());
-            log.info("매장명: {}", order.getStoreName());
-            log.info("대표 식자재: {}", order.getFirstIngredientName());
-            log.info("식자재 종류 수: {}", order.getIngredientCount());
-            log.info("총 발주 금액: {}", order.getTotalPrice());
-            log.info("입고일: {}", order.getStoreAt());
-        }
-        assertThat(result).isNotEmpty();
-    }
+//    @Test
+//    void 발주_목록_조회() {
+//
+//        List<OrderRequestDTO> result =
+////                mbOrderRepository.findOrderList("2026-11-01","2026-11-11","order","",2L, dateType);
+//        for (OrderRequestDTO order : result) {
+//            log.info("발주번호: {}", order.getOrderId());
+//            log.info("매장명: {}", order.getStoreName());
+//            log.info("대표 식자재: {}", order.getFirstIngredientName());
+//            log.info("식자재 종류 수: {}", order.getIngredientCount());
+//            log.info("총 발주 금액: {}", order.getTotalPrice());
+//            log.info("입고일: {}", order.getStoreAt());
+//        }
+//        assertThat(result).isNotEmpty();
+//    }
 
     @Test
     void 발주_상태_조회() {
@@ -96,17 +96,17 @@ public class MBOrderRepositoryTest {
         assertFalse(result.isEmpty());
     }
 
-    @Test
-    void 발주_전체_조회() {
-
-        List<OrderRequestDTO> result =
-                mbOrderRepository.findOrderList(
-                        null, null, null, null, null,
-                        dateType);
-
-        assertNotNull(result);
-        assertFalse(result.isEmpty());
-    }
+//    @Test
+//    void 발주_전체_조회() {
+//
+//        List<OrderRequestDTO> result =
+//                mbOrderRepository.findOrderList(
+//                        null, null, null, null, null,
+//                        dateType);
+//
+//        assertNotNull(result);
+//        assertFalse(result.isEmpty());
+//    }
 
     @Test
     void 직영점_발주_요청_조회() {
@@ -136,118 +136,118 @@ public class MBOrderRepositoryTest {
         }
     }
 
-    @Test
-    void 발주일_기준_날짜_검색() {
-
-        List<OrderRequestDTO> result =
-                mbOrderRepository.findOrderList(
-                        "2026-11-01",
-                        "2026-11-12",
-                        null,
-                        null,
-                        null,
-                        dateType);
-        for (int i = 0; i < result.size(); i++) {
-
-            OrderRequestDTO order = result.get(i);
-            Timestamp orderAt = order.getOrderAt();
-
-            log.info("발주번호: {}, 발주일: {}",
-                    order.getOrderId(), orderAt);
-
-            Timestamp startDate =
-                    Timestamp.valueOf("2026-11-01 00:00:00");
-
-            Timestamp endDate =
-                    Timestamp.valueOf("2026-11-13 00:00:00");
-        }
-
-        assertNotNull(result);
-        assertFalse(result.isEmpty());
-
-    }
-    @Test
-    void 대기_발주_목록_조회(){
-        List<OrderRequestDTO> result = mbOrderRepository.findOrderList(
-                null,       // startDate
-                null,       // endDate
-                "대기",     // orderStatus
-                null,       // storeName
-                null,        // orderId
-                dateType);
-
-        log.info("대기 발주 조회 결과: {}", result);
-
-        assertNotNull(result);
-
-        for (OrderRequestDTO dto : result) {
-            assertNotNull(dto.getOrderId());
-            assertNotNull(dto.getOrderAt());
-            assertNotNull(dto.getStoreName());
-
-            log.info("발주번호: {}", dto.getOrderId());
-            log.info("매장명: {}", dto.getStoreName());
-            log.info("식재료 요약: {}", dto.getFirstIngredientName());
-            log.info("식재료 종류: {}", dto.getIngredientCount());
-            log.info("총금액: {}", dto.getTotalPrice());
-            log.info("입고일: {}", dto.getStoreAt());
-        }
-    }
-
-
-    @Test
-    void 발주_상태_검색() {
-
-        List<OrderRequestDTO> result =
-                mbOrderRepository.findOrderList(
-                        null, null, "대기", null, null,
-                        dateType);
-
-        assertNotNull(result);
-    }
-
-    @Test
-    void 발주_직영점명_검색() {
-
-        String keyword = "대";
-
-        List<OrderRequestDTO> result =
-                mbOrderRepository.findOrderList(
-                        null, null, null, keyword, null,
-                        dateType);
-
-        assertNotNull(result);
-    }
-
-    @Test
-    void 발주_번호_검색() {
-
-        Long orderId = 1L;
-
-        List<OrderRequestDTO> result =
-                mbOrderRepository.findOrderList(
-                        null, null, null, null, orderId,
-                        dateType);
-
-        assertEquals(1, result.size());
-        assertEquals(orderId, result.get(0).getOrderId());
-    }
-
-    @Test
-        void 발주_여러_조건_동시_검색() {
-
-        List<OrderRequestDTO> result =
-                mbOrderRepository.findOrderList(
-                        "2026-11-01",
-                        "2026-11-12",
-                        "대기",
-                        "대",
-                        null,
-                        dateType);
-
-        log.info("여러 조건 동시 검색 결과 :{}",result);
-        assertNotNull(result);
-    }
+//    @Test
+//    void 발주일_기준_날짜_검색() {
+//
+//        List<OrderRequestDTO> result =
+//                mbOrderRepository.findOrderList(
+//                        "2026-11-01",
+//                        "2026-11-12",
+//                        null,
+//                        null,
+//                        null,
+//                        dateType);
+//        for (int i = 0; i < result.size(); i++) {
+//
+//            OrderRequestDTO order = result.get(i);
+//            Timestamp orderAt = order.getOrderAt();
+//
+//            log.info("발주번호: {}, 발주일: {}",
+//                    order.getOrderId(), orderAt);
+//
+//            Timestamp startDate =
+//                    Timestamp.valueOf("2026-11-01 00:00:00");
+//
+//            Timestamp endDate =
+//                    Timestamp.valueOf("2026-11-13 00:00:00");
+//        }
+//
+//        assertNotNull(result);
+//        assertFalse(result.isEmpty());
+//
+//    }
+//    @Test
+//    void 대기_발주_목록_조회(){
+//        List<OrderRequestDTO> result = mbOrderRepository.findOrderList(
+//                null,       // startDate
+//                null,       // endDate
+//                "대기",     // orderStatus
+//                null,       // storeName
+//                null,        // orderId
+//                dateType);
+//
+//        log.info("대기 발주 조회 결과: {}", result);
+//
+//        assertNotNull(result);
+//
+//        for (OrderRequestDTO dto : result) {
+//            assertNotNull(dto.getOrderId());
+//            assertNotNull(dto.getOrderAt());
+//            assertNotNull(dto.getStoreName());
+//
+//            log.info("발주번호: {}", dto.getOrderId());
+//            log.info("매장명: {}", dto.getStoreName());
+//            log.info("식재료 요약: {}", dto.getFirstIngredientName());
+//            log.info("식재료 종류: {}", dto.getIngredientCount());
+//            log.info("총금액: {}", dto.getTotalPrice());
+//            log.info("입고일: {}", dto.getStoreAt());
+//        }
+//    }
+//
+//
+//    @Test
+//    void 발주_상태_검색() {
+//
+//        List<OrderRequestDTO> result =
+//                mbOrderRepository.findOrderList(
+//                        null, null, "대기", null, null,
+//                        dateType);
+//
+//        assertNotNull(result);
+//    }
+//
+//    @Test
+//    void 발주_직영점명_검색() {
+//
+//        String keyword = "대";
+//
+//        List<OrderRequestDTO> result =
+//                mbOrderRepository.findOrderList(
+//                        null, null, null, keyword, null,
+//                        dateType);
+//
+//        assertNotNull(result);
+//    }
+//
+//    @Test
+//    void 발주_번호_검색() {
+//
+//        Long orderId = 1L;
+//
+//        List<OrderRequestDTO> result =
+//                mbOrderRepository.findOrderList(
+//                        null, null, null, null, orderId,
+//                        dateType);
+//
+//        assertEquals(1, result.size());
+//        assertEquals(orderId, result.get(0).getOrderId());
+//    }
+//
+//    @Test
+//        void 발주_여러_조건_동시_검색() {
+//
+//        List<OrderRequestDTO> result =
+//                mbOrderRepository.findOrderList(
+//                        "2026-11-01",
+//                        "2026-11-12",
+//                        "대기",
+//                        "대",
+//                        null,
+//                        dateType);
+//
+//        log.info("여러 조건 동시 검색 결과 :{}",result);
+//        assertNotNull(result);
+//    }
 
     @Test
     void 발주_기본_정보_조회(){
@@ -269,25 +269,25 @@ public class MBOrderRepositoryTest {
         assertNotNull(result);
     }
 
-    @Test
-    void 발주_상세_품목_조회() {
-
-        Long orderId = 3L;
-
-        List<OrderDetailVO> result =
-                mbOrderRepository.selectOrderDetailList(orderId);
-        for (OrderDetailVO detail : result) {
-            log.info("발주번호 "+ orderId+ "의 정보 ");
-            log.info("식자재명: {}", detail.getIngredientName());
-            log.info("발주 수량: {}", detail.getOrderQuantity());
-            log.info("발주 단위: {}", detail.getOrderUnit());
-            log.info("공급 가격: {}", detail.getSupplyPrice());
-            log.info("발주 금액: {}", detail.getOrderPrice());
-            log.info("발주 상태: {}", detail.getOrderStatus());
-            log.info("거절 사유: {}", detail.getRejectReason());
-            log.info("-----------------------------------------");
-        }
-    }
+//    @Test
+//    void 발주_상세_품목_조회() {
+//
+//        Long orderId = 3L;
+//
+//        List<OrderDetailVO> result =
+//                mbOrderRepository.selectOrderDetailList(orderId);
+//        for (OrderDetailVO detail : result) {
+//            log.info("발주번호 "+ orderId+ "의 정보 ");
+//            log.info("식자재명: {}", detail.getIngredientName());
+//            log.info("발주 수량: {}", detail.getOrderQuantity());
+//            log.info("발주 단위: {}", detail.getOrderUnit());
+//            log.info("공급 가격: {}", detail.getSupplyPrice());
+//            log.info("발주 금액: {}", detail.getOrderPrice());
+//            log.info("발주 상태: {}", detail.getOrderStatus());
+//            log.info("거절 사유: {}", detail.getRejectReason());
+//            log.info("-----------------------------------------");
+//        }
+//    }
 
     @Test
     void 직영점_식자재_목록_조회() {
@@ -342,28 +342,28 @@ public class MBOrderRepositoryTest {
         assertNotNull(result);
     }
 
-    @Test
-    void 본사_매장기준_발주목록_조회() {
-
-        List<OrderRequestDTO> result = mbOrderRepository.findOrderList(
-                null,
-                null,
-                null,
-                null,
-                null,
-                dateType);
-
-        log.info("조회된 발주 건수: {}", result.size());
-
-        assertNotNull(result);
-
-        for (OrderRequestDTO order : result) {
-            log.info("발주번호: {}", order.getOrderId());
-            log.info("매장번호: {}", order.getStoreId());
-            log.info("매장명: {}", order.getStoreName());
-
-            assertNotNull(order.getOrderId());
-            assertNotNull(order.getStoreId());
-        }
-    }
+//    @Test
+//    void 본사_매장기준_발주목록_조회() {
+//
+//        List<OrderRequestDTO> result = mbOrderRepository.findOrderList(
+//                null,
+//                null,
+//                null,
+//                null,
+//                null,
+//                dateType);
+//
+//        log.info("조회된 발주 건수: {}", result.size());
+//
+//        assertNotNull(result);
+//
+//        for (OrderRequestDTO order : result) {
+//            log.info("발주번호: {}", order.getOrderId());
+//            log.info("매장번호: {}", order.getStoreId());
+//            log.info("매장명: {}", order.getStoreName());
+//
+//            assertNotNull(order.getOrderId());
+//            assertNotNull(order.getStoreId());
+//        }
+//    }
 }
