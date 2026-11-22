@@ -4,7 +4,6 @@ import kr.swdl.foodingredientmanagement.dto.InventoryListResponseDTO;
 import kr.swdl.foodingredientmanagement.dto.InventoryOrderResponseDTO;
 import kr.swdl.foodingredientmanagement.dto.InventoryUsageListResponseDTO;
 import kr.swdl.foodingredientmanagement.repository.vo.OrderDetailVO;
-
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,11 +15,11 @@ public interface MBInventoryRepository {
   List<InventoryListResponseDTO> findInventoryList();
 
   List<InventoryListResponseDTO> findInventoryList(@Param("ingredientId") Long ingredientId,
-                                                   @Param("storeId") Long storeId,
-                                                   @Param("storeStartDate") LocalDate storeStartDate,
-                                                   @Param("storeEndDate") LocalDate storeEndDate,
-                                                   @Param("manageStartDate") LocalDate manageStartDate,
-                                                   @Param("manageEndDate") LocalDate manageEndDate);
+                                               @Param("storeId") Long storeId,
+                                               @Param("storeStartDate") LocalDate storeStartDate,
+                                               @Param("storeEndDate") LocalDate storeEndDate,
+                                               @Param("manageStartDate") LocalDate manageStartDate,
+                                               @Param("manageEndDate") LocalDate manageEndDate);
 
   InventoryListResponseDTO findInventoryDetail(@Param("storeId") Long storeId,
                                                @Param("ingredientId") Long ingredientId);
@@ -41,6 +40,14 @@ public interface MBInventoryRepository {
   
 
     OrderDetailVO findById(@Param("orderDetailId")Long orderDetailId);
+
+
+
+
+
+  InventoryOrderResponseDTO findInventoryOrder(@Param("orderDetailId") Long orderDetailId);
+
+
 
 }
 

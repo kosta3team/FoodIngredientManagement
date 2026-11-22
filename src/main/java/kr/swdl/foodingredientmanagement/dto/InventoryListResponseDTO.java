@@ -40,4 +40,12 @@ public class InventoryListResponseDTO {
     private Long orderDetailId;
 
 
+
+    private Timestamp consumptionAt;
+
+    private Long storeId;
+    private Long IngredientId;
+
+
+
 }
