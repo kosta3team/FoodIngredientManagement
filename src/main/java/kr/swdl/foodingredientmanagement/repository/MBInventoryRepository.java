@@ -3,6 +3,8 @@ package kr.swdl.foodingredientmanagement.repository;
 import kr.swdl.foodingredientmanagement.dto.InventoryListResponseDTO;
 import kr.swdl.foodingredientmanagement.dto.InventoryOrderResponseDTO;
 import kr.swdl.foodingredientmanagement.dto.InventoryUsageListResponseDTO;
+import kr.swdl.foodingredientmanagement.repository.vo.OrderDetailVO;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -34,6 +36,11 @@ public interface MBInventoryRepository {
                                                         @Param("ingredientId") Long ingredientId);
 
   InventoryListResponseDTO findInventoryByOrderDetailId(@Param("orderDetailId") Long orderDetailId);
+
+
+  
+
+    OrderDetailVO findById(@Param("orderDetailId")Long orderDetailId);
 
 }
 

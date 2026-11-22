@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Mapper
-public interface MBDisposalStatisticsRepository {
+public interface DisposalStatisticsRepository {
 
     double getOrderDisposalRateUntilNow(@Param("startDate") LocalDate startDate,
                                      @Param("endDate") LocalDate endDate);
