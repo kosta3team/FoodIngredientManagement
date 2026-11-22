@@ -2,14 +2,14 @@ package kr.swdl.foodingredientmanagement.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.ToString;
 
 import java.sql.Timestamp;
 
 @Data
 @Builder
-public class StoreDisposalDTO {
+public class HQDisposalListDTO {
     private Timestamp disposalReqAt;
+    private String storeName;
     private String ingredientName;
     private int disposalQuantity;
     private int disposalPrice;

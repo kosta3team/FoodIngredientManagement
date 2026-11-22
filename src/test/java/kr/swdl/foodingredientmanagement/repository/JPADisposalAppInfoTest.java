@@ -14,7 +14,7 @@ import java.util.Optional;
 public class JPADisposalAppInfoTest {
 
     @Autowired
-    private JPADisposalAppInfosRepository jpaDisposalAppInfosRepository;
+    private DisposalAppInfosRepository disposalAppInfosRepository;
 
     @Test
     @Transactional
@@ -23,21 +23,21 @@ public class JPADisposalAppInfoTest {
                 .appUserId(Long.valueOf(1))
                 .disposalId(Long.valueOf(1)).build();
 
-        DisposalAppInfos created = jpaDisposalAppInfosRepository.save(disposalAppInfo);
+        DisposalAppInfos created = disposalAppInfosRepository.save(disposalAppInfo);
         Assertions.assertEquals(disposalAppInfo, created);
     }
 
     @Test
     @Transactional
     public void 폐기승인정보_업데이트() {
-        Optional<DisposalAppInfos> optionalDisposalAppInfo = jpaDisposalAppInfosRepository.findById(Long.valueOf(1));
+        Optional<DisposalAppInfos> optionalDisposalAppInfo = disposalAppInfosRepository.findById(Long.valueOf(1));
         Assertions.assertFalse(optionalDisposalAppInfo.isEmpty());
         DisposalAppInfos disposalAppInfo = optionalDisposalAppInfo.get();
         disposalAppInfo.setCheckAt(new Timestamp(System.currentTimeMillis()));
 //        disposalAppInfo.setDisposalImg();
         disposalAppInfo.setCheckUserId(Long.valueOf(1));
 
-        DisposalAppInfos updated = jpaDisposalAppInfosRepository.save(disposalAppInfo);
+        DisposalAppInfos updated = disposalAppInfosRepository.save(disposalAppInfo);
         Assertions.assertEquals(disposalAppInfo, updated);
     }
 }

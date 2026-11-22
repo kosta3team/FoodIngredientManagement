@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface JPADisposalCategoriesRepository extends JpaRepository<DisposalCategories, Long> {
+public interface DisposalCategoriesRepository extends JpaRepository<DisposalCategories, Long> {
     List<DisposalCategories> findAllByDisposalType(String disposalType);
     @Query("SELECT DISTINCT disposalType  FROM DisposalCategories")
     List<String> findDisposalType();
