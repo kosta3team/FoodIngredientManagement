@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class InventoryListResponseDTO {
+public class InventoryListDTO {
     private String storeName;
 
     private String ingredientName;
