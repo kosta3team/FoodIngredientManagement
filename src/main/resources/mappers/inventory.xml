@@ -102,7 +102,7 @@
             iu.consumption_at              AS consumptionAt,
             iu.management_start_at    AS managementStartAt,
             DATE(DATE_ADD(od.manufacture_at, INTERVAL i.expiration_period DAY))  AS expirationAt,
-            od.manufacture_at AS manufacture_at,
+            od.manufacture_at AS manufactureAt,
             od.store_at AS storeAt,
             od.order_quantity AS orderQuantity,
             i.order_unit AS orderUnit,

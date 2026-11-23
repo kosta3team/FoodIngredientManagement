@@ -44,7 +44,7 @@ public class InventoryListDTO {
     private Timestamp consumptionAt;
 
     private Long storeId;
-    private Long IngredientId;
+    private Long ingredientId;
 
 
 

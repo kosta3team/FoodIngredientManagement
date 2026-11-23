@@ -257,86 +257,122 @@ public class InventoryRepositoryTest {
         log.info("입고정보: {}", inventoryOrderDTO);
     }
 
-//    @Test
-//    void 본사_특정_직영점_특정_재고_상세_조회_사용이력(){
-//        List <InventoryUsageListResponseDTO> list = mbInventoryRepository.findInventoryUsageList(1L, 12L);
-//        list.forEach(System.out::println);
-//    }
-
     @Test
     void 본사_특정_직영점_특정_재고_상세_조회_사용이력(){
-        List <InventoryUsageListDTO> list = inventoryRepository.findInventoryUsageList(1L, 12L);
+        List<InventoryUsageListDTO> list = inventoryRepository.findInventoryUsageList(1L, 12L);
 
         assertThat(list).isNotEmpty();
-        
 
-
-
+        for(InventoryUsageListDTO inventoryUsageListDTO : list){
+            log.info("사용 일시:  {} " , inventoryUsageListDTO.getConsumptionAt());
+            log.info("관리 시작 일시:  {} " , inventoryUsageListDTO.getManagementStartAt());
+            log.info("유통 기한:  {} " , inventoryUsageListDTO.getExpirationAt());
+            log.info("제조 일자:  {} " , inventoryUsageListDTO.getManufactureAt());
+            log.info("입고 일시:  {} " , inventoryUsageListDTO.getStoreAt());
+            log.info("입고 수량:  {} " , inventoryUsageListDTO.getOrderQuantity());
+            log.info("입고 단위:  {} " , inventoryUsageListDTO.getOrderUnit());
+            log.info("사용 수량:  {} " , inventoryUsageListDTO.getUsageQuantity());
+        }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     @Test
     void 직영점_전체_재고_목록_조회(){
-
         List<InventoryListDTO> list = inventoryRepository.findStoreInventoryList(1L, null, null);
-        list.forEach(System.out::println);
+
+        assertThat(list).isNotEmpty();
+
+        for(InventoryListDTO inventoryListDTO : list){
+            log.info("직영점 명:  {} " , inventoryListDTO.getStoreName());
+            log.info("분류:  {} " , inventoryListDTO.getSubCategoryName());
+            log.info("식재료 명:  {} " , inventoryListDTO.getIngredientName());
+            log.info("보관유형:  {} " , inventoryListDTO.getStorageType());
+            log.info("잔여 수량:  {} " , inventoryListDTO.getCurrentQuantity());
+            log.info("입고 단위:  {} " , inventoryListDTO.getOrderUnit());
+            log.info("담당자:  {} " , inventoryListDTO.getUserName());
+        }
     }
+
+
 
     @Test
     void 직영점_분류_재고_목록_조회(){
         List<InventoryListDTO> list = inventoryRepository.findStoreInventoryList(1L, "소스류", null);
-        list.forEach(System.out::println);
+
+        assertThat(list).isNotEmpty();
+
+        for(InventoryListDTO inventoryListDTO : list){
+            log.info("직영점 명:  {} " , inventoryListDTO.getStoreName());
+            log.info("분류:  {} " , inventoryListDTO.getSubCategoryName());
+            log.info("식재료 명:  {} " , inventoryListDTO.getIngredientName());
+            log.info("보관유형:  {} " , inventoryListDTO.getStorageType());
+            log.info("잔여 수량:  {} " , inventoryListDTO.getCurrentQuantity());
+            log.info("입고 단위:  {} " , inventoryListDTO.getOrderUnit());
+            log.info("담당자:  {} " , inventoryListDTO.getUserName());
+        }
     }
 
     @Test
     void 직영점_식재료명_재고_목록_조회(){
         List<InventoryListDTO> list = inventoryRepository.findStoreInventoryList(1L, null, 12L);
-        list.forEach(System.out::println);
+
+        assertThat(list).isNotEmpty();
+
+        for(InventoryListDTO inventoryListDTO : list){
+            log.info("직영점 명:  {} " , inventoryListDTO.getStoreName());
+            log.info("분류:  {} " , inventoryListDTO.getSubCategoryName());
+            log.info("식재료 명:  {} " , inventoryListDTO.getIngredientName());
+            log.info("보관유형:  {} " , inventoryListDTO.getStorageType());
+            log.info("잔여 수량:  {} " , inventoryListDTO.getCurrentQuantity());
+            log.info("입고 단위:  {} " , inventoryListDTO.getOrderUnit());
+            log.info("담당자:  {} " , inventoryListDTO.getUserName());
+        }
     }
 
     @Test
     void 직영점_분류_식재료명_재고_목록_조회(){
-        List<InventoryListDTO> list = inventoryRepository.findStoreInventoryList(5L, "육가공류", 14L);
-        list.forEach(System.out::println);
+        List<InventoryListDTO> list = inventoryRepository.findStoreInventoryList(6L, "육가공류", 14L);
 
+        assertThat(list).isNotEmpty();
+
+        for(InventoryListDTO inventoryListDTO : list){
+            log.info("직영점 명:  {} " , inventoryListDTO.getStoreName());
+            log.info("분류:  {} " , inventoryListDTO.getSubCategoryName());
+            log.info("식재료 명:  {} " , inventoryListDTO.getIngredientName());
+            log.info("보관유형:  {} " , inventoryListDTO.getStorageType());
+            log.info("잔여 수량:  {} " , inventoryListDTO.getCurrentQuantity());
+            log.info("입고 단위:  {} " , inventoryListDTO.getOrderUnit());
+            log.info("담당자:  {} " , inventoryListDTO.getUserName());
+        }
     }
 
     @Test
     void 직영점_재고_상세_조회_잔여수량_식재료(){
         InventoryListDTO inventoryListDTO = inventoryRepository.findInventoryDetail(5L, 14L);
-        System.out.println(inventoryListDTO);
 
+        assertThat(inventoryListDTO)
+                .isNotNull()
+                .extracting("storeId", "ingredientId")
+                .containsExactly(5L, 14L);
+
+        log.info("상세: {}", inventoryListDTO);
     }
 
     @Test
     void 직영점_재고_상세_조회_사용이력(){
-        List <InventoryUsageListDTO> list  = inventoryRepository.findInventoryUsageList(5L, 14L);
-        list.forEach(System.out::println);
+        List<InventoryUsageListDTO> list = inventoryRepository.findInventoryUsageList(8L, 14L);
 
+        assertThat(list).isNotEmpty();
+
+        for(InventoryUsageListDTO inventoryUsageListDTO : list){
+            log.info("사용 일시:  {} " , inventoryUsageListDTO.getConsumptionAt());
+            log.info("관리 시작 일시:  {} " , inventoryUsageListDTO.getManagementStartAt());
+            log.info("유통 기한:  {} " , inventoryUsageListDTO.getExpirationAt());
+            log.info("제조 일자:  {} " , inventoryUsageListDTO.getManufactureAt());
+            log.info("입고 일시:  {} " , inventoryUsageListDTO.getStoreAt());
+            log.info("입고 수량:  {} " , inventoryUsageListDTO.getOrderQuantity());
+            log.info("입고 단위:  {} " , inventoryUsageListDTO.getOrderUnit());
+            log.info("사용 수량:  {} " , inventoryUsageListDTO.getUsageQuantity());
+        }
     }
+
 }
