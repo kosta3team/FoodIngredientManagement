@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 import java.util.Optional;
 
 @SpringBootTest
-public class JPADisposalAppInfoTest {
+public class DisposalAppInfoTest {
 
     @Autowired
     private DisposalAppInfosRepository disposalAppInfosRepository;
