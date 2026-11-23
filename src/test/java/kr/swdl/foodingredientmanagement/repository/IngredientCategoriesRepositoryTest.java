@@ -15,7 +15,7 @@ import java.util.List;
 public class IngredientCategoriesRepositoryTest {
 
     @Autowired
-    private IngredientCategoriesRepository ingredientCategoriesRepository;
+    private IngredientCategoryRepository ingredientCategoriesRepository;
 
     @Test
     public void 폐기유형_대분류_가져오기() {
