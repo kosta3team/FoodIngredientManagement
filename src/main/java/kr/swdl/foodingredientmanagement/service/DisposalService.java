@@ -1,5 +1,7 @@
 package kr.swdl.foodingredientmanagement.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import kr.swdl.foodingredientmanagement.dto.*;
 import kr.swdl.foodingredientmanagement.repository.*;
 import kr.swdl.foodingredientmanagement.repository.entitiy.DisposalAppInfos;
@@ -50,11 +52,12 @@ public class DisposalService {
                 .disposalType(disposalDTO.getDisposalType())
                 .disposalReason(disposalDTO.getDisposalReason())
                 .disposalDetailReason(disposalDTO.getDisposalDetailReason())
-                .disposalQuantity(disposalDTO.getDisposalQuantity())
+                .disposalQuantity(orderDetailVO.getCurrentQuantity())
                 .disposalPrice(ingredientDTO.getSupplyPrice() * disposalDTO.getDisposalQuantity())
                 .orderDetailId(orderDetailId)
                 .build();
         disposalsRepository.insertDisposal(disposalVO);
+        mbInventoryRepository.updateCurrentQuantityById(orderDetailId, 0);
 
         if (status.equals("승인") && null != disposalVO.getDisposalId()) {
             disposalAppInfosRepository.save(DisposalAppInfos.builder()
@@ -75,15 +78,26 @@ public class DisposalService {
 
     // 폐기 승인/거절
     @Transactional
-    public void approveDisposal(Long appUserId, DisposalDTO disposalDTO) {
-        disposalsRepository.approveDisposal(DisposalVO.builder()
+    public void approveDisposal(Long appUserId, Long disposalId, DisposalDTO disposalDTO) {
+        // TODO : controller에서 appUserId의 롤 체크 이후, 관리자가 아니면 접근을 막는게 추가되어야 한다.
+        int updated = disposalsRepository.approveDisposal(DisposalVO.builder()
+                .disposalId(disposalId)
                 .disposalAppAt(new Timestamp(System.currentTimeMillis()))
                 .disposalStatus(disposalDTO.getDisposalStatus())
-                .rejectReason(disposalDTO.getRejectReason()).build());
-        if (disposalDTO.getDisposalStatus().equals("승인")) {
+                .rejectReason(disposalDTO.getRejectReason())
+                .build());
+
+        // 승인/거절 처리 실패
+        if (updated != 1) {
+            throw new IllegalStateException("이미 처리되었거나 존재하지 않는 폐기 요청입니다.");
+        }
+
+        // 승인 정보 생성
+        if ("승인".equals(disposalDTO.getDisposalStatus())) {
             disposalAppInfosRepository.save(DisposalAppInfos.builder()
                     .appUserId(appUserId)
-                    .disposalId(disposalDTO.getDisposalId()).build());
+                    .disposalId(disposalId)
+                    .build());
         }
     }
 
@@ -92,16 +106,15 @@ public class DisposalService {
         disposalsRepository.deleteDisposalById(disposalId);
     }
 
-    public List<HQDisposalListDTO> getHqDisposals(HqDisposalSerachFilterDTO filterDTO) {
-        return disposalsRepository.getHqDisposals(filterDTO).stream()
-                .map(vo -> toHqDisposalListDTO(vo))
-                .toList();
+    public PageInfo<HQDisposalListDTO> getHqDisposals(HqDisposalSerachFilterDTO filterDTO, Long userId, int page, int size) {
+        filterDTO.setStoreIds(disposalsRepository.getStoreIdsByHQId(userId));
+        PageHelper.startPage(page, size);
+        return new PageInfo<>(disposalsRepository.getHqDisposals(filterDTO)).convert(this::toHqDisposalListDTO);
     }
 
-    public List<StoreDisposalListDTO> getStoreDisposals(StoreDisposalSerachFilterDTO filterDTO) {
-        return disposalsRepository.getStoreDisposals(filterDTO).stream()
-                .map(vo -> toStoreDisposalListDTO(vo))
-                .toList();
+    public PageInfo<StoreDisposalListDTO> getStoreDisposals(StoreDisposalSerachFilterDTO filterDTO, int page, int size) {
+        PageHelper.startPage(page, size);
+        return new PageInfo<>(disposalsRepository.getStoreDisposals(filterDTO)).convert(this::toStoreDisposalListDTO);
     }
 
     public int countByTodayDisposed() {

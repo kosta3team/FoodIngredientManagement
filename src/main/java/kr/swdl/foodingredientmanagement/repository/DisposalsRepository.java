@@ -34,4 +34,6 @@ public interface DisposalsRepository {
     public int sumByTodayDisposedPrice();
 
     public int countNeedToConfirmByStoreId(Long storeId);
+
+    public List<Long> getStoreIdsByHQId(Long userId);
 }

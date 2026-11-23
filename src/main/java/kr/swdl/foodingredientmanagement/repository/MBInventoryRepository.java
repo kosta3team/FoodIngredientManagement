@@ -43,6 +43,10 @@ public interface MBInventoryRepository {
                                                             @Param("ingredientId") Long ingredientId);
 
     OrderDetailVO findById(@Param("orderDetailId")Long orderDetailId);
+
+    int updateCurrentQuantityById(@Param("orderDetailId") Long orderDetailId, @Param("newQuantity")int newQuantity);
+
+
 }
 
 
