@@ -4,6 +4,7 @@
 
 <mapper namespace="kr.swdl.foodingredientmanagement.repository.InventoryRepository">
 
+
     <select id="getInventoryList" resultType="kr.swdl.foodingredientmanagement.dto.InventoryListDTO">
         SELECT
         s.store_name AS storeName,
@@ -159,6 +160,16 @@
         FROM order_details
         WHERE order_detail_id = #{orderDetailId}
           AND order_status = '승인'
+    </select>
+
+
+    <select id="getIngredientNameList" resultType="kr.swdl.foodingredientmanagement.dto.InventoryListDTO">
+        SELECT
+            ingredient_id   AS ingredientId,
+            ingredient_name AS ingredientName
+        FROM ingredients
+            WHERE usable_flag = 'Y'
+        ORDER BY ingredient_name
     </select>
 
 

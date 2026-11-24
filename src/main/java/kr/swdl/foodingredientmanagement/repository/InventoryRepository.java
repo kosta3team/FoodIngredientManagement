@@ -49,6 +49,13 @@ public interface InventoryRepository {
 
 
 
+
+
+  List<InventoryListDTO> getIngredientNameList();
+
+
+
+
 }
 
 

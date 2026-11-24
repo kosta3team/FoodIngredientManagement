@@ -52,4 +52,9 @@ public class InventoryService {
     public List<InventoryUsageListDTO> getInventoryUsageList(Long storeId, Long ingredientId) {
         return inventoryRepository.getInventoryUsageList(storeId, ingredientId);
     }
+
+    // 검색 조건용 식재료명 목록 조회
+    public List<InventoryListDTO> getIngredientNameList() {
+        return inventoryRepository.getIngredientNameList();
+    }
 }
