@@ -375,4 +375,20 @@ public class InventoryRepositoryTest {
         }
     }
 
+    @Test
+    void 검색조건_식재료명_목록_조회(){
+        List<InventoryListDTO> list = inventoryRepository.getIngredientNameList();
+
+        assertThat(list).isNotEmpty();
+        assertThat(list).allSatisfy(dto -> {
+            assertThat(dto.getIngredientId()).isNotNull();
+            assertThat(dto.getIngredientName()).isNotBlank();
+        });
+        assertThat(list).extracting("ingredientName").isSorted();
+
+        for (InventoryListDTO inventoryListDTO : list) {
+            log.info("식재료 ID: {}, 식재료 명: {}", inventoryListDTO.getIngredientId(), inventoryListDTO.getIngredientName());
+        }
+    }
+
 }

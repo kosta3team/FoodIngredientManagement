@@ -208,4 +208,17 @@ public class InventoryServiceTest {
         List<InventoryUsageListDTO> list = inventoryService.getInventoryUsageList(5L, 14L);
         Assertions.assertTrue(list.isEmpty());
     }
+
+
+    @Test
+    public void 검색조건_식재료명_목록_조회_성공() {
+        List<InventoryListDTO> list = inventoryService.getIngredientNameList();
+
+        Assertions.assertFalse(list.isEmpty());
+        for (InventoryListDTO info : list) {
+            Assertions.assertNotNull(info.getIngredientId());
+            Assertions.assertNotNull(info.getIngredientName());
+            log.info("{}", info);
+        }
+    }
 }
