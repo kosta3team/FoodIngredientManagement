@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadIngredientOptions() {
     const select = document.getElementById('ingredient');
     try {
-        const response = await fetch('/api/inventory/ingredient');
+        const response = await fetch('/api/inventory/ingredients');
         if (!response.ok) throw new Error('식재료 목록 조회 실패: ' + response.status);
 
         const list = await response.json();

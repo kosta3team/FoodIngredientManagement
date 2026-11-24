@@ -25,7 +25,7 @@ public class InventoryRestController {
     private final InventoryService inventoryService;
 
     // 검색 조건용 식재료명 목록
-    @GetMapping("/ingredient")
+    @GetMapping("/ingredients")
     public List<InventoryListDTO> getIngredientNameList() {
         return inventoryService.getIngredientNameList();
     }
