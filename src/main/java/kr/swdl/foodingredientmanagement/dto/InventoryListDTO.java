@@ -1,4 +1,4 @@
-package kr.swdl.foodingredientmanagement.controller.responseDTO;
+package kr.swdl.foodingredientmanagement.dto;
 
 import lombok.*;
 
@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class InventoryListResponse {
+public class InventoryListDTO {
     private String storeName;
 
     private String ingredientName;
@@ -35,6 +35,17 @@ public class InventoryListResponse {
     private int expirationPeriod;
     private int consumptionPeriod;
     private int summerConsumptionPeriod;
+
+
+    private Long orderDetailId;
+
+
+
+    private Timestamp consumptionAt;
+
+    private Long storeId;
+    private Long ingredientId;
+
 
 
 }

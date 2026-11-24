@@ -2,24 +2,24 @@
 <!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="kr.swdl.foodingredientmanagement.repository.MBInventoryRepository">
+<mapper namespace="kr.swdl.foodingredientmanagement.repository.InventoryRepository">
 
-    <select id="findInventoryList" resultType="kr.swdl.foodingredientmanagement.controller.responseDTO.InventoryListResponse">
+    <select id="getInventoryList" resultType="kr.swdl.foodingredientmanagement.dto.InventoryListDTO">
         SELECT
-            s.store_name AS storeName,
-            i.ingredient_name AS ingredientName,
-            i.storage_type AS storageType,
-            od.current_quantity AS currentQuantity,
-            i.order_unit AS orderUnit,
-            od.store_at AS storeAt,
-            iu.management_start_at AS managementStartAt,
-            u.user_name AS userName
+        s.store_name AS storeName,
+        i.ingredient_name AS ingredientName,
+        i.storage_type AS storageType,
+        od.current_quantity AS currentQuantity,
+        i.order_unit AS orderUnit,
+        od.store_at AS storeAt,
+        iu.consumption_at AS consumptionAt,
+        u.user_name AS userName
         FROM order_details od
-                 JOIN orders o                 ON od.order_id = o.order_id
-                 JOIN stores s                 ON o.store_id = s.store_id
-                 JOIN ingredients i            ON od.ingredient_id = i.ingredient_id
-                 LEFT JOIN inventory_usages iu ON iu.order_detail_id = od.order_detail_id
-                 LEFT JOIN users u             ON o.user_id = u.user_id
+        JOIN orders o                 ON od.order_id = o.order_id
+        JOIN stores s                 ON o.store_id = s.store_id
+        JOIN ingredients i            ON od.ingredient_id = i.ingredient_id
+        LEFT JOIN inventory_usages iu ON iu.order_detail_id = od.order_detail_id
+        LEFT JOIN users u             ON o.user_id = u.user_id
         WHERE od.current_quantity > 0
         <if test="ingredientId != null">
             AND i.ingredient_id = #{ingredientId}
@@ -34,19 +34,20 @@
             AND od.store_at &lt; DATE_ADD(#{storeEndDate}, INTERVAL 1 DAY)
         </if>
         <if test="manageStartDate != null">
-            AND iu.management_start_at &gt;= #{manageStartDate}
+            AND iu.consumption_at &gt;= #{manageStartDate}
         </if>
         <if test="manageEndDate != null">
-            AND iu.management_start_at &lt; DATE_ADD(#{manageEndDate}, INTERVAL 1 DAY)
+            AND iu.consumption_at &lt; DATE_ADD(#{manageEndDate}, INTERVAL 1 DAY)
         </if>
-        ORDER BY s.store_name, i.ingredient_name, od.store_at, iu.management_start_at
+        ORDER BY s.store_name, i.ingredient_name, od.store_at, iu.consumption_at
     </select>
 
 
 
-    <select id="findInventoryDetail"
-            resultType="kr.swdl.foodingredientmanagement.controller.responseDTO.InventoryListResponse">
+    <select id="getInventoryDetail" resultType="kr.swdl.foodingredientmanagement.dto.InventoryListDTO">
         SELECT
+            s.store_id                  AS storeId,
+            i.ingredient_id             AS ingredientId,
             s.store_name                AS storeName,
             i.ingredient_name           AS ingredientName,
             COALESCE((
@@ -74,33 +75,31 @@
     </select>
 
 
-        <select id="findInventoryOrder"
-                resultType="kr.swdl.foodingredientmanagement.controller.responseDTO.InventoryOrderResponse">
-            SELECT
-                od.manufacture_at                                          AS manufactureAt,
-                DATE_ADD(od.manufacture_at, INTERVAL i.expiration_period DAY) AS expirationDate,
-                od.store_at                                                AS storeAt,
-                od.order_quantity                                          AS orderQuantity,
-                i.order_unit                                               AS orderUnit
-            FROM order_details od
-                     JOIN orders o      ON od.order_id      = o.order_id
-                     JOIN ingredients i ON od.ingredient_id = i.ingredient_id
-            WHERE o.store_id       = #{storeId}
-              AND od.ingredient_id = #{ingredientId}
-              AND od.order_status  = '승인'
-              AND od.store_at IS NOT NULL
+    <select id="getInventoryOrder" resultType="kr.swdl.foodingredientmanagement.dto.InventoryOrderDTO">
+        SELECT
+            od.order_detail_id                                            AS orderDetailId,
+            od.ingredient_id                                              AS ingredientId,
+            od.manufacture_at                                             AS manufactureAt,
+            DATE_ADD(od.manufacture_at, INTERVAL i.expiration_period DAY) AS expirationDate,
+            od.store_at                                                   AS storeAt,
+            od.order_quantity                                             AS orderQuantity,
+            i.order_unit                                                  AS orderUnit
+        FROM order_details od
+                 JOIN ingredients i ON od.ingredient_id = i.ingredient_id
+        WHERE od.order_detail_id = #{orderDetailId}
+          AND od.order_status    = '승인'
+          AND od.store_at IS NOT NULL
 
-        </select>
+    </select>
 
 
-    <select id="findInventoryUsageList"
-            resultType="kr.swdl.foodingredientmanagement.controller.responseDTO.InventoryUsageListResponse">
+    <select id="getInventoryUsageList" resultType="kr.swdl.foodingredientmanagement.dto.InventoryUsageListDTO">
 
         SELECT
             iu.consumption_at              AS consumptionAt,
             iu.management_start_at    AS managementStartAt,
             DATE(DATE_ADD(od.manufacture_at, INTERVAL i.expiration_period DAY))  AS expirationAt,
-            od.manufacture_at AS manufacture_at,
+            od.manufacture_at AS manufactureAt,
             od.store_at AS storeAt,
             od.order_quantity AS orderQuantity,
             i.order_unit AS orderUnit,
@@ -116,8 +115,7 @@
     </select>
 
 
-    <select id="findStoreInventoryList"
-            resultType="kr.swdl.foodingredientmanagement.controller.responseDTO.InventoryListResponse">
+    <select id="getStoreInventoryList" resultType="kr.swdl.foodingredientmanagement.dto.InventoryListDTO">
         SELECT
         s.store_name        AS storeName,
         i.sub_category_name AS subCategoryName,
@@ -143,6 +141,7 @@
     </select>
 
 
+
     <select id="findById" resultType="kr.swdl.foodingredientmanagement.repository.vo.OrderDetailVO">
         SELECT
             order_detail_id AS orderDetailId,
@@ -161,11 +160,6 @@
         WHERE order_detail_id = #{orderDetailId}
           AND order_status = '승인'
     </select>
-
-
-
-
-
 
 
 </mapper>
