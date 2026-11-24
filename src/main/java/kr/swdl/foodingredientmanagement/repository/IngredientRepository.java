@@ -1,43 +1,40 @@
 package kr.swdl.foodingredientmanagement.repository;
 
+import kr.swdl.foodingredientmanagement.dto.IngredientDetailDTO;
+import kr.swdl.foodingredientmanagement.dto.IngredientInsertDTO;
+import kr.swdl.foodingredientmanagement.dto.IngredientListDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Map;
 
 @Mapper
 public interface IngredientRepository {
-    // 1. 식재료 목록 전체 조회
-    List<Map<String,Object>> getIngredientList();
+    // 1. 식재료 목록 조회 (본사)
+    //      목록 전체 조회
+    List<IngredientListDTO> findIngredientList();
 
-    // 2. 식재료 목록 소분류별 조회
-    List<Map<String, Object>> getSubCategoryList(
-            @Param("subCategoryName") String subCategoryName
+    //      분류로 목록 조회
+    //      보관유형 목록 조회
+    //      식재료명 목록 조회
+    //      식재료명 + 분류 목록 조회
+    //      식재료명 + 보관유형 목록 조회
+    List<IngredientListDTO> findIngredientList(
+                        @Param("storageType") String storageType,
+                        @Param("subCategoryName") String subCategoryName,
+                        @Param("ingredientName") String ingredientName
     );
 
-    // 3. 식재료 목록 보관유형별 조회
-    List<Map<String,Object>> getStorageTypeList(
-        @Param("storageType") String storageType
-    );
+    // 2. 식재료 상세 조회 (본사)
+    IngredientDetailDTO  findIngredientDetail(@Param("ingredientId")Long ingredientId);
 
-    // 4. 식재료 선택 삭제 (단일, 다중)
-    boolean deleteIngredients(
-            @Param("ids") List<Long> ids
-    );
+    // 3. 식재료 정보 등록 (본사)
+    int addIngredientDetail(IngredientInsertDTO ingredientInsertDTO);
 
-    // 5. 식재료 정보 등록
-    boolean addIngredient(
-            Map<String, Object> ingredient
-    );
+    // 4. 식재료 정보 수정 (본사)
+    int updateIngredientDetail(IngredientInsertDTO ingredientInsertDTO);
 
-    // 6. 식재료 상세 정보
-    Map<String, Object> getIngredientDetail(
-            @Param("ingredientId") Long ingredientId
-    );
+    // 4. 식재료 정보 삭제 (본사)
+    int deleteIngredientDetail(@Param("ids") List<Long> ids);
 
-    // 7. 식재료 상세 수정
-    boolean updateIngredient(
-            Map<String, Object> ingredient
-    );
 }

@@ -22,7 +22,7 @@ public class DisposalService {
     private final DisposalAppInfosRepository disposalAppInfosRepository;
     private final DisposalsRepository disposalsRepository;
     private final InventoryRepository inventoryRepository;
-    private final MBIngredientRepository mbIngredientRepository;
+    private final IngredientRepository ingredientRepository;
 
     // 폐기 등록
     @Transactional
@@ -37,7 +37,7 @@ public class DisposalService {
         if (null == orderDetailVO) {
             return false;
         }
-        IngredientDetailDTO ingredientDTO = mbIngredientRepository.findIngredientDetail(orderDetailVO.getIngredientId());
+        IngredientDetailDTO ingredientDTO = ingredientRepository.findIngredientDetail(orderDetailVO.getIngredientId());
         if (null == ingredientDTO) {
             return false;
         }

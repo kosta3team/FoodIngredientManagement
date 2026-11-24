@@ -4,7 +4,7 @@ import kr.swdl.foodingredientmanagement.dto.IngredientDetailDTO;
 import kr.swdl.foodingredientmanagement.dto.IngredientInsertDTO;
 import kr.swdl.foodingredientmanagement.dto.IngredientListDTO;
 import kr.swdl.foodingredientmanagement.exception.CreateFailException;
-import kr.swdl.foodingredientmanagement.repository.MBIngredientRepository;
+import kr.swdl.foodingredientmanagement.repository.IngredientRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,14 +17,14 @@ import java.util.List;
 @Slf4j
 @Transactional
 public class IngredientService {
-    private final MBIngredientRepository mbIngredientRepository;
+    private final IngredientRepository ingredientRepository;
 
     //  식재료 목록 조회 (본사)
     @Transactional(readOnly = true)
     public List<IngredientListDTO> findIngredientList(String storageType,
                                                      String subCategoryName,
                                                      String ingredientName) {
-        return mbIngredientRepository.findIngredientList(storageType, subCategoryName, ingredientName);
+        return ingredientRepository.findIngredientList(storageType, subCategoryName, ingredientName);
     }
 
     //         식재료    상세 조회 (본사)
@@ -34,7 +34,7 @@ public class IngredientService {
             throw new IllegalArgumentException("식재료 넘버가 없습니다");
         }
 
-        IngredientDetailDTO detail = mbIngredientRepository.findIngredientDetail(ingredientId);
+        IngredientDetailDTO detail = ingredientRepository.findIngredientDetail(ingredientId);
         if (detail == null) {
             throw new IllegalArgumentException("식재료정보를 찾을 수 없음::" + ingredientId);
         }
@@ -47,7 +47,7 @@ public class IngredientService {
             throw new IllegalArgumentException("식재료명은 필수");
         }
 
-        int result = mbIngredientRepository.addIngredientDetail(ingredientInsertDTO);
+        int result = ingredientRepository.addIngredientDetail(ingredientInsertDTO);
         if (result != 1) {
             throw new CreateFailException("식재료 등록에 실패!!!!!");
         }
@@ -62,11 +62,11 @@ public class IngredientService {
             throw new IllegalArgumentException("수정할 식재료 아이디가ㅇ벗ㅇㅁ없음");
         }
 
-        if (mbIngredientRepository.findIngredientDetail(ingredientInsertDTO.getIngredientId()) == null) {
+        if (ingredientRepository.findIngredientDetail(ingredientInsertDTO.getIngredientId()) == null) {
             throw new IllegalArgumentException("식재료 정보없음 ingredientId:" + ingredientInsertDTO.getIngredientId());
         }
 
-        int result = mbIngredientRepository.updateIngredientDetail(ingredientInsertDTO);
+        int result = ingredientRepository.updateIngredientDetail(ingredientInsertDTO);
         if (result != 1) {
             throw new IllegalStateException("식재료 수정 실패 ingredientId:" + ingredientInsertDTO.getIngredientId());
         }
@@ -77,7 +77,7 @@ public class IngredientService {
         if (ids == null || ids.isEmpty()) {
             throw new IllegalArgumentException("삭제할 식재료를 선택해주세요.!");
         }
-        int result = mbIngredientRepository.deleteIngredientDetail(ids);
+        int result = ingredientRepository.deleteIngredientDetail(ids);
         return result;
     }
 }

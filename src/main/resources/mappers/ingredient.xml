@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="kr.swdl.foodingredientmanagement.repository.MBIngredientRepository">
+<mapper namespace="kr.swdl.foodingredientmanagement.repository.IngredientRepository">
 
 <!--    // 1. 식재료 목록 전체 조회-->
     <select id="findIngredientList" resultType="kr.swdl.foodingredientmanagement.dto.IngredientListDTO">

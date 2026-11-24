@@ -3,7 +3,7 @@ package kr.swdl.foodingredientmanagement.service;
 import kr.swdl.foodingredientmanagement.dto.IngredientDetailDTO;
 import kr.swdl.foodingredientmanagement.dto.IngredientInsertDTO;
 import kr.swdl.foodingredientmanagement.dto.IngredientListDTO;
-import kr.swdl.foodingredientmanagement.repository.MBIngredientRepository;
+import kr.swdl.foodingredientmanagement.repository.IngredientRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -18,12 +18,12 @@ import java.util.List;
 public class IngredientServiceTest {
 
     @Autowired
-    private MBIngredientRepository mbIngredientRepository;
+    private IngredientRepository ingredientRepository;
 
 //
     @Test
     public void 식재료_목록_조회_성공() {
-        List<IngredientListDTO> list = mbIngredientRepository.findIngredientList("냉장", null, "치");
+        List<IngredientListDTO> list = ingredientRepository.findIngredientList("냉장", null, "치");
         Assertions.assertFalse(list.isEmpty());
         for (IngredientListDTO info : list) {
             Assertions.assertEquals("냉장", info.getStorageType());
@@ -33,7 +33,7 @@ public class IngredientServiceTest {
 
     @Test
     public void 식재료_목록조회_실패() {
-        List<IngredientListDTO> list = mbIngredientRepository.findIngredientList(null, null, "없음식재료명");
+        List<IngredientListDTO> list = ingredientRepository.findIngredientList(null, null, "없음식재료명");
         Assertions.assertTrue(list.isEmpty());
     }
     @Test
@@ -41,7 +41,7 @@ public class IngredientServiceTest {
         Long ingredientId = Long.valueOf(1);
 
 
-        IngredientDetailDTO detail = mbIngredientRepository.findIngredientDetail(ingredientId);
+        IngredientDetailDTO detail = ingredientRepository.findIngredientDetail(ingredientId);
         if (detail == null) Assertions.fail();
 
         Assertions.assertEquals(ingredientId, detail.getIngredientId());
@@ -52,7 +52,7 @@ public class IngredientServiceTest {
     public void 식재료_상세_조회_실패() {
         Long ingredientId = Long.valueOf(9999);
 
-        IngredientDetailDTO detail = mbIngredientRepository.findIngredientDetail(ingredientId);
+        IngredientDetailDTO detail = ingredientRepository.findIngredientDetail(ingredientId);
         Assertions.assertNull(detail);
     }
 
@@ -79,13 +79,13 @@ public class IngredientServiceTest {
         if (dto.getIngredientName() == null || dto.getIngredientName().isBlank()) Assertions.fail();
 
 
-        int result = mbIngredientRepository.addIngredientDetail(dto);
+        int result = ingredientRepository.addIngredientDetail(dto);
         Assertions.assertEquals(1, result);
         Assertions.assertNotNull(dto.getIngredientId());
 
 
 
-        IngredientDetailDTO saved = mbIngredientRepository.findIngredientDetail(dto.getIngredientId());
+        IngredientDetailDTO saved = ingredientRepository.findIngredientDetail(dto.getIngredientId());
         Assertions.assertEquals("테스트양상추", saved.getIngredientName());
         Assertions.assertEquals("Y", saved.getUsableFlag());
     }
@@ -123,10 +123,10 @@ public class IngredientServiceTest {
 
                 .supplyQuantity(10)
                 .build();
-        mbIngredientRepository.addIngredientDetail(insertDTO);
+        ingredientRepository.addIngredientDetail(insertDTO);
         Long ingredientId = insertDTO.getIngredientId();
 
-        if (mbIngredientRepository.findIngredientDetail(ingredientId) == null) Assertions.fail();
+        if (ingredientRepository.findIngredientDetail(ingredientId) == null) Assertions.fail();
 
 
         IngredientInsertDTO updateDTO = IngredientInsertDTO.builder()
@@ -134,13 +134,13 @@ public class IngredientServiceTest {
                 .ingredientName("테스트로메인")
                 .supplyPrice(18000)
                 .build();
-        int result = mbIngredientRepository.updateIngredientDetail(updateDTO);
+        int result = ingredientRepository.updateIngredientDetail(updateDTO);
         Assertions.assertEquals(1, result);
 
 
 
 
-        IngredientDetailDTO updated = mbIngredientRepository.findIngredientDetail(ingredientId);
+        IngredientDetailDTO updated = ingredientRepository.findIngredientDetail(ingredientId);
         Assertions.assertEquals("테스트로메인", updated.getIngredientName());
         Assertions.assertEquals(18000, updated.getSupplyPrice());
         Assertions.assertEquals("냉장", updated.getStorageType());
@@ -151,7 +151,7 @@ public class IngredientServiceTest {
     public void 식재료_수정_실패() {
         Long ingredientId = Long.valueOf(9999);
 
-        if (mbIngredientRepository.findIngredientDetail(ingredientId) == null) {
+        if (ingredientRepository.findIngredientDetail(ingredientId) == null) {
             return;
         }
         Assertions.fail();
@@ -195,17 +195,17 @@ public class IngredientServiceTest {
                 .supplyPrice(15000)
                 .supplyQuantity(10)
                 .build();
-        mbIngredientRepository.addIngredientDetail(ingredientInsertDTO1);
-        mbIngredientRepository.addIngredientDetail(ingredientInsertDTO2);
+        ingredientRepository.addIngredientDetail(ingredientInsertDTO1);
+        ingredientRepository.addIngredientDetail(ingredientInsertDTO2);
 
         List<Long> ids = List.of(ingredientInsertDTO1.getIngredientId(), ingredientInsertDTO2.getIngredientId());
         if (ids == null || ids.isEmpty()) Assertions.fail();
 
-        int result = mbIngredientRepository.deleteIngredientDetail(ids);
+        int result = ingredientRepository.deleteIngredientDetail(ids);
         Assertions.assertEquals(2, result);
 
-        Assertions.assertNull(mbIngredientRepository.findIngredientDetail(ingredientInsertDTO1.getIngredientId()));
-        Assertions.assertNull(mbIngredientRepository.findIngredientDetail(ingredientInsertDTO2.getIngredientId()));
+        Assertions.assertNull(ingredientRepository.findIngredientDetail(ingredientInsertDTO1.getIngredientId()));
+        Assertions.assertNull(ingredientRepository.findIngredientDetail(ingredientInsertDTO2.getIngredientId()));
     }
 
 
