@@ -12,29 +12,29 @@ import java.util.List;
 
 @Mapper
 public interface InventoryRepository {
-  List<InventoryListDTO> findInventoryList();
+  List<InventoryListDTO> getInventoryList();
 
-  List<InventoryListDTO> findInventoryList(@Param("ingredientId") Long ingredientId,
+  List<InventoryListDTO> getInventoryList(@Param("ingredientId") Long ingredientId,
                                            @Param("storeId") Long storeId,
                                            @Param("storeStartDate") LocalDate storeStartDate,
                                            @Param("storeEndDate") LocalDate storeEndDate,
                                            @Param("manageStartDate") LocalDate manageStartDate,
                                            @Param("manageEndDate") LocalDate manageEndDate);
 
-  InventoryListDTO findInventoryDetail(@Param("storeId") Long storeId,
+  InventoryListDTO getInventoryDetail(@Param("storeId") Long storeId,
                                        @Param("ingredientId") Long ingredientId);
 
-  InventoryOrderDTO findInventoryOrder(@Param("storeId") Long storeId,
+  InventoryOrderDTO getInventoryOrder(@Param("storeId") Long storeId,
                                        @Param("ingredientId") Long ingredientId);
 
-  List <InventoryUsageListDTO> findInventoryUsageList(@Param("storeId") Long storeId,
+  List <InventoryUsageListDTO> getInventoryUsageList(@Param("storeId") Long storeId,
                                                       @Param("ingredientId") Long ingredientId);
 
-  List<InventoryListDTO> findStoreInventoryList(@Param("storeId") Long storeId,
+  List<InventoryListDTO> getStoreInventoryList(@Param("storeId") Long storeId,
                                                 @Param("subCategoryName") String subCategoryName,
                                                 @Param("ingredientId") Long ingredientId);
 
-  InventoryListDTO findInventoryByOrderDetailId(@Param("orderDetailId") Long orderDetailId);
+  InventoryListDTO getInventoryByOrderDetailId(@Param("orderDetailId") Long orderDetailId);
 
 
   
@@ -45,7 +45,7 @@ public interface InventoryRepository {
 
 
 
-  InventoryOrderDTO findInventoryOrder(@Param("orderDetailId") Long orderDetailId);
+  InventoryOrderDTO getInventoryOrder(@Param("orderDetailId") Long orderDetailId);
 
 
 

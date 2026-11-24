@@ -21,7 +21,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 본사_전체_재고_목록_조회(){
-        List<InventoryListDTO> list = inventoryRepository.findInventoryList();
+        List<InventoryListDTO> list = inventoryRepository.getInventoryList();
         assertThat(list).isNotEmpty();
 
         for(InventoryListDTO inventoryListDTO : list){
@@ -38,7 +38,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 본사_식재료명_재고_목록_조회(){
-        List<InventoryListDTO> list = inventoryRepository.findInventoryList(1L, null, null, null, null, null);
+        List<InventoryListDTO> list = inventoryRepository.getInventoryList(1L, null, null, null, null, null);
 
         assertThat(list).isNotEmpty();
 
@@ -56,7 +56,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 본사_직영점명_재고_목록_조회(){
-        List<InventoryListDTO> list = inventoryRepository.findInventoryList(null, 9L, null, null, null, null);
+        List<InventoryListDTO> list = inventoryRepository.getInventoryList(null, 9L, null, null, null, null);
 
         assertThat(list).isNotEmpty();
 
@@ -74,7 +74,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 본사_입고일시_재고_목록_조회(){
-        List<InventoryListDTO> list = inventoryRepository.findInventoryList(null, null,  LocalDate.of(2026, 10, 1), LocalDate.of(2026, 11, 16), null, null);
+        List<InventoryListDTO> list = inventoryRepository.getInventoryList(null, null,  LocalDate.of(2026, 10, 1), LocalDate.of(2026, 11, 16), null, null);
 
         assertThat(list).isNotEmpty();
 
@@ -92,7 +92,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 본사_사용기한_재고_목록_조회(){
-        List<InventoryListDTO> list = inventoryRepository.findInventoryList(null, null, null, null,  LocalDate.of(2026, 10, 3), LocalDate.of(2026, 11, 16));
+        List<InventoryListDTO> list = inventoryRepository.getInventoryList(null, null, null, null,  LocalDate.of(2026, 10, 3), LocalDate.of(2026, 11, 16));
 
         assertThat(list).isNotEmpty();
 
@@ -110,7 +110,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 본사_식재료명_직영점명_재고_목록_조회(){
-        List<InventoryListDTO> list = inventoryRepository.findInventoryList(14L, 6L, null, null, null, null);
+        List<InventoryListDTO> list = inventoryRepository.getInventoryList(14L, 6L, null, null, null, null);
 
         assertThat(list).isNotEmpty();
 
@@ -128,7 +128,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 본사_식재료명_입고일시_재고_목록_조회(){
-        List<InventoryListDTO> list = inventoryRepository.findInventoryList(14L, null, LocalDate.of(2026, 11, 1), LocalDate.of(2026, 11, 30), null, null);
+        List<InventoryListDTO> list = inventoryRepository.getInventoryList(14L, null, LocalDate.of(2026, 11, 1), LocalDate.of(2026, 11, 30), null, null);
 
         assertThat(list).isNotEmpty();
 
@@ -146,7 +146,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 본사_식재료명_사용기한_재고_목록_조회(){
-        List<InventoryListDTO> list = inventoryRepository.findInventoryList(14L, null, null, null, LocalDate.of(2026, 11, 1), LocalDate.of(2026, 11, 30));
+        List<InventoryListDTO> list = inventoryRepository.getInventoryList(14L, null, null, null, LocalDate.of(2026, 11, 1), LocalDate.of(2026, 11, 30));
 
         assertThat(list).isNotEmpty();
 
@@ -164,7 +164,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 본사_직영점명_입고일시_재고_목록_조회(){
-        List<InventoryListDTO> list = inventoryRepository.findInventoryList(null, 6L, LocalDate.of(2026, 11, 1), LocalDate.of(2026, 11, 30),null, null);
+        List<InventoryListDTO> list = inventoryRepository.getInventoryList(null, 6L, LocalDate.of(2026, 11, 1), LocalDate.of(2026, 11, 30),null, null);
 
         assertThat(list).isNotEmpty();
 
@@ -183,7 +183,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 본사_직영점명_사용기한_재고_목록_조회(){
-        List<InventoryListDTO> list = inventoryRepository.findInventoryList(null, 1L, null, null,LocalDate.of(2026, 10, 1), LocalDate.of(2026, 11, 30));
+        List<InventoryListDTO> list = inventoryRepository.getInventoryList(null, 1L, null, null,LocalDate.of(2026, 10, 1), LocalDate.of(2026, 11, 30));
 
         assertThat(list).isNotEmpty();
 
@@ -201,7 +201,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 본사_식재료명_직영점명_입고일시_재고_목록_조회(){
-        List<InventoryListDTO> list = inventoryRepository.findInventoryList(14L, 6L, LocalDate.of(2026, 11, 1), LocalDate.of(2026, 11, 30) ,null, null);
+        List<InventoryListDTO> list = inventoryRepository.getInventoryList(14L, 6L, LocalDate.of(2026, 11, 1), LocalDate.of(2026, 11, 30) ,null, null);
 
         assertThat(list).isNotEmpty();
 
@@ -219,7 +219,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 본사_식재료명_직영점명_사용기한_재고_목록_조회(){
-        List<InventoryListDTO> list = inventoryRepository.findInventoryList(14L, 1L, null, null ,LocalDate.of(2026, 11, 1), LocalDate.of(2026, 11, 30));
+        List<InventoryListDTO> list = inventoryRepository.getInventoryList(14L, 1L, null, null ,LocalDate.of(2026, 11, 1), LocalDate.of(2026, 11, 30));
         assertThat(list).isNotEmpty();
 
         for(InventoryListDTO inventoryListDTO : list){
@@ -236,7 +236,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 본사_특정_직영점_특정_재고_상세_조회(){
-        InventoryListDTO inventoryListDTO = inventoryRepository.findInventoryDetail(1L, 1L);
+        InventoryListDTO inventoryListDTO = inventoryRepository.getInventoryDetail(1L, 1L);
 
         assertThat(inventoryListDTO)
                 .isNotNull()
@@ -249,7 +249,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 본사_특정_직영점_특정_재고_상세_조회_입고정보(){
-        InventoryOrderDTO inventoryOrderDTO = inventoryRepository.findInventoryOrder(1L);
+        InventoryOrderDTO inventoryOrderDTO = inventoryRepository.getInventoryOrder(1L);
 
         assertThat(inventoryOrderDTO).isNotNull();
         assertThat(inventoryOrderDTO.getOrderDetailId()).isEqualTo(1L);
@@ -259,7 +259,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 본사_특정_직영점_특정_재고_상세_조회_사용이력(){
-        List<InventoryUsageListDTO> list = inventoryRepository.findInventoryUsageList(1L, 12L);
+        List<InventoryUsageListDTO> list = inventoryRepository.getInventoryUsageList(1L, 12L);
 
         assertThat(list).isNotEmpty();
 
@@ -277,7 +277,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 직영점_전체_재고_목록_조회(){
-        List<InventoryListDTO> list = inventoryRepository.findStoreInventoryList(1L, null, null);
+        List<InventoryListDTO> list = inventoryRepository.getStoreInventoryList(1L, null, null);
 
         assertThat(list).isNotEmpty();
 
@@ -296,7 +296,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 직영점_분류_재고_목록_조회(){
-        List<InventoryListDTO> list = inventoryRepository.findStoreInventoryList(1L, "소스류", null);
+        List<InventoryListDTO> list = inventoryRepository.getStoreInventoryList(1L, "소스류", null);
 
         assertThat(list).isNotEmpty();
 
@@ -313,7 +313,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 직영점_식재료명_재고_목록_조회(){
-        List<InventoryListDTO> list = inventoryRepository.findStoreInventoryList(1L, null, 12L);
+        List<InventoryListDTO> list = inventoryRepository.getStoreInventoryList(1L, null, 12L);
 
         assertThat(list).isNotEmpty();
 
@@ -330,7 +330,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 직영점_분류_식재료명_재고_목록_조회(){
-        List<InventoryListDTO> list = inventoryRepository.findStoreInventoryList(6L, "육가공류", 14L);
+        List<InventoryListDTO> list = inventoryRepository.getStoreInventoryList(6L, "육가공류", 14L);
 
         assertThat(list).isNotEmpty();
 
@@ -347,7 +347,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 직영점_재고_상세_조회_잔여수량_식재료(){
-        InventoryListDTO inventoryListDTO = inventoryRepository.findInventoryDetail(5L, 14L);
+        InventoryListDTO inventoryListDTO = inventoryRepository.getInventoryDetail(5L, 14L);
 
         assertThat(inventoryListDTO)
                 .isNotNull()
@@ -359,7 +359,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 직영점_재고_상세_조회_사용이력(){
-        List<InventoryUsageListDTO> list = inventoryRepository.findInventoryUsageList(8L, 14L);
+        List<InventoryUsageListDTO> list = inventoryRepository.getInventoryUsageList(8L, 14L);
 
         assertThat(list).isNotEmpty();
 
