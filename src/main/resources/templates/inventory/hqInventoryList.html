@@ -25,18 +25,19 @@
           <!-- 검색 조건: 화면 구성만 제공하며 데이터는 예시 값 -->
           <section class="card hq-card p-3 mb-3">
             <div class="row g-3 align-items-center">
+              <div class="col-md-3">
+                <div class="d-flex align-items-center gap-2">
+                  <label class="form-label mb-0 text-nowrap" for="storeName">직영점명</label>
+                  <input class="form-control" id="storeName" name="storeName" type="text" placeholder="직영점명을 입력하세요"/>
+                </div>
+              </div>
+
               <div class="col-md-2">
                 <div class="d-flex align-items-center gap-2">
                   <label class="form-label mb-0 text-nowrap" for="ingredient">식재료명</label>
                   <select class="form-select" id="ingredient" name="ingredientId">
                     <option value="">전체</option>
                   </select>
-                </div>
-              </div>
-              <div class="col-md-3">
-                <div class="d-flex align-items-center gap-2">
-                  <label class="form-label mb-0 text-nowrap" for="storeName">직영점명</label>
-                  <input class="form-control" id="storeName" name="storeName" type="text" placeholder="직영점명을 입력하세요"/>
                 </div>
               </div>
 

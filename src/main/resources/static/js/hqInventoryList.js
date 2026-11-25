@@ -71,5 +71,8 @@ function searchInventory() {
     const ingredientId = document.getElementById('ingredient').value;
     if (ingredientId) params.append('ingredientId', ingredientId);
 
+    const storeName = document.getElementById('storeName').value.trim();
+    if (storeName) params.append('storeName', storeName);
+
     loadInventoryList(params);
 }
