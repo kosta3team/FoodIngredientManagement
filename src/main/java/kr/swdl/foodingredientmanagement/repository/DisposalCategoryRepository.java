@@ -12,7 +12,7 @@ import java.util.List;
 public interface DisposalCategoryRepository extends JpaRepository<DisposalCategories, Long> {
     List<DisposalCategories> findAllByDisposalType(String disposalType);
     @Query("SELECT DISTINCT disposalType  FROM DisposalCategories")
-    List<String> findDisposalType();
+    List<String> getDisposalTypes();
     @Query("SELECT disposalReason  FROM DisposalCategories WHERE disposalType = :disposalType")
-    List<String> findDisposalReasonByDisposalType(@Param("disposalType") String disposalType);
+    List<String> getDisposalReasonsByDisposalType(@Param("disposalType") String disposalType);
 }

@@ -3,22 +3,22 @@ package kr.swdl.foodingredientmanagement.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import kr.swdl.foodingredientmanagement.dto.*;
+import kr.swdl.foodingredientmanagement.exception.ErrorDomain;
+import kr.swdl.foodingredientmanagement.exception.NotFoundException;
 import kr.swdl.foodingredientmanagement.repository.*;
 import kr.swdl.foodingredientmanagement.repository.entitiy.DisposalAppInfos;
 import kr.swdl.foodingredientmanagement.repository.entitiy.Users;
-import kr.swdl.foodingredientmanagement.repository.vo.DisposalVO;
-import kr.swdl.foodingredientmanagement.repository.vo.HQDisposalListVO;
-import kr.swdl.foodingredientmanagement.repository.vo.OrderDetailVO;
-import kr.swdl.foodingredientmanagement.repository.vo.StoreDisposalListVO;
+import kr.swdl.foodingredientmanagement.repository.vo.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DisposalService {
     private final JPAUsersRepository jPAUsersRepository;
     private final DisposalAppInfosRepository disposalAppInfosRepository;
@@ -29,7 +29,8 @@ public class DisposalService {
     // 폐기 등록
     @Transactional
     public boolean addDisposal(Long orderDetailId, DisposalDTO disposalDTO) {
-        Users reqUser = jPAUsersRepository.findById(disposalDTO.getReqUserId()).orElseThrow();
+        Users reqUser = jPAUsersRepository
+                .findById(disposalDTO.getReqUserId()).orElseThrow();
         String status = "승인";
         if (!reqUser.getRole().equals("HQ")) {
             status = "대기";
@@ -37,11 +38,11 @@ public class DisposalService {
         // 특정 재고 아이디
         OrderDetailVO orderDetailVO = mbInventoryRepository.findById(orderDetailId);
         if (null == orderDetailVO) {
-            return false;
+            throw new NotFoundException(ErrorDomain.ORDER_DETAIL);
         }
-        IngredientDetailDTO ingredientDTO = mbIngredientRepository.findIngredientDetail(orderDetailVO.getIngredientId());
-        if (null == ingredientDTO) {
-            return false;
+        IngredientVO ingredientVO = mbIngredientRepository.findIngredientById(orderDetailVO.getIngredientId());
+        if (null == ingredientVO) {
+            throw new NotFoundException(ErrorDomain.INGREDIENT);
         }
         DisposalVO disposalVO = DisposalVO.builder()
                 .disposalUnit(disposalDTO.getDisposalUnit())
@@ -53,10 +54,11 @@ public class DisposalService {
                 .disposalReason(disposalDTO.getDisposalReason())
                 .disposalDetailReason(disposalDTO.getDisposalDetailReason())
                 .disposalQuantity(orderDetailVO.getCurrentQuantity())
-                .disposalPrice(ingredientDTO.getSupplyPrice() * disposalDTO.getDisposalQuantity())
+                .disposalPrice(ingredientVO.getSupplyPrice() * disposalDTO.getDisposalQuantity())
                 .orderDetailId(orderDetailId)
                 .build();
-        disposalsRepository.insertDisposal(disposalVO);
+
+        disposalsRepository.addDisposal(disposalVO);
         mbInventoryRepository.updateCurrentQuantityById(orderDetailId, 0);
 
         if (status.equals("승인") && null != disposalVO.getDisposalId()) {
@@ -118,19 +120,19 @@ public class DisposalService {
     }
 
     public int countByTodayDisposed() {
-        return disposalsRepository.countByTodayDisposed();
+        return disposalsRepository.getCountByTodayDisposed();
     }
 
     public int sumByTodayDisposedPrice() {
-        return disposalsRepository.sumByTodayDisposedPrice();
+        return disposalsRepository.getSumByTodayDisposedPrice();
     }
 
     public int countNeedToConfirmByStoreId(Long storeId) {
-        return disposalsRepository.countNeedToConfirmByStoreId(storeId);
+        return disposalsRepository.getCountNeedToConfirmByStoreId(storeId);
     }
 
     private DisposalVO getDisposalById(Long disposalId) {
-        return disposalsRepository.findById(disposalId);// -> 예외 발생할수 있음
+        return disposalsRepository.getDisposalById(disposalId);// -> 예외 발생할수 있음
     }
 
     private HQDisposalListDTO toHqDisposalListDTO(HQDisposalListVO vo) {

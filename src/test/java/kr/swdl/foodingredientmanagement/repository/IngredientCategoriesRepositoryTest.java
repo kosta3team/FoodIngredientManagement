@@ -33,7 +33,7 @@ public class IngredientCategoriesRepositoryTest {
     @Test
     public void 폐기유형_대분류_가져오기_커스텀쿼리() {
         // TODO: 서비스 계층
-        List<String> list = ingredientCategoriesRepository.findMajorCategoryName();
+        List<String> list = ingredientCategoriesRepository.getMajorCategoryNames();
         for (String majorCategoryName : list) {
             log.info("{}", majorCategoryName);
         }
@@ -53,7 +53,7 @@ public class IngredientCategoriesRepositoryTest {
 
     @Test
     public void 특정_식재료_대분류_하위목록_커스텀쿼리() {
-        List<String> list = ingredientCategoriesRepository.findSubCategoryNameByMajorCategoryName("가공식품");
+        List<String> list = ingredientCategoriesRepository.getSubCategoryNameByMajorCategoryName("가공식품");
         for (String subCategoryName : list) {
             log.info("{}", subCategoryName);
         }

@@ -12,7 +12,7 @@ import java.util.List;
 public interface IngredientCategoryRepository extends JpaRepository<IngredientCategories, Long> {
     List<IngredientCategories> findAllByMajorCategoryName(String majorCategoryName);
     @Query("SELECT DISTINCT majorCategoryName  FROM IngredientCategories")
-    List<String> findMajorCategoryName();
+    List<String> getMajorCategoryNames();
     @Query("SELECT subCategoryName  FROM IngredientCategories WHERE majorCategoryName = :majorCategoryName")
-    List<String> findSubCategoryNameByMajorCategoryName(@Param("majorCategoryName") String majorCategoryName);
+    List<String> getSubCategoryNameByMajorCategoryName(@Param("majorCategoryName") String majorCategoryName);
 }

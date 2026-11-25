@@ -86,13 +86,13 @@ public class DisposalServiceTest {
                 .disposalPrice(ingredientDTO.getSupplyPrice() * dto.getDisposalQuantity())
                 .orderDetailId(orderDetailId)
                 .build();
-        disposalsRepository.insertDisposal(disposalVO);
+        disposalsRepository.addDisposal(disposalVO);
 
         mbInventoryRepository.updateCurrentQuantityById(orderDetailId, 0);
         orderDetailVO = mbInventoryRepository.findById(orderDetailId);
         log.info("Disposal inventory dump : {}", orderDetailVO);
 
-        log.info("Created disposal dump : {}", disposalsRepository.findById(disposalVO.getDisposalId()));
+        log.info("Created disposal dump : {}", disposalsRepository.getDisposalById(disposalVO.getDisposalId()));
 
         if (status.equals("승인") && null != disposalVO.getDisposalId()) {
             DisposalAppInfos createdDAI = disposalAppInfosRepository.save(DisposalAppInfos.builder()
@@ -103,10 +103,11 @@ public class DisposalServiceTest {
         }
     }
 
-    //    @Test
+//    @Test
 //    @Transactional
 //    public void 본사_폐기_등록_실패() {
-//        disposalService.addDisposal();
+//        Long orderDetailId = 999L;
+//        disposalService.addDisposal(orderDetailId, DisposalDTO.builder().reqUserId(9999L).build());
 //    }
 //
 //    @Test
@@ -131,7 +132,7 @@ public class DisposalServiceTest {
         Long disposalId = 4L; // 요청
 
 
-        DisposalVO disposalVO = disposalsRepository.findById(disposalId);
+        DisposalVO disposalVO = disposalsRepository.getDisposalById(disposalId);
         Assertions.assertNotNull(disposalVO);
         log.info("before dump : {}", disposalVO);
 
@@ -146,7 +147,7 @@ public class DisposalServiceTest {
                 .disposalReason(disposalDTO.getDisposalReason())
                 .disposalDetailReason(disposalDTO.getDisposalDetailReason()).build()), 1);
 
-        disposalVO = disposalsRepository.findById(disposalId);
+        disposalVO = disposalsRepository.getDisposalById(disposalId);
         log.info("after dump : {}", disposalVO);
     }
 
@@ -182,7 +183,7 @@ public class DisposalServiceTest {
         Long disposalId = 4L;
 
         // 승인 전
-        DisposalVO before = disposalsRepository.findById(disposalId);
+        DisposalVO before = disposalsRepository.getDisposalById(disposalId);
 
         Assertions.assertNotNull(before);
         Assertions.assertEquals("요청", before.getDisposalStatus());
@@ -199,7 +200,7 @@ public class DisposalServiceTest {
         disposalService.approveDisposal(appUserId, disposalId, disposalDTO);
 
         // 승인 후
-        DisposalVO after = disposalsRepository.findById(disposalId);
+        DisposalVO after = disposalsRepository.getDisposalById(disposalId);
 
         Assertions.assertNotNull(after);
         Assertions.assertEquals("승인", after.getDisposalStatus());
@@ -208,7 +209,7 @@ public class DisposalServiceTest {
         log.info("after : {}", after);
 
         // 승인 정보 생성 확인
-        Optional<DisposalAppInfos> optionalDisposalAppInfos = disposalAppInfosRepository.findByDisposalId(disposalId);
+        Optional<DisposalAppInfos> optionalDisposalAppInfos = disposalAppInfosRepository.getDisposalAppInfoByDisposalId(disposalId);
         DisposalAppInfos created = optionalDisposalAppInfos.get();
         Assertions.assertNotNull(created);
         Assertions.assertEquals(appUserId, created.getAppUserId());
@@ -225,7 +226,7 @@ public class DisposalServiceTest {
         Long disposalId = 4L;
 
         // 거절 전
-        DisposalVO before = disposalsRepository.findById(disposalId);
+        DisposalVO before = disposalsRepository.getDisposalById(disposalId);
 
         Assertions.assertNotNull(before);
         Assertions.assertEquals("요청", before.getDisposalStatus());
@@ -242,7 +243,7 @@ public class DisposalServiceTest {
         disposalService.approveDisposal(appUserId, disposalId, disposalDTO);
 
         // 거절 후
-        DisposalVO after = disposalsRepository.findById(disposalId);
+        DisposalVO after = disposalsRepository.getDisposalById(disposalId);
 
         Assertions.assertNotNull(after);
         Assertions.assertEquals("거절", after.getDisposalStatus());
@@ -253,7 +254,7 @@ public class DisposalServiceTest {
 
         // 거절 시 승인 정보가 생성되지 않아야 함
         Optional<DisposalAppInfos> optionalDisposalAppInfos =
-                disposalAppInfosRepository.findByDisposalId(disposalId);
+                disposalAppInfosRepository.getDisposalAppInfoByDisposalId(disposalId);
 
         Assertions.assertTrue(optionalDisposalAppInfos.isEmpty());
 
@@ -268,7 +269,7 @@ public class DisposalServiceTest {
         Long disposalId = 4L;
 
         // 승인 전
-        DisposalVO before = disposalsRepository.findById(disposalId);
+        DisposalVO before = disposalsRepository.getDisposalById(disposalId);
 
         Assertions.assertNotNull(before);
         Assertions.assertEquals("요청", before.getDisposalStatus());
@@ -285,7 +286,7 @@ public class DisposalServiceTest {
         disposalService.approveDisposal(appUserId, disposalId, disposalDTO);
 
         // 최초 승인 후
-        DisposalVO approved = disposalsRepository.findById(disposalId);
+        DisposalVO approved = disposalsRepository.getDisposalById(disposalId);
 
         Assertions.assertNotNull(approved);
         Assertions.assertEquals("승인", approved.getDisposalStatus());
@@ -295,7 +296,7 @@ public class DisposalServiceTest {
 
         // 최초 승인 정보 생성 확인
         Optional<DisposalAppInfos> optionalDisposalAppInfos =
-                disposalAppInfosRepository.findByDisposalId(disposalId);
+                disposalAppInfosRepository.getDisposalAppInfoByDisposalId(disposalId);
 
         Assertions.assertTrue(optionalDisposalAppInfos.isPresent());
 
@@ -323,7 +324,7 @@ public class DisposalServiceTest {
         log.info("중복 승인 예외 : {}", exception.getMessage());
 
         // 중복 승인 시도 후
-        DisposalVO after = disposalsRepository.findById(disposalId);
+        DisposalVO after = disposalsRepository.getDisposalById(disposalId);
 
         Assertions.assertNotNull(after);
         Assertions.assertEquals("승인", after.getDisposalStatus());
@@ -336,7 +337,7 @@ public class DisposalServiceTest {
 
         // 기존 승인 정보 유지 확인
         Optional<DisposalAppInfos> afterOptional =
-                disposalAppInfosRepository.findByDisposalId(disposalId);
+                disposalAppInfosRepository.getDisposalAppInfoByDisposalId(disposalId);
 
         Assertions.assertTrue(afterOptional.isPresent());
 
@@ -367,18 +368,18 @@ public class DisposalServiceTest {
     @Transactional
     public void 폐기_삭제_성공() {
         Long disposalId = 4L; // 요청상태 폐기
-        Assertions.assertNotNull(disposalsRepository.findById(disposalId));
+        Assertions.assertNotNull(disposalsRepository.getDisposalById(disposalId));
         disposalService.deleteDisposal(disposalId);
-        Assertions.assertNull(disposalsRepository.findById(disposalId));
+        Assertions.assertNull(disposalsRepository.getDisposalById(disposalId));
     }
 
     @Test
     @Transactional
     public void 폐기_삭제_실패_승인된폐기() {
         Long disposalId = 3L; // 승인된 폐기
-        Assertions.assertNotNull(disposalsRepository.findById(disposalId));
+        Assertions.assertNotNull(disposalsRepository.getDisposalById(disposalId));
         disposalService.deleteDisposal(disposalId);
-        Assertions.assertNotNull(disposalsRepository.findById(disposalId));
+        Assertions.assertNotNull(disposalsRepository.getDisposalById(disposalId));
     }
 
 

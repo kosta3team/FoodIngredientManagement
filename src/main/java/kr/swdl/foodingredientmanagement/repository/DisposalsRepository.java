@@ -14,10 +14,10 @@ public interface DisposalsRepository {
 
     List<DisposalVO> findAll();
 
-    DisposalVO findById(@Param("disposalId")Long disposalId);
+    DisposalVO getDisposalById(@Param("disposalId")Long disposalId);
 
     // select insert update delete
-    int insertDisposal(DisposalVO disposalsVO);
+    int addDisposal(DisposalVO disposalsVO);
 
     int updateDisposal(DisposalVO disposalsVO);
 
@@ -29,11 +29,11 @@ public interface DisposalsRepository {
 
     public List<StoreDisposalListVO> getStoreDisposals(StoreDisposalSerachFilterDTO storeDisposalSerachFilterDTO);
 
-    public int countByTodayDisposed();
+    public int getCountByTodayDisposed();
 
-    public int sumByTodayDisposedPrice();
+    public int getSumByTodayDisposedPrice();
 
-    public int countNeedToConfirmByStoreId(Long storeId);
+    public int getCountNeedToConfirmByStoreId(Long storeId);
 
     public List<Long> getStoreIdsByHQId(Long userId);
 }
