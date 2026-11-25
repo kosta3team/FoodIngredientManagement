@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     loadIngredientOptions();
     loadInventoryList();
+    document.getElementById('searchBtn').addEventListener('click', searchInventory);
 });
 
 
@@ -25,10 +26,10 @@ async function loadIngredientOptions() {
 }
 
 // 재고 목록 조회
-async function loadInventoryList() {
+async function loadInventoryList(params = new URLSearchParams()) {
     const tbody = document.getElementById('inventoryTableBody');
     try {
-        const response = await fetch('/api/inventory/list');
+        const response = await fetch('/api/inventory/list?' + params.toString());
         if (!response.ok) throw new Error('재고 목록 조회 실패: ' + response.status);
 
         const list = await response.json();
@@ -62,4 +63,13 @@ async function loadInventoryList() {
 function formatDate(value) {
     if (!value) return '-';
     return value.replace('T', ' ').substring(0, 16);
+}
+
+function searchInventory() {
+    const params = new URLSearchParams();
+
+    const ingredientId = document.getElementById('ingredient').value;
+    if (ingredientId) params.append('ingredientId', ingredientId);
+
+    loadInventoryList(params);
 }
