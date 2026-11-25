@@ -8,12 +8,12 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 @Mapper
-public interface MBOrderRepository {
+public interface OrderRepository {
     int insertOrder(OrderRequestDTO orderRequestDTO);
 
-    List<OrderStatusVO> findOrderStatusList();
+    List<OrderStatusVO> getOrderStatusList();
 
-    List<OrderRequestDTO> findOrderList(
+    List<OrderRequestDTO> getOrderList(
             @Param("startDate") String startDate,
             @Param("endDate") String endDate,
             @Param("orderStatus") String orderStatus,
@@ -21,7 +21,7 @@ public interface MBOrderRepository {
             @Param("orderId") Long orderId,
             String dateType);
 
-    List<OrderListVO> findOrderDetail(
+    List<OrderListVO> getOrderDetail(
             @Param("userId") Long userId,
             @Param("startDate") String startDate,
             @Param("endDate") String endDate,
@@ -30,14 +30,12 @@ public interface MBOrderRepository {
 
     List<OrderInfoVO> selectOrderInfo();
 
-    List<OrderDetailVO> selectOrderDetailList(
+    List<OrderDetailListVO> selectOrderDetailList(
             @Param("orderId") Long orderId
     );
 
-
     Long selectOrderTotalPrice(@Param("orderId") Long orderId);
 
-
-    List<OrderProgressVO> findOrderProgress(@Param("storeId") Long storeId);
+    List<OrderProgressVO> getOrderProgress(@Param("storeId") Long storeId);
 
 }

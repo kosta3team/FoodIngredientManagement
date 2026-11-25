@@ -1,16 +1,17 @@
-package kr.swdl.foodingredientmanagement.order.service;
+package kr.swdl.foodingredientmanagement.service;
 
+import com.github.pagehelper.PageInfo;
 import kr.swdl.foodingredientmanagement.dto.OrderDetailRequestDTO;
 import kr.swdl.foodingredientmanagement.dto.OrderRequestDTO;
 import kr.swdl.foodingredientmanagement.dto.OrderStatusCountDTO;
-import kr.swdl.foodingredientmanagement.repository.MBOrderDetailsRepository;
-import kr.swdl.foodingredientmanagement.repository.MBOrderRepository;
+import kr.swdl.foodingredientmanagement.repository.OrderDetailsRepository;
+import kr.swdl.foodingredientmanagement.repository.OrderRepository;
 import kr.swdl.foodingredientmanagement.repository.vo.*;
-import kr.swdl.foodingredientmanagement.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -21,16 +22,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Slf4j
+@Transactional
 public class OrderServiceTest {
 
     @Autowired
     private OrderService orderService;
 
     @Autowired
-    private MBOrderRepository mbOrderRepository;
+    private OrderRepository orderRepository;
 
     @Autowired
-    private MBOrderDetailsRepository mbOrderDetailsRepository;
+    private OrderDetailsRepository orderDetailsRepository;
 
     // 1. 발주 등록
     @Test
@@ -63,8 +65,8 @@ public class OrderServiceTest {
 
         Long orderId = orderService.registerOrder(order, detailList);
 
-        int count = mbOrderDetailsRepository.countOrderDetails(orderId);
-        Long totalPrice = mbOrderRepository.selectOrderTotalPrice(orderId);
+        int count = orderDetailsRepository.countOrderDetails(orderId);
+        Long totalPrice = orderRepository.selectOrderTotalPrice(orderId);
 
         assertNotNull(orderId);
         assertEquals(2, count);
@@ -93,7 +95,20 @@ public class OrderServiceTest {
 //            }
 //        }
 //    }
+    @Test
+    void 발주상세조회_전체상태확인() {
 
+        Long orderId = 13L;
+
+        OrderInfoVO result =
+                orderService.getOrderInfoByOrderId(orderId);
+
+        log.info("발주번호: {}", result.getOrderId());
+        log.info("발주 전체 상태: {}", result.getOrderStatus());
+
+        assertNotNull(result);
+        assertEquals("부분", result.getOrderStatus());
+    }
     @Test
     void 발주_상세_품목_조회() {
 
@@ -101,8 +116,8 @@ public class OrderServiceTest {
         Long orderId = 1L;
 
         // when
-        List<OrderDetailVO> result =
-                orderService.findOrderDetail(orderId);
+        List<OrderDetailListVO> result =
+                orderService.getOrderDetail(orderId);
 
         // then
         log.info("발주 상세 품목 조회 결과: {}", result);
@@ -114,7 +129,7 @@ public class OrderServiceTest {
     @Test
     void 직영점_발주_요청_조회() {
         List<OrderListVO> result =
-                mbOrderRepository.findOrderDetail(
+                orderRepository.getOrderDetail(
                         4L,
                         "2026-11-01 00:00:00",
                         "2026-11-11 00:00:00",
@@ -144,7 +159,7 @@ public class OrderServiceTest {
         Long storeId = 2L;
 
         List<OrderProgressVO> result =
-                mbOrderRepository.findOrderProgress(storeId);
+                orderRepository.getOrderProgress(storeId);
 
         assertNotNull(result);
 
@@ -167,7 +182,7 @@ public class OrderServiceTest {
     @Test
     void 발주_상세_상태_조회() {
 
-        List<OrderStatusVO> result = mbOrderRepository.findOrderStatusList();
+        List<OrderStatusVO> result = orderRepository.getOrderStatusList();
 
         assertNotNull(result, "조회 결과 리스트가 null입니다.");
         assertFalse(result.isEmpty(), "조회 결과가 없습니다.");
@@ -193,24 +208,41 @@ public class OrderServiceTest {
         log.info("거절 전체 상태 조회 : {}", result.getRejectedCount());
         log.info("대기 전체 상태 조회 : {}", result.getWaitingCount());
     }
-
-    // 3. 본사 승인
     @Test
-    void 본사_발주_승인() {
-        int result = orderService.approveOrder(22L);
-        log.info("본사 발주 승인 : {}", result);
-        assertEquals(1, result, "발주 승인 미처리");
+    void 승인_대기_거절_상태_결과값_테스트() {
+
+        // 1. 대기 품목이 하나라도 있으면 대기
+        String result1 = orderService.calculateOrderStatus(
+                List.of("승인", "대기", "거절")
+        );
+
+        // 2. 전부 승인
+        String result2 = orderService.calculateOrderStatus(
+                List.of("승인", "승인")
+        );
+
+        // 3. 전부 거절
+        String result3 = orderService.calculateOrderStatus(
+                List.of("거절", "거절")
+        );
+
+        // 4. 승인과 거절이 섞이면 부분
+        String result4 = orderService.calculateOrderStatus(
+                List.of("승인", "거절")
+        );
+
+        log.info("대기 포함 결과: {}", result1);
+        log.info("전체 승인 결과: {}", result2);
+        log.info("전체 거절 결과: {}", result3);
+        log.info("승인 + 거절 결과: {}", result4);
+
+        assertEquals("대기", result1);
+        assertEquals("승인", result2);
+        assertEquals("거절", result3);
+        assertEquals("부분", result4);
     }
 
-    // 4, 본사 거절
-    @Test
-    void 본사_발주_거절() {
-        int result = orderService.rejectOrder(23L, "곰팡이");
 
-        log.info("본사 거절 결과 : {}", result);
-
-        assertEquals(1, result, "발주 거절 미처리 ");
-    }
 
     // 5. 입고 처리(입고, 제조일자 변경)
     @Test
@@ -221,77 +253,10 @@ public class OrderServiceTest {
         assertEquals(1, result, "입고 날짜가 수정되지 않았습니다.");
     }
 
-    // 1. 존재하지 않는 발주 상세 ID 승인
-    @Test
-    void 존재하지_않는_발주_상세_승인() {
-
-        Long orderDetailId = 1239L;
-
-        int result = orderService.approveOrder(orderDetailId);
-
-        assertEquals(0, result,
-                "존재하지 않는 발주 상세입니다. 수정할 수 없습니다.");
-
-        log.info("승인 실패 테스트 - 상세 ID: {}", orderDetailId);
-        log.info("승인 처리 결과: {}", result);
-    }
 
 
-    // 2. 존재하지 않는 발주 상세 거절
-    @Test
-    void 존재하지_않는_발주_상세_거절() {
-
-        Long orderDetailId = 1239L;
-        String rejectReason = "재고 부족";
-
-        int result = orderService.rejectOrder(
-                orderDetailId,
-                rejectReason
-        );
-
-        assertEquals(0, result,
-                "존재하지 않는 발주 상세입니다. 거절할 수 없습니다.");
-
-        log.info("거절 실패 테스트 - 상세 ID: {}", orderDetailId);
-        log.info("거절 처리 결과: {}", result);
-    }
 
 
-    // 3. 존재하지 않는 발주 상세 입고일자 수정
-    @Test
-    void 존재하지_않는_발주_상세_입고_처리() {
-
-        Long orderDetailId = 9999799L;
-        String manufactureAt = "2026-11-17";
-        String storeAt = "2026-11-19";
-
-        int result = orderService.updateOrderDate(
-                orderDetailId,
-                manufactureAt,
-                storeAt
-        );
-
-        assertEquals(0, result,
-                "존재하지 않는 발주 상세입니다. 입고될 수 없습니다.");
-
-        log.info("입고 처리 실패 테스트 - 상세 ID: {}", orderDetailId);
-        log.info("입고 처리 결과: {}", result);
-    }
-
-    // 4. 본사 거절
-    @Test
-    void 본사_발주_거절_() {
-
-        Long orderDetailId = 2L; //
-        String rejectReason = "곰팡이";
-
-        int result = orderService.rejectOrder(orderDetailId, rejectReason);
-
-        log.info("발주 거절 - 상세 ID: {}", orderDetailId);
-        log.info("반려 사유: {}", rejectReason);
-        log.info("반려 처리 결과: {}", result);
-
-    }
 
     // 5. 입고 처리 -> 제조일자 + 식재료 기간
 
@@ -315,4 +280,56 @@ public class OrderServiceTest {
         log.info("수정 결과: {}", result);
 
     }
+    @Test
+    void 발주목록_페이지네이션_조회() {
+
+        int page = 2;
+        int size = 10;
+
+        PageInfo<OrderRequestDTO> result =
+                orderService.getOrderList(
+                        page,
+                        size,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        "orderAt"
+                );
+
+        log.info("현재 페이지 : {}", result.getPageNum());
+        log.info("페이지당 조회 건수 : {}", result.getPageSize());
+        log.info("전체 데이터 : {}", result.getTotal());
+        log.info("전체 페이지 : {}", result.getPages());
+        log.info("현재 페이지 데이터 : {}", result.getList().size());
+
+        assertEquals(page, result.getPageNum());
+        assertEquals(size, result.getPageSize());
+        assertTrue(result.getList().size() <= size);
+    }
+
+    @Test
+    void 승인과거절이섞인발주조회() {
+        // given
+        Long userId = 2L;
+
+        // when
+        List<OrderListVO> result =
+                orderRepository.getOrderDetail(
+                        userId, null, null, "orderAt"
+                );
+
+        // then
+        OrderListVO order = result.stream()
+                .filter(item -> item.getOrderId().equals(13L))
+                .findFirst()
+                .orElseThrow();
+
+        log.info("발주번호: {}", order.getOrderId());
+        log.info("발주 전체 상태: {}", order.getOrderStatus());
+
+        assertEquals("부분", order.getOrderStatus());
+    }
 }
+

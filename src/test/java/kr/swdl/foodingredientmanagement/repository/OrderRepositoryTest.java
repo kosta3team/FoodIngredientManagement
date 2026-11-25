@@ -1,9 +1,7 @@
-package kr.swdl.foodingredientmanagement.order.repository;
+package kr.swdl.foodingredientmanagement.repository;
 
 import kr.swdl.foodingredientmanagement.dto.OrderRequestDTO;
 import kr.swdl.foodingredientmanagement.dto.OrderStatusCountDTO;
-import kr.swdl.foodingredientmanagement.repository.MBOrderDetailsRepository;
-import kr.swdl.foodingredientmanagement.repository.MBOrderRepository;
 import kr.swdl.foodingredientmanagement.repository.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -13,19 +11,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Slf4j
-public class MBOrderRepositoryTest {
+public class OrderRepositoryTest {
 
     @Autowired
-    private MBOrderRepository mbOrderRepository;
+    private OrderRepository orderRepository;
 
     @Autowired
-    private MBOrderDetailsRepository mbOrderDetailsRepository;
+    private OrderDetailsRepository orderDetailsRepository;
 
     @Test
     void 발주_등록(){
@@ -38,14 +37,14 @@ public class MBOrderRepositoryTest {
                 .storeAt(Timestamp.valueOf(LocalDateTime.now()))
                 .storeId(1L)
                 .build();
-        int result = mbOrderRepository.insertOrder(orderRequestDTO);
+        int result = orderRepository.insertOrder(orderRequestDTO);
         log.info("발주 등록 결과 : {} 건",result);
         assertEquals(1, result);
     }
 
     @Test
     void 발주_상태_전체_조회(){
-        OrderStatusCountDTO result = mbOrderDetailsRepository.countOrderStatus();
+        OrderStatusCountDTO result = orderDetailsRepository.countOrderStatus();
 
         log.info("대기 : {}", result.getWaitingCount());
         log.info("승인 : {}", result.getApprovedCount());
@@ -74,7 +73,7 @@ public class MBOrderRepositoryTest {
     void 발주_상태_조회() {
 
         List<OrderStatusVO> result =
-                mbOrderRepository.findOrderStatusList();
+                orderRepository.getOrderStatusList();
 
         log.info("조회 결과 개수: {}", result.size());
 
@@ -111,7 +110,7 @@ public class MBOrderRepositoryTest {
     @Test
     void 직영점_발주_요청_조회() {
         List<OrderListVO> result =
-                mbOrderRepository.findOrderDetail(
+                orderRepository.getOrderDetail(
                         1L,
                         "2026-11-01 00:00:00",
                         "2026-11-11 00:00:00",
@@ -253,7 +252,7 @@ public class MBOrderRepositoryTest {
     void 발주_기본_정보_조회(){
 
         List<OrderInfoVO> result =
-                mbOrderRepository.selectOrderInfo();
+                orderRepository.selectOrderInfo();
 
         for (OrderInfoVO detail : result){
             log.info("발주번호 {}", detail.getOrderId() + "의 정보 ");
@@ -296,14 +295,14 @@ public class MBOrderRepositoryTest {
     }
     @Test
     void 발주_상세_승인(){
-        int result = mbOrderDetailsRepository.approveOrderDetail(34L);
+        int result = orderDetailsRepository.approveOrderDetail(34L);
         log.info("승인 처리 결과 : {}",result);
         assertEquals(1, result);
     }
 
     @Test
     void 발주_상세_거절_(){
-        int result = mbOrderDetailsRepository.rejectOrderDetail(
+        int result = orderDetailsRepository.rejectOrderDetail(
                 34L,"박스가 비에 젖어 상태불량"
         );
         log.info("거절 처리 결과 : {}", result);
@@ -312,7 +311,7 @@ public class MBOrderRepositoryTest {
 
     @Test
     void 직영점_입고_제조_변경(){
-        int result = mbOrderDetailsRepository.updateOrderDetailsDates(
+        int result = orderDetailsRepository.updateOrderDetailsDates(
                 34L,"2026-11-17","2026-11-19"
         );
         log.info("입고, 제조일 변경 결과 : {}", result);
@@ -325,7 +324,7 @@ public class MBOrderRepositoryTest {
         Long userId = 2L;
 
         List<OrderListVO> result =
-                mbOrderRepository.findOrderDetail(
+                orderRepository.getOrderDetail(
                         userId, null, null, null
                 );
 
@@ -341,29 +340,57 @@ public class MBOrderRepositoryTest {
 
         assertNotNull(result);
     }
+    @Test
+    void 동일한_발주상세_동시승인_테스트() throws Exception {
 
-//    @Test
-//    void 본사_매장기준_발주목록_조회() {
-//
-//        List<OrderRequestDTO> result = mbOrderRepository.findOrderList(
-//                null,
-//                null,
-//                null,
-//                null,
-//                null,
-//                dateType);
-//
-//        log.info("조회된 발주 건수: {}", result.size());
-//
-//        assertNotNull(result);
-//
-//        for (OrderRequestDTO order : result) {
-//            log.info("발주번호: {}", order.getOrderId());
-//            log.info("매장번호: {}", order.getStoreId());
-//            log.info("매장명: {}", order.getStoreName());
-//
-//            assertNotNull(order.getOrderId());
-//            assertNotNull(order.getStoreId());
-//        }
-//    }
+        Long orderDetailId = 35L; // 실제 대기 상태인 테스트 데이터 ID로 변경
+
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+
+        CountDownLatch ready = new CountDownLatch(2);
+        CountDownLatch start = new CountDownLatch(1);
+
+        Callable<Integer> approvalTask = () -> {
+            ready.countDown();
+
+            // 두 스레드가 동시에 시작할 수 있도록 대기
+            start.await();
+
+            return orderDetailsRepository.approveOrderDetail(orderDetailId);
+        };
+
+        Future<Integer> futureA = executor.submit(approvalTask);
+        Future<Integer> futureB = executor.submit(approvalTask);
+
+        // 두 스레드 모두 준비 완료까지 대기
+        ready.await();
+
+        // 두 승인 요청 동시 시작
+        start.countDown();
+
+        int resultA = futureA.get();
+        int resultB = futureB.get();
+
+        executor.shutdown();
+
+        log.info("요청 A 승인 결과 : {}", resultA);
+        log.info("요청 B 승인 결과 : {}", resultB);
+        log.info("총 변경 행 수 : {}", resultA + resultB);
+
+        assertEquals(1, resultA + resultB);
+    }
+
+    @Test
+    void 발주번호로_발주_기본정보_조회() {
+
+        Long orderId = 3L;
+
+        OrderInfoVO result =
+                orderDetailsRepository.selectOrderInfoByOrderId(orderId);
+
+        log.info("발주 기본정보 조회 결과: {}", result);
+
+        assertNotNull(result);
+        assertEquals(orderId, result.getOrderId());
+    }
 }

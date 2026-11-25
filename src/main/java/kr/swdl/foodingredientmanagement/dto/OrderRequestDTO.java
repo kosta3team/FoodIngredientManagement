@@ -23,4 +23,8 @@ public class OrderRequestDTO {
     private String firstIngredientName;
     private Long ingredientCount;
     private Timestamp storeAt;
+    private String orderStatus;
+
+    private Integer size;
+    private Integer page;
 }
