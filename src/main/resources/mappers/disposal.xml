@@ -6,42 +6,40 @@
 
     <select id="findAll"
             resultType="kr.swdl.foodingredientmanagement.repository.vo.DisposalVO">
-        SELECT
-            d.disposal_id            AS disposalId,
-            d.disposal_unit          AS disposalUnit,
-            d.disposal_req_at        AS disposalReqAt,
-            d.disposal_app_at        AS disposalAppAt,
-            d.req_user_id            AS reqUserId,
-            d.disposal_status        AS disposalStatus,
-            d.processing_method      AS processingMethod,
-            d.disposal_type          AS disposalType,
-            d.disposal_reason        AS disposalReason,
-            d.disposal_detail_reason AS disposalDetailReason,
-            d.reject_reason          AS rejectReason,
-            d.disposal_quantity      AS disposalQuantity,
-            d.disposal_price         AS disposalPrice,
-            d.order_detail_id        AS orderDetailId
+        SELECT d.disposal_id            AS disposalId,
+               d.disposal_unit          AS disposalUnit,
+               d.disposal_req_at        AS disposalReqAt,
+               d.disposal_app_at        AS disposalAppAt,
+               d.req_user_id            AS reqUserId,
+               d.disposal_status        AS disposalStatus,
+               d.processing_method      AS processingMethod,
+               d.disposal_type          AS disposalType,
+               d.disposal_reason        AS disposalReason,
+               d.disposal_detail_reason AS disposalDetailReason,
+               d.reject_reason          AS rejectReason,
+               d.disposal_quantity      AS disposalQuantity,
+               d.disposal_price         AS disposalPrice,
+               d.order_detail_id        AS orderDetailId
         FROM disposals d
     </select>
 
     <!-- 폐기조회 -->
     <select id="findById"
             resultType="kr.swdl.foodingredientmanagement.repository.vo.DisposalVO">
-        SELECT
-            d.disposal_id            AS disposalId,
-            d.disposal_unit          AS disposalUnit,
-            d.disposal_req_at        AS disposalReqAt,
-            d.disposal_app_at        AS disposalAppAt,
-            d.req_user_id            AS reqUserId,
-            d.disposal_status        AS disposalStatus,
-            d.processing_method      AS processingMethod,
-            d.disposal_type          AS disposalType,
-            d.disposal_reason        AS disposalReason,
-            d.disposal_detail_reason AS disposalDetailReason,
-            d.reject_reason          AS rejectReason,
-            d.disposal_quantity      AS disposalQuantity,
-            d.disposal_price         AS disposalPrice,
-            d.order_detail_id        AS orderDetailId
+        SELECT d.disposal_id            AS disposalId,
+               d.disposal_unit          AS disposalUnit,
+               d.disposal_req_at        AS disposalReqAt,
+               d.disposal_app_at        AS disposalAppAt,
+               d.req_user_id            AS reqUserId,
+               d.disposal_status        AS disposalStatus,
+               d.processing_method      AS processingMethod,
+               d.disposal_type          AS disposalType,
+               d.disposal_reason        AS disposalReason,
+               d.disposal_detail_reason AS disposalDetailReason,
+               d.reject_reason          AS rejectReason,
+               d.disposal_quantity      AS disposalQuantity,
+               d.disposal_price         AS disposalPrice,
+               d.order_detail_id        AS orderDetailId
         FROM disposals d
         WHERE d.disposal_id = #{disposalId}
     </select>
@@ -99,7 +97,7 @@
     </update>
 
     <!-- 요청 상태에서만 삭제 -->
-    <delete id="deleteDisposal" parameterType="Long">
+    <delete id="deleteDisposalById" parameterType="Long">
         DELETE
         FROM disposals
         WHERE disposal_id = #{disposalId}
@@ -107,8 +105,10 @@
     </delete>
 
 
-    <select id="getHqDisposals" parameterType="kr.swdl.foodingredientmanagement.dto.HqDisposalSerachFilterDTO"
+    <select id="getHqDisposals"
+            parameterType="kr.swdl.foodingredientmanagement.dto.HqDisposalSerachFilterDTO"
             resultType="kr.swdl.foodingredientmanagement.repository.vo.HQDisposalListVO">
+
         SELECT
         d.disposal_req_at AS disposalReqAt,
         s.store_name AS storeName,
@@ -120,47 +120,73 @@
         d.disposal_status AS disposalStatus,
         dai.check_at AS checkAt
         FROM disposals d
-        LEFT OUTER JOIN order_details AS od
+        LEFT OUTER JOIN order_details od
         ON d.order_detail_id = od.order_detail_id
         LEFT OUTER JOIN ingredients i
         ON od.ingredient_id = i.ingredient_id
-        LEFT OUTER JOIN orders AS o
+        LEFT OUTER JOIN orders o
         ON od.order_id = o.order_id
         LEFT OUTER JOIN stores s
         ON o.store_id = s.store_id
         LEFT OUTER JOIN disposal_app_infos dai
         ON dai.disposal_id = d.disposal_id
+
         <where>
-            <if test="userId != null">
-                AND s.user_id = #{userId}
-            </if>
+            <!-- 담당 직영점 조회 범위 제한 -->
+            <choose>
+                <when test="storeIds != null and storeIds.size() > 0">
+                    AND s.store_id IN
+                    <foreach collection="storeIds"
+                             item="storeId"
+                             open="("
+                             separator=","
+                             close=")">
+                        #{storeId}
+                    </foreach>
+                </when>
+                <otherwise>
+                    AND 1 = 0
+                </otherwise>
+            </choose>
+            <!-- 직영점명 -->
             <if test="storeName != null and storeName != ''">
                 AND s.store_name LIKE CONCAT('%', #{storeName}, '%')
             </if>
+
+            <!-- 식재료명 -->
             <if test="ingredientName != null and ingredientName != ''">
                 AND i.ingredient_name LIKE CONCAT('%', #{ingredientName}, '%')
             </if>
+
+            <!-- 폐기 처리 상태 -->
             <if test="disposalStatus != null and disposalStatus != ''">
                 AND d.disposal_status = #{disposalStatus}
             </if>
-            <if test="startDate != null and endDate != null">
+
+            <!-- 요청 시작일 -->
+            <if test="startDate != null and startDate != ''">
                 AND d.disposal_req_at &gt;= #{startDate}
+            </if>
+            <!-- 요청 종료일 -->
+            <if test="endDate != null and endDate != ''">
                 AND d.disposal_req_at &lt; DATE_ADD(#{endDate}, INTERVAL 1 DAY)
             </if>
+            <!-- 폐기 유형 -->
             <if test="disposalType != null and disposalType != ''">
                 AND d.disposal_type = #{disposalType}
             </if>
+            <!-- 폐기 처리 방식 -->
             <if test="processingMethod != null and processingMethod != ''">
                 AND d.processing_method = #{processingMethod}
             </if>
         </where>
         ORDER BY d.disposal_req_at
         <choose>
-            <when test="sortType != null and sortType.equalsIgnoreCase('DESC')">
-                DESC
+            <when test="sortType != null and sortType.equalsIgnoreCase('ASC')">
+                ASC
             </when>
             <otherwise>
-                ASC
+                DESC
             </otherwise>
         </choose>
     </select>
@@ -183,7 +209,7 @@
           AND CURDATE() + INTERVAL 1 DAY > disposal_app_at
     </select>
 
-    <select id="countNeedToConfirmByStoreId" parameterType="int" resultType="int">
+    <select id="countNeedToConfirmByStoreId" resultType="int">
         SELECT COUNT(*)
         FROM disposals d,
              order_details od,
@@ -200,7 +226,7 @@
             d.disposal_status = '승인'
           AND (dai.check_at IS NULL OR -- 폐기 확인이 안된 경우
                dai.check_user_id IS NULL OR -- 폐기 확인이 안된 경우
-               dai.disposal_img IS NULL); -- 폐기 확인이 안된 경우
+               dai.disposal_img IS NULL) -- 폐기 확인이 안된 경우
     </select>
 
     <select id="getStoreDisposals" parameterType="kr.swdl.foodingredientmanagement.dto.StoreDisposalSerachFilterDTO"
@@ -252,4 +278,11 @@
             </otherwise>
         </choose>
     </select>
+
+    <select id="getStoreIdsByHQId">
+        SELECT store_id
+        FROM stores
+        WHERE user_id = #{userId}
+    </select>
+
 </mapper>

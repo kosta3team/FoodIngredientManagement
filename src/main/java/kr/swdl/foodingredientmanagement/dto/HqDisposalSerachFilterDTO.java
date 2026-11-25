@@ -3,6 +3,8 @@ package kr.swdl.foodingredientmanagement.dto;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Builder
 public class HqDisposalSerachFilterDTO {
@@ -15,5 +17,6 @@ public class HqDisposalSerachFilterDTO {
     private String processingMethod;
     private String sortType;
     private Long userId;
-    private int pageCnt;
+
+    private List<Long> storeIds;
 }

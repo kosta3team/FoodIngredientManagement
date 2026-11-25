@@ -3,6 +3,7 @@ package kr.swdl.foodingredientmanagement.repository;
 import kr.swdl.foodingredientmanagement.dto.IngredientDetailDTO;
 import kr.swdl.foodingredientmanagement.dto.IngredientInsertDTO;
 import kr.swdl.foodingredientmanagement.dto.IngredientListDTO;
+import kr.swdl.foodingredientmanagement.repository.vo.IngredientVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -37,4 +38,5 @@ public interface MBIngredientRepository {
     // 4. 식재료 정보 삭제 (본사)
     int deleteIngredientDetail(@Param("ids") List<Long> ids);
 
+    IngredientVO findIngredientById(Long ingredientId);
 }

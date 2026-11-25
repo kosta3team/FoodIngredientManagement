@@ -156,7 +156,6 @@
     </select>
 
 
-
     <select id="findById" resultType="kr.swdl.foodingredientmanagement.repository.vo.OrderDetailVO">
         SELECT
             order_detail_id AS orderDetailId,
@@ -175,6 +174,15 @@
         WHERE order_detail_id = #{orderDetailId}
           AND order_status = '승인'
     </select>
+
+
+    <update id="updateCurrentQuantityById">
+        UPDATE order_details
+        SET current_quantity = #{newQuantity}
+        WHERE order_detail_id = #{orderDetailId}
+    </update>
+
+
 
 
 </mapper>

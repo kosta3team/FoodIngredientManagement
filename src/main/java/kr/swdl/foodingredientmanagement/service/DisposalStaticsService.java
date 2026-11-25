@@ -3,6 +3,7 @@ package kr.swdl.foodingredientmanagement.service;
 import kr.swdl.foodingredientmanagement.dto.*;
 import kr.swdl.foodingredientmanagement.repository.DisposalStatisticsRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -10,7 +11,8 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class DisposalstatisticsService {
+public class DisposalStaticsService {
+
     private final DisposalStatisticsRepository disposalStatisticsRepository;
 
     public double getOrderDisposalRateUntilNow(LocalDate startDate, LocalDate endDate) {

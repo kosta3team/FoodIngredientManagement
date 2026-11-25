@@ -120,4 +120,26 @@
         </foreach>
     </delete>
 
+    <select id="findIngredientById" resultType="kr.swdl.foodingredientmanagement.repository.vo.IngredientVO">
+        SELECT
+        ingredient_id AS ingredientId,
+        ingredient_name AS ingredientName,
+        major_category_name AS majorCategoryName,
+        sub_category_name AS subCategoryName,
+        order_unit AS orderUnit,
+        capacity AS capacity,
+        capacity_unit AS capacityUnit,
+        storage_type AS storageType,
+        supply_price AS supplyPrice,
+        supply_quantity AS supplyQuantity,
+        management_method AS managementMethod,
+        expiration_period AS expirationPeriod,
+        consumption_period AS consumptionPeriod,
+        summer_consumption_period AS summerConsumptionPeriod,
+        usable_flag AS usableFlag,
+        regist_at AS registAt
+        FROM ingredients
+        WHERE ingredient_id = #{ingredientId}
+    </select>
+
 </mapper>
