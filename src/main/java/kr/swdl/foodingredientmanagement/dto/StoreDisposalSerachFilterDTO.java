@@ -12,6 +12,5 @@ public class StoreDisposalSerachFilterDTO {
     private String startDate;
     private String endDate;
     private String sortType;
-    private int pageCnt;
     private Long storeId;
 }

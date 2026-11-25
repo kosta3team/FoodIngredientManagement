@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class TestController {
 
-    @GetMapping("/hqDisposalList")
+    @GetMapping("/test/hqDisposalList")
     public String hq(){
         return "disposal/hqDisposalList";
     }
