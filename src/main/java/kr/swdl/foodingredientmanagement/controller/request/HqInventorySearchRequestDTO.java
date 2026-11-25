@@ -14,7 +14,7 @@ import java.time.LocalDate;
  */
 @Data
 public class HqInventorySearchRequestDTO {
-    private Long ingredientId;
+    private String ingredientName;
     private String storeName;
     @DateTimeFormat(pattern = "yyyy-MM-dd") private LocalDate storeStartDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd") private LocalDate storeEndDate;

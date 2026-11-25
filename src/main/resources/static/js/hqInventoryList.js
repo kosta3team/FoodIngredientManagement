@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    loadIngredientOptions();
     loadInventoryList();
     document.getElementById('searchBtn').addEventListener('click', searchInventory);
 
@@ -15,25 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-
-// 식재료명 드롭다운
-async function loadIngredientOptions() {
-    const select = document.getElementById('ingredient');
-    try {
-        const response = await fetch('/api/inventory/ingredients');
-        if (!response.ok) throw new Error('식재료 목록 조회 실패: ' + response.status);
-
-        const list = await response.json();
-        list.forEach(item => {
-            const option = document.createElement('option');
-            option.value = item.ingredientId;
-            option.textContent = item.ingredientName;
-            select.appendChild(option);
-        });
-    } catch (e) {
-        console.error(e);
-    }
-}
 
 // 재고 목록 조회
 async function loadInventoryList(params = new URLSearchParams()) {
@@ -85,8 +65,8 @@ function formatDate(value) {
 function searchInventory() {
     const params = new URLSearchParams();
 
-    const ingredientId = document.getElementById('ingredient').value;
-    if (ingredientId) params.append('ingredientId', ingredientId);
+    const ingredientName = document.getElementById('ingredientName').value.trim();
+    if (ingredientName) params.append('ingredientName', ingredientName);
 
     const storeName = document.getElementById('storeName').value.trim();
     if (storeName) params.append('storeName', storeName);

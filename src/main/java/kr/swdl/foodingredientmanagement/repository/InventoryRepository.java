@@ -14,7 +14,7 @@ import java.util.List;
 public interface InventoryRepository {
   List<InventoryListDTO> getInventoryList();
 
-  List<InventoryListDTO> getInventoryList(@Param("ingredientId") Long ingredientId,
+  List<InventoryListDTO> getInventoryList(@Param("ingredientName") String ingredientName,
                                            @Param("storeName") String storeName,
                                            @Param("storeStartDate") LocalDate storeStartDate,
                                            @Param("storeEndDate") LocalDate storeEndDate,

@@ -26,20 +26,24 @@ public class InventoryService {
     }
 
     // 본사 재고 목록 조회 (식재료명, 직영점명, 입고일시, 사용기한)
-    public List<InventoryListDTO> getInventoryList(Long ingredientId,
+    public List<InventoryListDTO> getInventoryList(String ingredientName,
                                                     String storeName,
                                                     LocalDate storeStartDate,
                                                     LocalDate storeEndDate,
                                                     LocalDate manageStartDate,
                                                     LocalDate manageEndDate) {
         // 직영점명 앞뒤 공백 제거, 빈 값이면 조건 제외
-        if (storeName != null) {
-            storeName = storeName.trim();
-            if (storeName.isEmpty()) storeName = null;
-        }
-        return inventoryRepository.getInventoryList(ingredientId, storeName,
+        ingredientName = trimToNull(ingredientName);
+        storeName = trimToNull(storeName);
+
+        return inventoryRepository.getInventoryList(ingredientName, storeName,
                 storeStartDate, storeEndDate, manageStartDate, manageEndDate);
     }
+
+    private String trimToNull(String value) {
+        if (value == null) return null;
+        value = value.trim();
+        return value.isEmpty() ? null : value; }
 
     // 직영점 재고 목록 조회 (분류, 식재료명 필터)
     public List<InventoryListDTO> getStoreInventoryList(Long storeId,
@@ -71,7 +75,7 @@ public class InventoryService {
     // 본사 재고 목록 검색
     public List<HqInventoryListResponseDTO> getHqInventoryList(HqInventorySearchRequestDTO request) {
         List<InventoryListDTO> list = getInventoryList(
-                request.getIngredientId(),
+                request.getIngredientName(),
                 request.getStoreName(),
                 request.getStoreStartDate(),
                 request.getStoreEndDate(),

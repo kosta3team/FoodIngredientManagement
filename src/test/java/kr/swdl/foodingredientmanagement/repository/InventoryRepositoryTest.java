@@ -38,7 +38,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 본사_식재료명_재고_목록_조회(){
-        List<InventoryListDTO> list = inventoryRepository.getInventoryList(1L, null, null, null, null, null);
+        List<InventoryListDTO> list = inventoryRepository.getInventoryList("계란", null, null, null, null, null);
 
         assertThat(list).isNotEmpty();
 
@@ -110,7 +110,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 본사_식재료명_직영점명_재고_목록_조회(){
-        List<InventoryListDTO> list = inventoryRepository.getInventoryList(14L, "대전둔산", null, null, null, null);
+        List<InventoryListDTO> list = inventoryRepository.getInventoryList("불갈비", "대전둔산", null, null, null, null);
 
         assertThat(list).isNotEmpty();
 
@@ -128,7 +128,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 본사_식재료명_입고일시_재고_목록_조회(){
-        List<InventoryListDTO> list = inventoryRepository.getInventoryList(14L, null, LocalDate.of(2026, 11, 1), LocalDate.of(2026, 11, 30), null, null);
+        List<InventoryListDTO> list = inventoryRepository.getInventoryList("불갈비", null, LocalDate.of(2026, 11, 1), LocalDate.of(2026, 11, 30), null, null);
 
         assertThat(list).isNotEmpty();
 
@@ -146,7 +146,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 본사_식재료명_사용기한_재고_목록_조회(){
-        List<InventoryListDTO> list = inventoryRepository.getInventoryList(14L, null, null, null, LocalDate.of(2026, 11, 1), LocalDate.of(2026, 11, 30));
+        List<InventoryListDTO> list = inventoryRepository.getInventoryList("불갈비", null, null, null, LocalDate.of(2026, 11, 1), LocalDate.of(2026, 11, 30));
 
         assertThat(list).isNotEmpty();
 
@@ -201,7 +201,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 본사_식재료명_직영점명_입고일시_재고_목록_조회(){
-        List<InventoryListDTO> list = inventoryRepository.getInventoryList(14L, "대전둔산", LocalDate.of(2026, 11, 1), LocalDate.of(2026, 11, 30) ,null, null);
+        List<InventoryListDTO> list = inventoryRepository.getInventoryList("불갈비", "대전둔산", LocalDate.of(2026, 11, 1), LocalDate.of(2026, 11, 30) ,null, null);
 
         assertThat(list).isNotEmpty();
 
@@ -219,7 +219,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 본사_식재료명_직영점명_사용기한_재고_목록_조회(){
-        List<InventoryListDTO> list = inventoryRepository.getInventoryList(14L, "강남", null, null ,LocalDate.of(2026, 11, 1), LocalDate.of(2026, 11, 30));
+        List<InventoryListDTO> list = inventoryRepository.getInventoryList("불갈비", "강남", null, null ,LocalDate.of(2026, 11, 1), LocalDate.of(2026, 11, 30));
         assertThat(list).isNotEmpty();
 
         for(InventoryListDTO inventoryListDTO : list){

@@ -31,7 +31,7 @@
                 return res.json();
             })
             .then(function (d) {
-                title.textContent = d.storeName + ' 재고 상세조회';  
+                title.textContent = d.storeName + ' 재고 상세조회';
                 body.innerHTML = renderDetail(d);
             })
             .catch(function () {

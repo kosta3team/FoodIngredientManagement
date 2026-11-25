@@ -33,7 +33,7 @@ public class InventoryServiceTest {
 
     @Test
     public void 본사_식재료명_재고_목록_조회_성공() {
-        List<InventoryListDTO> list = inventoryService.getInventoryList(14L, null, null, null, null, null);
+        List<InventoryListDTO> list = inventoryService.getInventoryList("불갈비", null, null, null, null, null);
 
         Assertions.assertFalse(list.isEmpty());
         for (InventoryListDTO info : list) {
@@ -44,7 +44,7 @@ public class InventoryServiceTest {
 
     @Test
     public void 본사_식재료명_재고_목록_조회_실패() {
-        List<InventoryListDTO> list = inventoryService.getInventoryList(9999L, null, null, null, null, null);
+        List<InventoryListDTO> list = inventoryService.getInventoryList("999", null, null, null, null, null);
         Assertions.assertTrue(list.isEmpty());
     }
 

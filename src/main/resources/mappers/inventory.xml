@@ -31,8 +31,8 @@
         WHERE od.current_quantity > 0
         AND od.order_status = '승인'
         AND od.store_at IS NOT NULL
-        <if test="ingredientId != null">
-            AND i.ingredient_id = #{ingredientId}
+        <if test="ingredientName != null and ingredientName != ''">
+            AND i.ingredient_name LIKE CONCAT('%', #{ingredientName}, '%')
         </if>
         <if test="storeName != null and storeName != ''">
             AND s.store_name LIKE CONCAT('%', #{storeName}, '%')
