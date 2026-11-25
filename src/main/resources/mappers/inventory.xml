@@ -163,7 +163,11 @@
     </select>
 
 
-
+    <update id="updateCurrentQuantityById">
+        UPDATE order_details
+        SET current_quantity = #{newQuantity}
+        WHERE order_detail_id = #{orderDetailId}
+    </update>
 
 
 
