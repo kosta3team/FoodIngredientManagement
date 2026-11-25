@@ -1,14 +1,14 @@
 package kr.swdl.foodingredientmanagement.exception;
 
 public enum ErrorDomain {
-    DISPOSAL_APP_INFOS,
-    DISPOSAL_CATEGORIES,
-    DISPOSALS,
-    INGREDIENT_CATEGORIES,
-    INGREDIENTS,
-    INVENTORY_USAGES,
-    ORDER_DETAILS,
-    ORDERS,
-    STORES,
-    USERS;
+    DISPOSAL_APP_INFO,
+    DISPOSAL_CATEGORY,
+    DISPOSAL,
+    INGREDIENT_CATEGORY,
+    INGREDIENT,
+    INVENTORY_USAGE,
+    ORDER_DETAIL,
+    ORDER,
+    STORE,
+    USER;
 }

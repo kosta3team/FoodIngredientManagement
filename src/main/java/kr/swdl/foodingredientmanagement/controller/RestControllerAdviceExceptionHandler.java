@@ -10,10 +10,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice
-@Order(Ordered.LOWEST_PRECEDENCE)
+import java.util.NoSuchElementException;
+
+@RestControllerAdvice(annotations = RestController.class)
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class RestControllerAdviceExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
@@ -21,8 +24,14 @@ public class RestControllerAdviceExceptionHandler {
         return ResponseEntity.status(mappingExceptionToHttpStatus(e)).body(e.getClass().toString());
     }
 
-    private HttpStatus mappingExceptionToHttpStatus(BusinessException e) {
-        if (e instanceof NotFoundException) {
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<?> handleBusinessException(NoSuchElementException e) {
+        return ResponseEntity.status(mappingExceptionToHttpStatus(e)).body(e.getClass().toString());
+    }
+
+    private HttpStatus mappingExceptionToHttpStatus(RuntimeException e) {
+        if (e instanceof NotFoundException
+        || e instanceof NoSuchElementException) {
             return HttpStatus.NOT_FOUND;
         }
         if (e instanceof CreateFailedException
