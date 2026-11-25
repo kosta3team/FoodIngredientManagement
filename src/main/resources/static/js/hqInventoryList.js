@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    loadInventoryList();
     document.getElementById('searchBtn').addEventListener('click', searchInventory);
 
     // 기간선택 전에는 날짜 입력 막기

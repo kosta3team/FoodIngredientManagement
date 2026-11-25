@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1" name="viewport"/>
@@ -28,14 +28,18 @@
               <div class="col-md-3">
                 <div class="d-flex align-items-center gap-2">
                   <label class="form-label mb-0 text-nowrap" for="storeName">직영점명</label>
-                  <input class="form-control" id="storeName" name="storeName" type="text" placeholder="직영점명을 입력하세요"/>
+                  <input class="form-control" id="storeName" name="storeName" type="text"
+                         placeholder="직영점명을 입력하세요"
+                         th:value="${filter != null ? filter.storeName : null}"/>
                 </div>
               </div>
 
               <div class="col-md-2">
                 <div class="d-flex align-items-center gap-2">
                   <label class="form-label mb-0 text-nowrap" for="ingredientName">식재료명</label>
-                  <input class="form-control" id="ingredientName" name="ingredientName" type="text" placeholder="식재료명을 입력하세요"/>
+                  <input class="form-control" id="ingredientName" name="ingredientName" type="text"
+                         placeholder="식재료명을 입력하세요"
+                         th:value="${filter != null ? filter.ingredientName : null}"/>
                 </div>
               </div>
 
@@ -103,8 +107,25 @@
                 </thead>
 
                 <tbody id="inventoryTableBody">
-                <tr>
-                  <td colspan="10" class="text-center text-secondary py-4">불러오는 중...</td>
+                <tr th:each="item, stat : ${list}">
+                  <td th:text="${stat.count}">1</td>
+                  <td th:text="${item.storeName}">—</td>
+                  <td th:text="${item.ingredientName}">—</td>
+                  <td th:text="${item.storageType}">—</td>
+                  <td th:text="|${item.currentQuantity} ${item.orderUnit}|">0</td>
+                  <td th:text="${item.storeAt != null ? #temporals.format(item.storeAt, 'yyyy-MM-dd HH:mm') : '-'}">-</td>
+                  <td th:text="${item.consumptionAt != null ? #temporals.format(item.consumptionAt, 'yyyy-MM-dd HH:mm') : '-'}">-</td>
+                  <td th:text="${item.userName ?: '-'}">-</td>
+                  <td>
+                    <button type="button" class="btn btn-outline-primary btn-sm btn-detail"
+                            th:data-store-id="${item.storeId}"
+                            th:data-ingredient-id="${item.ingredientId}"
+                            th:data-order-detail-id="${item.orderDetailId}">상세 보기</button>
+                  </td>
+                  <td><a class="btn btn-outline-secondary btn-sm" href="#">폐기 등록</a></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(list)}">
+                  <td colspan="10" class="text-center text-secondary py-4">조회된 재고가 없습니다.</td>
                 </tr>
                 </tbody>
 
