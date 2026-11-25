@@ -99,7 +99,7 @@
     </update>
 
     <!-- 요청 상태에서만 삭제 -->
-    <delete id="deleteDisposal" parameterType="Long">
+    <delete id="deleteDisposalById" parameterType="Long">
         DELETE
         FROM disposals
         WHERE disposal_id = #{disposalId}
