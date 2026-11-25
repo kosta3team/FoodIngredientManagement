@@ -3,7 +3,8 @@ package kr.swdl.foodingredientmanagement.service;
 import kr.swdl.foodingredientmanagement.dto.IngredientDetailDTO;
 import kr.swdl.foodingredientmanagement.dto.IngredientInsertDTO;
 import kr.swdl.foodingredientmanagement.dto.IngredientListDTO;
-import kr.swdl.foodingredientmanagement.exception.CreateFailException;
+import kr.swdl.foodingredientmanagement.exception.CreateFailedException;
+import kr.swdl.foodingredientmanagement.exception.ErrorDomain;
 import kr.swdl.foodingredientmanagement.repository.MBIngredientRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +50,7 @@ public class IngredientService {
 
         int result = mbIngredientRepository.addIngredientDetail(ingredientInsertDTO);
         if (result != 1) {
-            throw new CreateFailException("식재료 등록에 실패!!!!!");
+            throw new CreateFailedException(ErrorDomain.INGREDIENT ,"식재료 등록에 실패!!!!!");
         }
 
         log.info("식재료 등록 완료 ingredientId:     {}", ingredientInsertDTO.getIngredientId());

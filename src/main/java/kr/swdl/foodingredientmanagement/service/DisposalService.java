@@ -59,7 +59,7 @@ public class DisposalService {
                 .build();
 
         disposalsRepository.addDisposal(disposalVO);
-        mbInventoryRepository.updateCurrentQuantityById(orderDetailId, 0);
+        inventoryRepository.updateCurrentQuantityById(orderDetailId, 0);
 
         if (status.equals("승인") && null != disposalVO.getDisposalId()) {
             disposalAppInfosRepository.save(DisposalAppInfos.builder()

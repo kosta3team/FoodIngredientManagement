@@ -42,10 +42,13 @@ public interface InventoryRepository {
     OrderDetailVO findById(@Param("orderDetailId")Long orderDetailId);
 
 
-
+  int updateCurrentQuantityById(@Param("orderDetailId") Long orderDetailId,
+                                @Param("newQuantity") int newQuantity);
 
 
   InventoryOrderDTO getInventoryOrder(@Param("orderDetailId") Long orderDetailId);
+
+
 
 
 }

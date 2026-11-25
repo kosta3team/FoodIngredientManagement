@@ -29,7 +29,7 @@ public class DisposalServiceTest {
     @Autowired
     private JPAUsersRepository jpaUsersRepository;
     @Autowired
-    private MBInventoryRepository mbInventoryRepository;
+    private InventoryRepository inventoryRepository;
     @Autowired
     private MBIngredientRepository mBIngredientRepository;
     @Autowired
@@ -66,7 +66,7 @@ public class DisposalServiceTest {
             status = "대기";
         }
         // 특정 재고 아이디
-        OrderDetailVO orderDetailVO = mbInventoryRepository.findById(orderDetailId);
+        OrderDetailVO orderDetailVO = inventoryRepository.findById(orderDetailId);
         if (null == orderDetailVO) Assertions.fail();
         log.info("Disposal inventory dump : {}", orderDetailVO);
 
@@ -88,8 +88,8 @@ public class DisposalServiceTest {
                 .build();
         disposalsRepository.addDisposal(disposalVO);
 
-        mbInventoryRepository.updateCurrentQuantityById(orderDetailId, 0);
-        orderDetailVO = mbInventoryRepository.findById(orderDetailId);
+        inventoryRepository.updateCurrentQuantityById(orderDetailId, 0);
+        orderDetailVO = inventoryRepository.findById(orderDetailId);
         log.info("Disposal inventory dump : {}", orderDetailVO);
 
         log.info("Created disposal dump : {}", disposalsRepository.getDisposalById(disposalVO.getDisposalId()));
