@@ -7,21 +7,30 @@
 
     <select id="getInventoryList" resultType="kr.swdl.foodingredientmanagement.dto.InventoryListDTO">
         SELECT
-        s.store_name AS storeName,
-        i.ingredient_name AS ingredientName,
-        i.storage_type AS storageType,
-        od.current_quantity AS currentQuantity,
-        i.order_unit AS orderUnit,
-        od.store_at AS storeAt,
-        iu.consumption_at AS consumptionAt,
-        u.user_name AS userName
+        s.store_id               AS storeId,
+        i.ingredient_id          AS ingredientId,
+        CAST(SUBSTRING_INDEX(
+        GROUP_CONCAT(od.order_detail_id ORDER BY od.store_at DESC), ',', 1
+        ) AS UNSIGNED)       AS orderDetailId,
+        s.store_name             AS storeName,
+        i.ingredient_name        AS ingredientName,
+        i.storage_type           AS storageType,
+        SUM(od.current_quantity) AS currentQuantity,
+        i.order_unit             AS orderUnit,
+        MAX(od.store_at)         AS storeAt,
+        MIN(iu.consumption_at)   AS consumptionAt,
+        u.user_name              AS userName
         FROM order_details od
-        JOIN orders o                 ON od.order_id = o.order_id
-        JOIN stores s                 ON o.store_id = s.store_id
-        JOIN ingredients i            ON od.ingredient_id = i.ingredient_id
-        LEFT JOIN inventory_usages iu ON iu.order_detail_id = od.order_detail_id
-        LEFT JOIN users u             ON o.user_id = u.user_id
+        JOIN orders o      ON od.order_id      = o.order_id
+        JOIN stores s      ON o.store_id       = s.store_id
+        JOIN ingredients i ON od.ingredient_id = i.ingredient_id
+        LEFT JOIN (SELECT order_detail_id, MIN(consumption_at) AS consumption_at
+        FROM inventory_usages
+        GROUP BY order_detail_id) iu ON iu.order_detail_id = od.order_detail_id
+        LEFT JOIN users u  ON s.user_id        = u.user_id
         WHERE od.current_quantity > 0
+        AND od.order_status = '승인'
+        AND od.store_at IS NOT NULL
         <if test="ingredientId != null">
             AND i.ingredient_id = #{ingredientId}
         </if>
@@ -34,13 +43,17 @@
         <if test="storeEndDate != null">
             AND od.store_at &lt; DATE_ADD(#{storeEndDate}, INTERVAL 1 DAY)
         </if>
-        <if test="manageStartDate != null">
-            AND iu.consumption_at &gt;= #{manageStartDate}
-        </if>
-        <if test="manageEndDate != null">
-            AND iu.consumption_at &lt; DATE_ADD(#{manageEndDate}, INTERVAL 1 DAY)
-        </if>
-        ORDER BY s.store_name, i.ingredient_name, od.store_at, iu.consumption_at
+        GROUP BY s.store_id, s.store_name, i.ingredient_id, i.ingredient_name,
+        i.storage_type, i.order_unit, u.user_name
+        <trim prefix="HAVING" prefixOverrides="AND">
+            <if test="manageStartDate != null">
+                AND MIN(iu.consumption_at) &gt;= #{manageStartDate}
+            </if>
+            <if test="manageEndDate != null">
+                AND MIN(iu.consumption_at) &lt; DATE_ADD(#{manageEndDate}, INTERVAL 1 DAY)
+            </if>
+        </trim>
+        ORDER BY s.store_name, i.ingredient_name
     </select>
 
 
@@ -68,7 +81,8 @@
             i.management_method         AS managementMethod,
             i.expiration_period         AS expirationPeriod,
             i.consumption_period        AS consumptionPeriod,
-            i.summer_consumption_period AS summerConsumptionPeriod
+            i.summer_consumption_period AS summerConsumptionPeriod,
+        (SELECT u.user_name FROM users u WHERE u.user_id = s.user_id) AS userName
         FROM stores s
                  CROSS JOIN ingredients i
         WHERE s.store_id      = #{storeId}

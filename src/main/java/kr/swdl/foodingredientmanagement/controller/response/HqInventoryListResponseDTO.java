@@ -23,4 +23,8 @@ public class HqInventoryListResponseDTO {
     private LocalDateTime storeAt;
     private LocalDateTime consumptionAt;
     private String userName;
+
+    private Long storeId;
+    private Long ingredientId;
+    private Long orderDetailId;
 }

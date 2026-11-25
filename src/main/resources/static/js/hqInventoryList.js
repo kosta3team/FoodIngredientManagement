@@ -59,7 +59,14 @@ async function loadInventoryList(params = new URLSearchParams()) {
               <td>${formatDate(item.storeAt)}</td>
               <td>${formatDate(item.consumptionAt)}</td>
               <td>${item.userName ?? '-'}</td>
-              <td><a class="btn btn-outline-primary btn-sm" href="#">상세 보기</a></td>
+              
+              <td>
+                <button type="button" class="btn btn-outline-primary btn-sm btn-detail"
+                        data-store-id="${item.storeId}"
+                        data-ingredient-id="${item.ingredientId}"
+                        data-order-detail-id="${item.orderDetailId}">상세 보기</button>
+              </td>
+              
               <td><a class="btn btn-outline-secondary btn-sm" href="#">폐기 등록</a></td>
             </tr>
         `).join('');
