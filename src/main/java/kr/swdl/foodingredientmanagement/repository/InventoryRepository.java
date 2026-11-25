@@ -15,7 +15,7 @@ public interface InventoryRepository {
   List<InventoryListDTO> getInventoryList();
 
   List<InventoryListDTO> getInventoryList(@Param("ingredientId") Long ingredientId,
-                                           @Param("storeId") Long storeId,
+                                           @Param("storeName") String storeName,
                                            @Param("storeStartDate") LocalDate storeStartDate,
                                            @Param("storeEndDate") LocalDate storeEndDate,
                                            @Param("manageStartDate") LocalDate manageStartDate,

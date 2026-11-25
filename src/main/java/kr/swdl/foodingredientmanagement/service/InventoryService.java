@@ -22,12 +22,17 @@ public class InventoryService {
 
     // 본사 재고 목록 조회 (식재료명, 직영점명, 입고일시, 사용기한)
     public List<InventoryListDTO> getInventoryList(Long ingredientId,
-                                                    Long storeId,
+                                                    String storeName,
                                                     LocalDate storeStartDate,
                                                     LocalDate storeEndDate,
                                                     LocalDate manageStartDate,
                                                     LocalDate manageEndDate) {
-        return inventoryRepository.getInventoryList(ingredientId, storeId,
+        // 직영점명 앞뒤 공백 제거, 빈 값이면 조건 제외
+        if (storeName != null) {
+            storeName = storeName.trim();
+            if (storeName.isEmpty()) storeName = null;
+        }
+        return inventoryRepository.getInventoryList(ingredientId, storeName,
                 storeStartDate, storeEndDate, manageStartDate, manageEndDate);
     }
 

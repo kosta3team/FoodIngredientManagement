@@ -25,8 +25,8 @@
         <if test="ingredientId != null">
             AND i.ingredient_id = #{ingredientId}
         </if>
-        <if test="storeId != null">
-            AND  s.store_id = #{storeId}
+        <if test="storeName != null and storeName != ''">
+            AND s.store_name LIKE CONCAT('%', #{storeName}, '%')
         </if>
         <if test="storeStartDate != null">
             AND od.store_at &gt;= #{storeStartDate}

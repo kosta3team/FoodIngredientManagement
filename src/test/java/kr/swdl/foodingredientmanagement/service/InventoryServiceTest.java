@@ -48,7 +48,7 @@ public class InventoryServiceTest {
 
     @Test
     public void 본사_직영점명_재고_목록_조회_성공() {
-        List<InventoryListDTO> list = inventoryService.getInventoryList(null, 6L, null, null, null, null);
+        List<InventoryListDTO> list = inventoryService.getInventoryList(null, "대전둔산", null, null, null, null);
 
         Assertions.assertFalse(list.isEmpty());
         for (InventoryListDTO info : list) {
@@ -59,8 +59,17 @@ public class InventoryServiceTest {
 
     @Test
     public void 본사_직영점명_재고_목록_조회_실패() {
-        List<InventoryListDTO> list = inventoryService.getInventoryList(null, 9999L, null, null, null, null);
+        List<InventoryListDTO> list = inventoryService.getInventoryList(null, "없는직영점", null, null, null, null);
         Assertions.assertTrue(list.isEmpty());
+
+    }
+
+    @Test
+    public void 본사_직영점명_공백_재고_목록_조회_성공() {
+        List<InventoryListDTO> all = inventoryService.getInventoryList();
+        List<InventoryListDTO> list = inventoryService.getInventoryList(null, "   ", null, null, null, null);
+
+        Assertions.assertEquals(all.size(), list.size());
     }
 
     @Test
