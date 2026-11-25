@@ -222,18 +222,6 @@ public class InventoryServiceTest {
 
 
     @Test
-    public void 검색조건_식재료명_목록_조회_성공() {
-        List<InventoryListDTO> list = inventoryService.getIngredientNameList();
-
-        Assertions.assertFalse(list.isEmpty());
-        for (InventoryListDTO info : list) {
-            Assertions.assertNotNull(info.getIngredientId());
-            Assertions.assertNotNull(info.getIngredientName());
-            log.info("{}", info);
-        }
-    }
-
-    @Test
     public void 본사_재고_목록_검색_응답DTO_변환_성공() {
         HqInventorySearchRequestDTO request = new HqInventorySearchRequestDTO();
         request.setStoreName("강남");

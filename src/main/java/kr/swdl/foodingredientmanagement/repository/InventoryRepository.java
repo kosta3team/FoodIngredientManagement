@@ -48,14 +48,6 @@ public interface InventoryRepository {
   InventoryOrderDTO getInventoryOrder(@Param("orderDetailId") Long orderDetailId);
 
 
-
-
-
-  List<InventoryListDTO> getIngredientNameList();
-
-
-
-
 }
 
 

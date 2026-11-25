@@ -3,11 +3,9 @@ package kr.swdl.foodingredientmanagement.controller;
 import kr.swdl.foodingredientmanagement.controller.request.HqInventorySearchRequestDTO;
 import kr.swdl.foodingredientmanagement.controller.response.HqInventoryDetailResponseDTO;
 import kr.swdl.foodingredientmanagement.controller.response.HqInventoryListResponseDTO;
-import kr.swdl.foodingredientmanagement.dto.InventoryListDTO;
 import kr.swdl.foodingredientmanagement.service.InventoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,12 +23,6 @@ import java.util.List;
 public class InventoryRestController {
 
     private final InventoryService inventoryService;
-
-    // 검색 조건용 식재료명 목록
-    @GetMapping("/ingredients")
-    public List<InventoryListDTO> getIngredientNameList() {
-        return inventoryService.getIngredientNameList();
-    }
 
     @GetMapping("/list")
     public List<HqInventoryListResponseDTO> getHqInventoryList(@ModelAttribute HqInventorySearchRequestDTO request) {

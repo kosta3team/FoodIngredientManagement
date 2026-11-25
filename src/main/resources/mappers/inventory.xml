@@ -177,14 +177,4 @@
     </select>
 
 
-    <select id="getIngredientNameList" resultType="kr.swdl.foodingredientmanagement.dto.InventoryListDTO">
-        SELECT
-            ingredient_id   AS ingredientId,
-            ingredient_name AS ingredientName
-        FROM ingredients
-            WHERE usable_flag = 'Y'
-        ORDER BY ingredient_name
-    </select>
-
-
 </mapper>
