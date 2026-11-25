@@ -1,10 +1,13 @@
 package kr.swdl.foodingredientmanagement.controller;
 
+import kr.swdl.foodingredientmanagement.controller.request.HqInventorySearchRequestDTO;
+import kr.swdl.foodingredientmanagement.controller.response.HqInventoryListResponseDTO;
 import kr.swdl.foodingredientmanagement.dto.InventoryListDTO;
 import kr.swdl.foodingredientmanagement.service.InventoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,4 +33,8 @@ public class InventoryRestController {
         return inventoryService.getIngredientNameList();
     }
 
+    @GetMapping("/list")
+    public List<HqInventoryListResponseDTO> getHqInventoryList(@ModelAttribute HqInventorySearchRequestDTO request) {
+        return inventoryService.getHqInventoryList(request);
+    }
 }

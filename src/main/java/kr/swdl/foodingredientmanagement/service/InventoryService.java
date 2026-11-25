@@ -1,5 +1,7 @@
 package kr.swdl.foodingredientmanagement.service;
 
+import kr.swdl.foodingredientmanagement.controller.request.HqInventorySearchRequestDTO;
+import kr.swdl.foodingredientmanagement.controller.response.HqInventoryListResponseDTO;
 import kr.swdl.foodingredientmanagement.dto.InventoryListDTO;
 import kr.swdl.foodingredientmanagement.dto.InventoryOrderDTO;
 import kr.swdl.foodingredientmanagement.dto.InventoryUsageListDTO;
@@ -7,7 +9,9 @@ import kr.swdl.foodingredientmanagement.repository.InventoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -61,5 +65,37 @@ public class InventoryService {
     // 검색 조건용 식재료명 목록 조회
     public List<InventoryListDTO> getIngredientNameList() {
         return inventoryRepository.getIngredientNameList();
+    }
+
+    // 본사 재고 목록 검색
+    public List<HqInventoryListResponseDTO> getHqInventoryList(HqInventorySearchRequestDTO request) {
+        List<InventoryListDTO> list = getInventoryList(
+                request.getIngredientId(),
+                request.getStoreName(),
+                request.getStoreStartDate(),
+                request.getStoreEndDate(),
+                request.getManageStartDate(),
+                request.getManageEndDate());
+
+        return list.stream()
+                .map(this::toHqInventoryListResponse)
+                .toList();
+    }
+
+    private HqInventoryListResponseDTO toHqInventoryListResponse(InventoryListDTO dto) {
+        return HqInventoryListResponseDTO.builder()
+                .storeName(dto.getStoreName())
+                .ingredientName(dto.getIngredientName())
+                .storageType(dto.getStorageType())
+                .currentQuantity(dto.getCurrentQuantity())
+                .orderUnit(dto.getOrderUnit())
+                .storeAt(toLocalDateTime(dto.getStoreAt()))
+                .consumptionAt(toLocalDateTime(dto.getConsumptionAt()))
+                .userName(dto.getUserName())
+                .build();
+    }
+
+    private LocalDateTime toLocalDateTime(Timestamp ts) {
+        return ts == null ? null : ts.toLocalDateTime();
     }
 }
