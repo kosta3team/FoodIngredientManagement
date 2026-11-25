@@ -23,7 +23,7 @@ public class DisposalService {
     private final JPAUsersRepository jPAUsersRepository;
     private final DisposalAppInfosRepository disposalAppInfosRepository;
     private final DisposalsRepository disposalsRepository;
-    private final MBInventoryRepository mbInventoryRepository;
+    private final InventoryRepository inventoryRepository;
     private final MBIngredientRepository mbIngredientRepository;
 
     // 폐기 등록
@@ -36,7 +36,7 @@ public class DisposalService {
             status = "대기";
         }
         // 특정 재고 아이디
-        OrderDetailVO orderDetailVO = mbInventoryRepository.findById(orderDetailId);
+        OrderDetailVO orderDetailVO = inventoryRepository.findById(orderDetailId);
         if (null == orderDetailVO) {
             throw new NotFoundException(ErrorDomain.ORDER_DETAIL);
         }
@@ -59,7 +59,7 @@ public class DisposalService {
                 .build();
 
         disposalsRepository.addDisposal(disposalVO);
-        mbInventoryRepository.updateCurrentQuantityById(orderDetailId, 0);
+        inventoryRepository.updateCurrentQuantityById(orderDetailId, 0);
 
         if (status.equals("승인") && null != disposalVO.getDisposalId()) {
             disposalAppInfosRepository.save(DisposalAppInfos.builder()

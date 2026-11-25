@@ -25,22 +25,17 @@
           <!-- 검색 조건: 화면 구성만 제공하며 데이터는 예시 값 -->
           <section class="card hq-card p-3 mb-3">
             <div class="row g-3 align-items-center">
-              <div class="col-md-2">
-                <div class="d-flex align-items-center gap-2">
-                  <label class="form-label mb-0 text-nowrap" for="ingredient">식재료명</label>
-                  <select class="form-select" id="ingredient" name="ingredient">
-                    <option value="">전체</option>
-                    <option>식빵</option>
-                    <option>브리오슈</option>
-                    <option>기타 토스트용 빵</option>
-                    <option>계란</option>
-                  </select>
-                </div>
-              </div>
               <div class="col-md-3">
                 <div class="d-flex align-items-center gap-2">
                   <label class="form-label mb-0 text-nowrap" for="storeName">직영점명</label>
                   <input class="form-control" id="storeName" name="storeName" type="text" placeholder="직영점명을 입력하세요"/>
+                </div>
+              </div>
+
+              <div class="col-md-2">
+                <div class="d-flex align-items-center gap-2">
+                  <label class="form-label mb-0 text-nowrap" for="ingredientName">식재료명</label>
+                  <input class="form-control" id="ingredientName" name="ingredientName" type="text" placeholder="식재료명을 입력하세요"/>
                 </div>
               </div>
 
@@ -61,7 +56,7 @@
                 </div>
               </div>
               <div class="col-md-2 d-flex gap-2 justify-content-md-end">
-                <button class="btn btn-primary px-4" type="submit">검색</button>
+                <button class="btn btn-primary px-4" id="searchBtn" type="button">검색</button>
               </div>
             </div>
           </section>
@@ -106,369 +101,13 @@
                   </th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                  <td>
-                    1
-                  </td>
-                  <td>
-                    강남점
-                  </td>
-                  <td>
-                    양배추
-                  </td>
-                  <td>
-                    냉장
-                  </td>
-                  <td>
-                    3 통
-                  </td>
-                  <td>
-                    2026-11-01
-                  </td>
-                  <td>
-                    2026-11-08
-                  </td>
-                  <td>
-                    김담당
-                  </td>
-                  <td>
-                    <a class="btn btn-outline-primary btn-sm" href="hqInventoryDetail.html" th:href="@{/inventory/detail/101}">
-                      상세 보기
-                    </a>
-                  </td>
-                  <td>
-                    <a class="btn btn-outline-secondary btn-sm" href="#" th:href="@{/inventory/disposal-request/101}">
-                      폐기 등록
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    2
-                  </td>
-                  <td>
-                    강남점
-                  </td>
-                  <td>
-                    양배추
-                  </td>
-                  <td>
-                    냉장
-                  </td>
-                  <td>
-                    1 통
-                  </td>
-                  <td>
-                    2026-10-31
-                  </td>
-                  <td>
-                    2026-11-07
-                  </td>
-                  <td>
-                    이담당
-                  </td>
-                  <td>
-                    <a class="btn btn-outline-primary btn-sm" href="hqInventoryDetail.html" th:href="@{/inventory/detail/101}">
-                      상세 보기
-                    </a>
-                  </td>
-                  <td>
-                    <a class="btn btn-outline-secondary btn-sm" href="#" th:href="@{/inventory/disposal-request/101}">
-                      폐기 등록
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    3
-                  </td>
-                  <td>
-                    강남점
-                  </td>
-                  <td>
-                    계란
-                  </td>
-                  <td>
-                    냉장
-                  </td>
-                  <td>
-                    3 판
-                  </td>
-                  <td>
-                    2026-11-02
-                  </td>
-                  <td>
-                    2026-11-12
-                  </td>
-                  <td>
-                    김담당
-                  </td>
-                  <td>
-                    <a class="btn btn-outline-primary btn-sm" href="hqInventoryDetail.html" th:href="@{/inventory/detail/101}">
-                      상세 보기
-                    </a>
-                  </td>
-                  <td>
-                    <a class="btn btn-outline-secondary btn-sm" href="#" th:href="@{/inventory/disposal-request/101}">
-                      폐기 등록
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    4
-                  </td>
-                  <td>
-                    강남점
-                  </td>
-                  <td>
-                    브리오슈
-                  </td>
-                  <td>
-                    실온
-                  </td>
-                  <td>
-                    4 봉
-                  </td>
-                  <td>
-                    2026-11-05
-                  </td>
-                  <td>
-                    2026-11-09
-                  </td>
-                  <td>
-                    이담당
-                  </td>
-                  <td>
-                    <a class="btn btn-outline-primary btn-sm" href="hqInventoryDetail.html" th:href="@{/inventory/detail/101}">
-                      상세 보기
-                    </a>
-                  </td>
-                  <td>
-                    <a class="btn btn-outline-secondary btn-sm" href="#" th:href="@{/inventory/disposal-request/101}">
-                      폐기 등록
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    5
-                  </td>
-                  <td>
-                    신촌점
-                  </td>
-                  <td>
-                    계란
-                  </td>
-                  <td>
-                    냉장
-                  </td>
-                  <td>
-                    2 판
-                  </td>
-                  <td>
-                    2026-11-01
-                  </td>
-                  <td>
-                    2026-11-15
-                  </td>
-                  <td>
-                    정담당
-                  </td>
-                  <td>
-                    <a class="btn btn-outline-primary btn-sm" href="hqInventoryDetail.html" th:href="@{/inventory/detail/101}">
-                      상세 보기
-                    </a>
-                  </td>
-                  <td>
-                    <a class="btn btn-outline-secondary btn-sm" href="#" th:href="@{/inventory/disposal-request/101}">
-                      폐기 등록
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    6
-                  </td>
-                  <td>
-                    신촌점
-                  </td>
-                  <td>
-                    식빵
-                  </td>
-                  <td>
-                    냉동
-                  </td>
-                  <td>
-                    3 박스
-                  </td>
-                  <td>
-                    2026-10-25
-                  </td>
-                  <td>
-                    2026-12-25
-                  </td>
-                  <td>
-                    정담당
-                  </td>
-                  <td>
-                    <a class="btn btn-outline-primary btn-sm" href="hqInventoryDetail.html" th:href="@{/inventory/detail/101}">
-                      상세 보기
-                    </a>
-                  </td>
-                  <td>
-                    <a class="btn btn-outline-secondary btn-sm" href="#" th:href="@{/inventory/disposal-request/101}">
-                      폐기 등록
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    7
-                  </td>
-                  <td>
-                    잠실점
-                  </td>
-                  <td>
-                    양배추
-                  </td>
-                  <td>
-                    냉장
-                  </td>
-                  <td>
-                    4 통
-                  </td>
-                  <td>
-                    2026-11-04
-                  </td>
-                  <td>
-                    2026-11-11
-                  </td>
-                  <td>
-                    최담당
-                  </td>
-                  <td>
-                    <a class="btn btn-outline-primary btn-sm" href="hqInventoryDetail.html" th:href="@{/inventory/detail/101}">
-                      상세 보기
-                    </a>
-                  </td>
-                  <td>
-                    <a class="btn btn-outline-secondary btn-sm" href="#" th:href="@{/inventory/disposal-request/101}">
-                      폐기 등록
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    8
-                  </td>
-                  <td>
-                    잠실점
-                  </td>
-                  <td>
-                    기타 토스트용 빵
-                  </td>
-                  <td>
-                    실온
-                  </td>
-                  <td>
-                    6 봉
-                  </td>
-                  <td>
-                    2026-11-05
-                  </td>
-                  <td>
-                    2026-11-08
-                  </td>
-                  <td>
-                    최담당
-                  </td>
-                  <td>
-                    <a class="btn btn-outline-primary btn-sm" href="hqInventoryDetail.html" th:href="@{/inventory/detail/101}">
-                      상세 보기
-                    </a>
-                  </td>
-                  <td>
-                    <a class="btn btn-outline-secondary btn-sm" href="#" th:href="@{/inventory/disposal-request/101}">
-                      폐기 등록
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    9
-                  </td>
-                  <td>
-                    홍대점
-                  </td>
-                  <td>
-                    식빵
-                  </td>
-                  <td>
-                    실온
-                  </td>
-                  <td>
-                    5 봉
-                  </td>
-                  <td>
-                    2026-11-03
-                  </td>
-                  <td>
-                    2026-11-06
-                  </td>
-                  <td>
-                    박담당
-                  </td>
-                  <td>
-                    <a class="btn btn-outline-primary btn-sm" href="hqInventoryDetail.html" th:href="@{/inventory/detail/101}">
-                      상세 보기
-                    </a>
-                  </td>
-                  <td>
-                    <a class="btn btn-outline-secondary btn-sm" href="#" th:href="@{/inventory/disposal-request/101}">
-                      폐기 등록
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    10
-                  </td>
-                  <td>
-                    홍대점
-                  </td>
-                  <td>
-                    브리오슈
-                  </td>
-                  <td>
-                    냉동
-                  </td>
-                  <td>
-                    2 박스
-                  </td>
-                  <td>
-                    2026-10-28
-                  </td>
-                  <td>
-                    2026-12-28
-                  </td>
-                  <td>
-                    박담당
-                  </td>
-                  <td>
-                    <a class="btn btn-outline-primary btn-sm" href="hqInventoryDetail.html" th:href="@{/inventory/detail/101}">
-                      상세 보기
-                    </a>
-                  </td>
-                  <td>
-                    <a class="btn btn-outline-secondary btn-sm" href="#" th:href="@{/inventory/disposal-request/101}">
-                      폐기 등록
-                    </a>
-                  </td>
-                </tr>
 
+                <tbody id="inventoryTableBody">
+                <tr>
+                  <td colspan="10" class="text-center text-secondary py-4">불러오는 중...</td>
+                </tr>
                 </tbody>
+
               </table>
             </div>
           </section>
@@ -497,6 +136,7 @@
     </div>
     <div class="modal-backdrop show d-none" id="hqInventoryDetailBackdrop"></div>
     <script src="/js/hqInventoryDetail.js" defer></script>
+    <script src="/js/hqInventoryList.js" defer></script>
   </body>
 </html>
 

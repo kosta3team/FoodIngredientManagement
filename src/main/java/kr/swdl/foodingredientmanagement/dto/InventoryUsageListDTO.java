@@ -1,4 +1,4 @@
-package kr.swdl.foodingredientmanagement.controller.responseDTO;
+package kr.swdl.foodingredientmanagement.dto;
 
 
 import lombok.*;
@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class InventoryUsageListResponse {
+public class InventoryUsageListDTO {
 
     private Timestamp consumptionAt;
     private Timestamp managementStartAt;
