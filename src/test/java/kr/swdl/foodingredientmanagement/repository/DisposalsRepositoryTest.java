@@ -25,7 +25,7 @@ public class DisposalsRepositoryTest {
 
     @Test
     public void 특정_폐기_조회() {
-        DisposalVO disposalVO = disposalsRepository.findById(2L);
+        DisposalVO disposalVO = disposalsRepository.getDisposalById(2L);
         log.info("{}", disposalVO);
     }
 
@@ -45,10 +45,10 @@ public class DisposalsRepositoryTest {
                 .disposalPrice(99999)
                 .orderDetailId(Long.valueOf(1))
                 .build();
-        Assertions.assertEquals(disposalsRepository.insertDisposal(disposalVO), 1);
+        Assertions.assertEquals(disposalsRepository.addDisposal(disposalVO), 1);
         Assertions.assertEquals(disposalsRepository.findAll().size(), beforeSize + 1);
         log.info("{}",disposalVO.getDisposalId());
-        log.info("{}", disposalsRepository.findById(disposalVO.getDisposalId()));
+        log.info("{}", disposalsRepository.getDisposalById(disposalVO.getDisposalId()));
     }
 
     @Test
@@ -78,7 +78,7 @@ public class DisposalsRepositoryTest {
                 .disposalPrice(7980)
                 .orderDetailId(Long.valueOf(1))
                 .build();
-        Assertions.assertEquals(disposalsRepository.insertDisposal(disposalVO), 1);
+        Assertions.assertEquals(disposalsRepository.addDisposal(disposalVO), 1);
         Assertions.assertEquals(disposalsRepository.findAll().size(), beforeSize + 1);
     }
 
@@ -86,30 +86,30 @@ public class DisposalsRepositoryTest {
     @Transactional
     public void 폐기_수정_성공() {
         Long disposalId = 4L;
-        DisposalVO disposalVO = disposalsRepository.findById(disposalId);
+        DisposalVO disposalVO = disposalsRepository.getDisposalById(disposalId);
         Assertions.assertNotNull(disposalVO);
-        log.info("{}", disposalsRepository.findById(disposalId));
+        log.info("{}", disposalsRepository.getDisposalById(disposalId));
         Assertions.assertEquals(disposalsRepository.updateDisposal(DisposalVO.builder()
                 .disposalId(disposalId)
                 .disposalType("식재료규칙2")
                 .disposalReason("12341234")
                 .disposalDetailReason("@@@@@").build()), 1);
-        log.info("{}", disposalsRepository.findById(disposalId));
+        log.info("{}", disposalsRepository.getDisposalById(disposalId));
     }
 
     @Test
     @Transactional
     public void 폐기_수정_실패() {
         Long disposalId = 1L;
-        DisposalVO disposalVO = disposalsRepository.findById(disposalId);
+        DisposalVO disposalVO = disposalsRepository.getDisposalById(disposalId);
         Assertions.assertNotNull(disposalVO);
-        log.info("{}", disposalsRepository.findById(disposalId));
+        log.info("{}", disposalsRepository.getDisposalById(disposalId));
         Assertions.assertEquals(disposalsRepository.updateDisposal(DisposalVO.builder()
                 .disposalId(disposalId)
                 .disposalType("식재료규칙2")
                 .disposalReason("12341234")
                 .disposalDetailReason("@@@@@").build()), 0);
-        log.info("{}", disposalsRepository.findById(disposalId));
+        log.info("{}", disposalsRepository.getDisposalById(disposalId));
     }
 
 
@@ -117,10 +117,10 @@ public class DisposalsRepositoryTest {
     @Transactional
     public void 폐기_삭제() {
         Long disposalId = 4L;
-        DisposalVO disposalVO = disposalsRepository.findById(disposalId);
+        DisposalVO disposalVO = disposalsRepository.getDisposalById(disposalId);
         log.info("{}", disposalVO);
         disposalsRepository.deleteDisposalById(disposalId);
-        Assertions.assertNull(disposalsRepository.findById(disposalId));
+        Assertions.assertNull(disposalsRepository.getDisposalById(disposalId));
         log.info("{}", disposalVO);
     }
 
@@ -296,19 +296,19 @@ public class DisposalsRepositoryTest {
     @Transactional
     public void 금일_폐기_건수() {
         // 테스트 폐기 추가
-        System.out.println(disposalsRepository.countByTodayDisposed());
+        System.out.println(disposalsRepository.getCountByTodayDisposed());
     }
 
     @Test
     @Transactional
     public void 금일_폐기_금액() {
-        System.out.println(disposalsRepository.sumByTodayDisposedPrice());
+        System.out.println(disposalsRepository.getSumByTodayDisposedPrice());
     }
 
     @Test
     @Transactional
     public void 금일_폐기확인필요_개수() {
-        System.out.println(disposalsRepository.countNeedToConfirmByStoreId(3L));
+        System.out.println(disposalsRepository.getCountNeedToConfirmByStoreId(3L));
     }
 
     @Test
