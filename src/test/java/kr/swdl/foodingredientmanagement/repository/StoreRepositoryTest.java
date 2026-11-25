@@ -8,12 +8,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 @Slf4j
-public class JPAStoresRepositoryTest {
+public class StoreRepositoryTest {
     @Autowired
-    private JPAStoresRepository jpaStoresRepository;
+    private StoreRepository storeRepository;
     @Test
     void 담당매장_조회(){
-        Stores store = jpaStoresRepository.findByUserId(4).orElseThrow(
+        Stores store = storeRepository.findByUserId(4).orElseThrow(
                 () -> new RuntimeException("매장 없음"));
         log.info("담당 매장 : {}", store);
     }
