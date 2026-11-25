@@ -32,7 +32,7 @@ public class DisposalsRepositoryTest {
     @Test
     @Transactional
     public void 본사_폐기_등록_성공() {
-        int beforeSize = disposalsRepository.findAll().size();
+        int beforeSize = disposalsRepository.getDisposals().size();
         DisposalVO disposalVO = DisposalVO.builder()
                 .disposalUnit("통폐기")
                 .disposalReqAt(new Timestamp(System.currentTimeMillis()))
@@ -46,7 +46,7 @@ public class DisposalsRepositoryTest {
                 .orderDetailId(Long.valueOf(1))
                 .build();
         Assertions.assertEquals(disposalsRepository.addDisposal(disposalVO), 1);
-        Assertions.assertEquals(disposalsRepository.findAll().size(), beforeSize + 1);
+        Assertions.assertEquals(disposalsRepository.getDisposals().size(), beforeSize + 1);
         log.info("{}",disposalVO.getDisposalId());
         log.info("{}", disposalsRepository.getDisposalById(disposalVO.getDisposalId()));
     }
@@ -54,16 +54,16 @@ public class DisposalsRepositoryTest {
     @Test
     @Transactional
     public void 본사_폐기_등록_실패_누락데이터() {
-        int beforeSize = disposalsRepository.findAll().size();
+        int beforeSize = disposalsRepository.getDisposals().size();
         DisposalVO disposalVO = DisposalVO.builder().build();
 //        Assertions.assertEquals(mbDisposalsRepository.insertDisposal(disposalVO), 0); SQLIntegrityConstraintViolationException
-        Assertions.assertEquals(disposalsRepository.findAll().size(), beforeSize);
+        Assertions.assertEquals(disposalsRepository.getDisposals().size(), beforeSize);
     }
 
     @Test
     @Transactional
     public void 직영점_폐기_등록() {
-        int beforeSize = disposalsRepository.findAll().size();
+        int beforeSize = disposalsRepository.getDisposals().size();
         DisposalVO disposalVO = DisposalVO.builder()
                 .disposalUnit("통폐기")
                 .disposalReqAt(new Timestamp(System.currentTimeMillis()))
@@ -79,7 +79,7 @@ public class DisposalsRepositoryTest {
                 .orderDetailId(Long.valueOf(1))
                 .build();
         Assertions.assertEquals(disposalsRepository.addDisposal(disposalVO), 1);
-        Assertions.assertEquals(disposalsRepository.findAll().size(), beforeSize + 1);
+        Assertions.assertEquals(disposalsRepository.getDisposals().size(), beforeSize + 1);
     }
 
     @Test
