@@ -26,7 +26,7 @@ public class InventoryMappingQATest {
     @Test
     @Order(1)
     void mbInventory_Repository_XML_mapping_success(){
-        validateMapping(MBIngredientRepository.class);
+        validateMapping(MBInventoryRepository.class);
     }
 
     // 검증로직
