@@ -1,5 +1,8 @@
 package kr.swdl.foodingredientmanagement.repository;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import kr.swdl.foodingredientmanagement.repository.entitiy.InventoryUsages;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -7,26 +10,42 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class InventoryMappingQATest {
 
+    // mybatis 검증
     @Autowired
     private SqlSessionFactory sqlSessionFactory;
+
+    // JPA 검증
+    @PersistenceContext
+    private EntityManager entityManager;
 
     // 1. MBInventoryRepository
     @Test
     @Order(1)
     void inventory_Repository_XML_mapping_success(){
         validateMapping(InventoryRepository.class);
+    }
+
+    // 2. InventoryUsages
+    // JPA
+    @Test
+    @Order(2)
+    @Transactional(readOnly = true)
+    void inventoryUsages_Entity_DB_mapping_success(){
+        validateJpaMapping(InventoryUsages.class);
     }
 
     // 검증로직
@@ -74,5 +93,33 @@ public class InventoryMappingQATest {
                 missingMappings.isEmpty(),
                 "Mybatis mapping missed: " + missingMappings
         );
+
+
+    }
+
+    // JPA 검증로직
+    private void validateJpaMapping(Class<?> entity){
+
+        // Given
+        String entityName = entityManager
+                .getMetamodel()
+                .entity(entity)
+                .getName();
+
+        String jpSql =
+                "SELECT e FROM "
+                        + entityName
+                        + " e WHERE 1 = 0";
+
+        // When
+        assertDoesNotThrow(() -> {
+                    entityManager
+                            .createQuery(jpSql, entity)
+                            .getResultList();
+                },
+                // Then
+                "JPA mapping failed: " + entityName);
+
+        System.out.println("[PASS] " + entityName);
     }
 }
