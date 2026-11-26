@@ -132,6 +132,8 @@
 
     <select id="getStoreInventoryList" resultType="kr.swdl.foodingredientmanagement.repository.vo.InventoryListVO">
         SELECT
+        s.store_id          AS storeId,
+        i.ingredient_id     AS ingredientId,
         s.store_name        AS storeName,
         i.sub_category_name AS subCategoryName,
         i.ingredient_name   AS ingredientName,
@@ -149,8 +151,8 @@
         <if test="subCategoryName != null and subCategoryName != ''">
             AND i.sub_category_name = #{subCategoryName}
         </if>
-        <if test="ingredientId != null">
-            AND i.ingredient_id = #{ingredientId}
+        <if test="ingredientName != null and ingredientName != ''">
+            AND i.ingredient_name LIKE CONCAT('%', #{ingredientName}, '%')
         </if>
         ORDER BY i.sub_category_name, i.ingredient_name, od.store_at
     </select>

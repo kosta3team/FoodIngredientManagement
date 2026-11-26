@@ -1,9 +1,11 @@
 package kr.swdl.foodingredientmanagement.service;
 
 import kr.swdl.foodingredientmanagement.controller.request.HQInventorySearchRequestDTO;
+import kr.swdl.foodingredientmanagement.controller.request.StoreInventorySearchRequestDTO;
 import kr.swdl.foodingredientmanagement.controller.response.HQInventoryDetailResponseDTO;
 import kr.swdl.foodingredientmanagement.controller.response.HQInventoryListResponseDTO;
 import kr.swdl.foodingredientmanagement.controller.response.HQInventoryUsageResponseDTO;
+import kr.swdl.foodingredientmanagement.controller.response.StoreInventoryListResponseDTO;
 import kr.swdl.foodingredientmanagement.repository.vo.InventoryListVO;
 import kr.swdl.foodingredientmanagement.repository.vo.InventoryOrderVO;
 import kr.swdl.foodingredientmanagement.repository.vo.InventoryUsageListVO;
@@ -49,8 +51,8 @@ public class InventoryService {
     // 직영점 재고 목록 조회 (분류, 식재료명 필터)
     public List<InventoryListVO> getStoreInventoryList(Long storeId,
                                                        String subCategoryName,
-                                                       Long ingredientId) {
-        return inventoryRepository.getStoreInventoryList(storeId, subCategoryName, ingredientId);
+                                                       String  ingredientName) {
+        return inventoryRepository.getStoreInventoryList(storeId, subCategoryName, ingredientName);
     }
 
     // 특정 직영점의 특정 재고 상세 조회
@@ -69,7 +71,7 @@ public class InventoryService {
     }
 
 
-    // 본사 재고 목록 검색
+    // 본사 재고 목록 검색 (화면)
     public List<HQInventoryListResponseDTO> getHqInventoryList(HQInventorySearchRequestDTO request) {
         List<InventoryListVO> list = getInventoryList(
                 request.getIngredientName(),
@@ -108,7 +110,7 @@ public class InventoryService {
 
 
 
-    // 본사 재고 상세
+    // 본사 재고 상세 (화면)
     public HQInventoryDetailResponseDTO getHqInventoryDetail(Long storeId, Long ingredientId, Long orderDetailId) {
         InventoryListVO detail = getInventoryDetail(storeId, ingredientId);
         if (detail == null) return null;   // 없는 직영점/식재료
@@ -146,5 +148,22 @@ public class InventoryService {
                 // 사용 이력
                 .usageList(usageList)
                 .build();
+    }
+
+    // 직영점 재고 목록 (화면용)
+    public List<StoreInventoryListResponseDTO> getStoreInventoryList(StoreInventorySearchRequestDTO request) {
+        Long storeId = 2L;   // TODO: 로그인 세션 생기면 교체
+        return getStoreInventoryList(storeId, request.getSubCategoryName(), request.getIngredientName()).stream()
+                .map(vo -> StoreInventoryListResponseDTO.builder()
+                        .subCategoryName(vo.getSubCategoryName())
+                        .ingredientName(vo.getIngredientName())
+                        .storageType(vo.getStorageType())
+                        .currentQuantity(vo.getCurrentQuantity())
+                        .orderUnit(vo.getOrderUnit())
+                        .userName(vo.getUserName())
+                        .storeId(vo.getStoreId())
+                        .ingredientId(vo.getIngredientId())
+                        .build())
+                .toList();
     }
 }

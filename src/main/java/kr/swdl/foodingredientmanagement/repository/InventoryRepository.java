@@ -32,7 +32,7 @@ public interface InventoryRepository {
 
   List<InventoryListVO> getStoreInventoryList(@Param("storeId") Long storeId,
                                               @Param("subCategoryName") String subCategoryName,
-                                              @Param("ingredientId") Long ingredientId);
+                                              @Param("ingredientName") String ingredientName);
 
   InventoryListVO getInventoryByOrderDetailId(@Param("orderDetailId") Long orderDetailId);
 

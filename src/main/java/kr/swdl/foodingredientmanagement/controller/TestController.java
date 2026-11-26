@@ -26,7 +26,7 @@ public class TestController {
         return "ingredient/ingredientList";
     }
 
-    @GetMapping("/storeInventoryList")
+    @GetMapping("/test/storeInventoryList")
     public String storeInventoryList(){
         return "inventory/storeInventoryList";
     }

@@ -156,7 +156,7 @@ public class InventoryServiceTest {
 
     @Test
     public void 직영점_분류_식재료명_재고_목록_조회_성공() {
-        List<InventoryListVO> list = inventoryService.getStoreInventoryList(6L, "육가공류", 14L);
+        List<InventoryListVO> list = inventoryService.getStoreInventoryList(6L, "육가공류", "불갈비 패티");
 
         Assertions.assertFalse(list.isEmpty());
         for (InventoryListVO info : list) {
@@ -168,7 +168,7 @@ public class InventoryServiceTest {
 
     @Test
     public void 직영점_분류_식재료명_재고_목록_조회_실패() {
-        List<InventoryListVO> list = inventoryService.getStoreInventoryList(5L, "육가공류", 14L);
+        List<InventoryListVO> list = inventoryService.getStoreInventoryList(5L, "육가공류", "불갈비 패티");
         Assertions.assertTrue(list.isEmpty());
     }
 

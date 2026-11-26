@@ -313,7 +313,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 직영점_식재료명_재고_목록_조회(){
-        List<InventoryListVO> list = inventoryRepository.getStoreInventoryList(1L, null, 12L);
+        List<InventoryListVO> list = inventoryRepository.getStoreInventoryList(1L, null, "슬라이스 햄");
 
         assertThat(list).isNotEmpty();
 
@@ -330,7 +330,7 @@ public class InventoryRepositoryTest {
 
     @Test
     void 직영점_분류_식재료명_재고_목록_조회(){
-        List<InventoryListVO> list = inventoryRepository.getStoreInventoryList(6L, "육가공류", 14L);
+        List<InventoryListVO> list = inventoryRepository.getStoreInventoryList(6L, "육가공류", "불갈비 패티");
 
         assertThat(list).isNotEmpty();
 
