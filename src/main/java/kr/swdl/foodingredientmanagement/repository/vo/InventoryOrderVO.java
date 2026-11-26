@@ -1,4 +1,4 @@
-package kr.swdl.foodingredientmanagement.dto;
+package kr.swdl.foodingredientmanagement.repository.vo;
 
 import lombok.*;
 
@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class InventoryOrderDTO {
+public class InventoryOrderVO {
 
     // 입고 정보
     private Timestamp manufactureAt;

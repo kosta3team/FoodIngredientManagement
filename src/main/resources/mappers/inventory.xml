@@ -5,7 +5,7 @@
 <mapper namespace="kr.swdl.foodingredientmanagement.repository.InventoryRepository">
 
 
-    <select id="getInventoryList" resultType="kr.swdl.foodingredientmanagement.dto.InventoryListDTO">
+    <select id="getInventoryList" resultType="kr.swdl.foodingredientmanagement.repository.vo.InventoryListVO">
         SELECT
         s.store_id               AS storeId,
         i.ingredient_id          AS ingredientId,
@@ -58,7 +58,7 @@
 
 
 
-    <select id="getInventoryDetail" resultType="kr.swdl.foodingredientmanagement.dto.InventoryListDTO">
+    <select id="getInventoryDetail" resultType="kr.swdl.foodingredientmanagement.repository.vo.InventoryListVO">
         SELECT
             s.store_id                  AS storeId,
             i.ingredient_id             AS ingredientId,
@@ -90,7 +90,7 @@
     </select>
 
 
-    <select id="getInventoryOrder" resultType="kr.swdl.foodingredientmanagement.dto.InventoryOrderDTO">
+    <select id="getInventoryOrder" resultType="kr.swdl.foodingredientmanagement.repository.vo.InventoryOrderVO">
         SELECT
             od.order_detail_id                                            AS orderDetailId,
             od.ingredient_id                                              AS ingredientId,
@@ -108,7 +108,7 @@
     </select>
 
 
-    <select id="getInventoryUsageList" resultType="kr.swdl.foodingredientmanagement.dto.InventoryUsageListDTO">
+    <select id="getInventoryUsageList" resultType="kr.swdl.foodingredientmanagement.repository.vo.InventoryUsageListVO">
 
         SELECT
             iu.consumption_at              AS consumptionAt,
@@ -130,7 +130,7 @@
     </select>
 
 
-    <select id="getStoreInventoryList" resultType="kr.swdl.foodingredientmanagement.dto.InventoryListDTO">
+    <select id="getStoreInventoryList" resultType="kr.swdl.foodingredientmanagement.repository.vo.InventoryListVO">
         SELECT
         s.store_name        AS storeName,
         i.sub_category_name AS subCategoryName,

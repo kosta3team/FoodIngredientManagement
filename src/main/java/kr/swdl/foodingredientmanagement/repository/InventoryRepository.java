@@ -1,8 +1,8 @@
 package kr.swdl.foodingredientmanagement.repository;
 
-import kr.swdl.foodingredientmanagement.dto.InventoryListDTO;
-import kr.swdl.foodingredientmanagement.dto.InventoryOrderDTO;
-import kr.swdl.foodingredientmanagement.dto.InventoryUsageListDTO;
+import kr.swdl.foodingredientmanagement.repository.vo.InventoryListVO;
+import kr.swdl.foodingredientmanagement.repository.vo.InventoryOrderVO;
+import kr.swdl.foodingredientmanagement.repository.vo.InventoryUsageListVO;
 import kr.swdl.foodingredientmanagement.repository.vo.OrderDetailVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -12,29 +12,29 @@ import java.util.List;
 
 @Mapper
 public interface InventoryRepository {
-  List<InventoryListDTO> getInventoryList();
+  List<InventoryListVO> getInventoryList();
 
-  List<InventoryListDTO> getInventoryList(@Param("ingredientName") String ingredientName,
-                                           @Param("storeName") String storeName,
-                                           @Param("storeStartDate") LocalDate storeStartDate,
-                                           @Param("storeEndDate") LocalDate storeEndDate,
-                                           @Param("manageStartDate") LocalDate manageStartDate,
-                                           @Param("manageEndDate") LocalDate manageEndDate);
+  List<InventoryListVO> getInventoryList(@Param("ingredientName") String ingredientName,
+                                         @Param("storeName") String storeName,
+                                         @Param("storeStartDate") LocalDate storeStartDate,
+                                         @Param("storeEndDate") LocalDate storeEndDate,
+                                         @Param("manageStartDate") LocalDate manageStartDate,
+                                         @Param("manageEndDate") LocalDate manageEndDate);
 
-  InventoryListDTO getInventoryDetail(@Param("storeId") Long storeId,
-                                       @Param("ingredientId") Long ingredientId);
+  InventoryListVO getInventoryDetail(@Param("storeId") Long storeId,
+                                     @Param("ingredientId") Long ingredientId);
 
-  InventoryOrderDTO getInventoryOrder(@Param("storeId") Long storeId,
-                                       @Param("ingredientId") Long ingredientId);
+  InventoryOrderVO getInventoryOrder(@Param("storeId") Long storeId,
+                                     @Param("ingredientId") Long ingredientId);
 
-  List <InventoryUsageListDTO> getInventoryUsageList(@Param("storeId") Long storeId,
-                                                      @Param("ingredientId") Long ingredientId);
+  List <InventoryUsageListVO> getInventoryUsageList(@Param("storeId") Long storeId,
+                                                    @Param("ingredientId") Long ingredientId);
 
-  List<InventoryListDTO> getStoreInventoryList(@Param("storeId") Long storeId,
-                                                @Param("subCategoryName") String subCategoryName,
-                                                @Param("ingredientId") Long ingredientId);
+  List<InventoryListVO> getStoreInventoryList(@Param("storeId") Long storeId,
+                                              @Param("subCategoryName") String subCategoryName,
+                                              @Param("ingredientId") Long ingredientId);
 
-  InventoryListDTO getInventoryByOrderDetailId(@Param("orderDetailId") Long orderDetailId);
+  InventoryListVO getInventoryByOrderDetailId(@Param("orderDetailId") Long orderDetailId);
 
 
   
@@ -46,7 +46,7 @@ public interface InventoryRepository {
                                 @Param("newQuantity") int newQuantity);
 
 
-  InventoryOrderDTO getInventoryOrder(@Param("orderDetailId") Long orderDetailId);
+  InventoryOrderVO getInventoryOrder(@Param("orderDetailId") Long orderDetailId);
 
 
 
