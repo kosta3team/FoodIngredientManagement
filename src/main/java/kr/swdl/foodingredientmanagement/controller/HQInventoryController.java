@@ -1,6 +1,6 @@
 package kr.swdl.foodingredientmanagement.controller;
 
-import kr.swdl.foodingredientmanagement.controller.request.HqInventorySearchRequestDTO;
+import kr.swdl.foodingredientmanagement.controller.request.HQInventorySearchRequestDTO;
 import kr.swdl.foodingredientmanagement.service.InventoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -23,7 +23,7 @@ public class HQInventoryController {
     // 본사 재고 목록 화면
     @GetMapping("/hqInventoryList")
     public String hqInventoryList(Model model,
-                                  @ModelAttribute("filter") HqInventorySearchRequestDTO filter) {
+                                  @ModelAttribute("filter") HQInventorySearchRequestDTO filter) {
         model.addAttribute("list", inventoryService.getHqInventoryList(filter));
         return "inventory/hqInventoryList";
     }

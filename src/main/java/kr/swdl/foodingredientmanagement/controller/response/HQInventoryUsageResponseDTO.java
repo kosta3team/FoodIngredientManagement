@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @Builder
-public class InventoryUsageResponseDTO {
+public class HQInventoryUsageResponseDTO {
     private LocalDateTime consumptionAt;      // 소비기한
     private LocalDateTime managementStartAt;  // 관리시작일시
     private int usageQuantity;                // 사용개수

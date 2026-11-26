@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @Builder
-public class HqInventoryListResponseDTO {
+public class HQInventoryListResponseDTO {
     private String storeName;
     private String ingredientName;
     private String storageType;

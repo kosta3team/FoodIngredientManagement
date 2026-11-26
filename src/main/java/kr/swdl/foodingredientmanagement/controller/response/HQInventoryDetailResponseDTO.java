@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Data
 @Builder
-public class HqInventoryDetailResponseDTO {
+public class HQInventoryDetailResponseDTO {
     // 기본 정보
     private String storeName;
     private String ingredientName;
@@ -37,6 +37,6 @@ public class HqInventoryDetailResponseDTO {
     private int orderQuantity;
 
     // 사용 이력
-    private List<InventoryUsageResponseDTO> usageList;
+    private List<HQInventoryUsageResponseDTO> usageList;
 
 }

@@ -1,9 +1,9 @@
 package kr.swdl.foodingredientmanagement.service;
 
-import kr.swdl.foodingredientmanagement.controller.request.HqInventorySearchRequestDTO;
-import kr.swdl.foodingredientmanagement.controller.response.HqInventoryDetailResponseDTO;
-import kr.swdl.foodingredientmanagement.controller.response.HqInventoryListResponseDTO;
-import kr.swdl.foodingredientmanagement.controller.response.InventoryUsageResponseDTO;
+import kr.swdl.foodingredientmanagement.controller.request.HQInventorySearchRequestDTO;
+import kr.swdl.foodingredientmanagement.controller.response.HQInventoryDetailResponseDTO;
+import kr.swdl.foodingredientmanagement.controller.response.HQInventoryListResponseDTO;
+import kr.swdl.foodingredientmanagement.controller.response.HQInventoryUsageResponseDTO;
 import kr.swdl.foodingredientmanagement.repository.vo.InventoryListVO;
 import kr.swdl.foodingredientmanagement.repository.vo.InventoryOrderVO;
 import kr.swdl.foodingredientmanagement.repository.vo.InventoryUsageListVO;
@@ -70,7 +70,7 @@ public class InventoryService {
 
 
     // 본사 재고 목록 검색
-    public List<HqInventoryListResponseDTO> getHqInventoryList(HqInventorySearchRequestDTO request) {
+    public List<HQInventoryListResponseDTO> getHqInventoryList(HQInventorySearchRequestDTO request) {
         List<InventoryListVO> list = getInventoryList(
                 request.getIngredientName(),
                 request.getStoreName(),
@@ -84,8 +84,8 @@ public class InventoryService {
                 .toList();
     }
 
-    private HqInventoryListResponseDTO toHqInventoryListResponse(InventoryListVO dto) {
-        return HqInventoryListResponseDTO.builder()
+    private HQInventoryListResponseDTO toHqInventoryListResponse(InventoryListVO dto) {
+        return HQInventoryListResponseDTO.builder()
                 .storeName(dto.getStoreName())
                 .ingredientName(dto.getIngredientName())
                 .storageType(dto.getStorageType())
@@ -109,14 +109,14 @@ public class InventoryService {
 
 
     // 본사 재고 상세
-    public HqInventoryDetailResponseDTO getHqInventoryDetail(Long storeId, Long ingredientId, Long orderDetailId) {
+    public HQInventoryDetailResponseDTO getHqInventoryDetail(Long storeId, Long ingredientId, Long orderDetailId) {
         InventoryListVO detail = getInventoryDetail(storeId, ingredientId);
         if (detail == null) return null;   // 없는 직영점/식재료
         InventoryOrderVO latest = getInventoryOrder(orderDetailId);
 
-        List<InventoryUsageResponseDTO> usageList =
+        List<HQInventoryUsageResponseDTO> usageList =
                 getInventoryUsageList(storeId, ingredientId).stream()
-                        .map(u -> InventoryUsageResponseDTO.builder()
+                        .map(u -> HQInventoryUsageResponseDTO.builder()
                                 .consumptionAt(toLocalDateTime(u.getConsumptionAt()))
                                 .managementStartAt(toLocalDateTime(u.getManagementStartAt()))
                                 .usageQuantity(u.getUsageQuantity())
@@ -124,7 +124,7 @@ public class InventoryService {
                                 .build())
                         .toList();
 
-        return HqInventoryDetailResponseDTO.builder()
+        return HQInventoryDetailResponseDTO.builder()
                 // 기본 정보
                 .storeName(detail.getStoreName())
                 .ingredientName(detail.getIngredientName())

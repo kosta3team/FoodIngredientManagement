@@ -1,7 +1,7 @@
 package kr.swdl.foodingredientmanagement.service;
 
-import kr.swdl.foodingredientmanagement.controller.request.HqInventorySearchRequestDTO;
-import kr.swdl.foodingredientmanagement.controller.response.HqInventoryListResponseDTO;
+import kr.swdl.foodingredientmanagement.controller.request.HQInventorySearchRequestDTO;
+import kr.swdl.foodingredientmanagement.controller.response.HQInventoryListResponseDTO;
 import kr.swdl.foodingredientmanagement.repository.vo.InventoryListVO;
 import kr.swdl.foodingredientmanagement.repository.vo.InventoryOrderVO;
 import kr.swdl.foodingredientmanagement.repository.vo.InventoryUsageListVO;
@@ -222,13 +222,13 @@ public class InventoryServiceTest {
 
     @Test
     public void 본사_재고_목록_검색_응답DTO_변환_성공() {
-        HqInventorySearchRequestDTO request = new HqInventorySearchRequestDTO();
+        HQInventorySearchRequestDTO request = new HQInventorySearchRequestDTO();
         request.setStoreName("강남");
 
-        List<HqInventoryListResponseDTO> list = inventoryService.getHqInventoryList(request);
+        List<HQInventoryListResponseDTO> list = inventoryService.getHqInventoryList(request);
 
         Assertions.assertFalse(list.isEmpty());
-        for (HqInventoryListResponseDTO info : list) {
+        for (HQInventoryListResponseDTO info : list) {
             Assertions.assertTrue(info.getStoreName().contains("강남"));
             Assertions.assertNotNull(info.getStoreAt());
         }
@@ -236,10 +236,10 @@ public class InventoryServiceTest {
 
     @Test
     public void 본사_재고_목록_검색_응답DTO_변환_실패() {
-        HqInventorySearchRequestDTO request = new HqInventorySearchRequestDTO();
+        HQInventorySearchRequestDTO request = new HQInventorySearchRequestDTO();
         request.setStoreName("없는직영점");
 
-        List<HqInventoryListResponseDTO> list = inventoryService.getHqInventoryList(request);
+        List<HQInventoryListResponseDTO> list = inventoryService.getHqInventoryList(request);
 
         Assertions.assertTrue(list.isEmpty());
     }

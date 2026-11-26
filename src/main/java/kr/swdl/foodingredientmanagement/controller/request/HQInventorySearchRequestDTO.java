@@ -13,7 +13,7 @@ import java.time.LocalDate;
  * @since : 2026. 11. 25.
  */
 @Data
-public class HqInventorySearchRequestDTO {
+public class HQInventorySearchRequestDTO {
     private String ingredientName;
     private String storeName;
     @DateTimeFormat(pattern = "yyyy-MM-dd") private LocalDate storeStartDate;
