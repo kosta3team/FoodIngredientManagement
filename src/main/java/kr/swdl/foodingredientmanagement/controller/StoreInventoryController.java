@@ -24,6 +24,7 @@ public class StoreInventoryController {
     @GetMapping("/storeInventoryList")
     public String storeInventoryList(Model model, @ModelAttribute("filter") StoreInventorySearchRequestDTO filter){
         model.addAttribute("list", inventoryService.getStoreInventoryList(filter));
+        model.addAttribute("subCategoryList", inventoryService.getSubCategoryList());
         return "inventory/storeInventoryList";
     }
 }

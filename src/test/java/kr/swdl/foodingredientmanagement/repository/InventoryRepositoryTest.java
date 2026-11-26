@@ -375,4 +375,11 @@ public class InventoryRepositoryTest {
         }
     }
 
+    @Test
+    void 재고_분류_목록_조회_성공() {
+        List<String> list = inventoryRepository.getSubCategoryList();
+        assertThat(list).isNotEmpty();
+        assertThat(list).contains("육가공류");
+    }
+
 }

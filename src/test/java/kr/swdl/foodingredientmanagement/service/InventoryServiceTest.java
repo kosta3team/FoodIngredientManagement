@@ -243,4 +243,14 @@ public class InventoryServiceTest {
 
         Assertions.assertTrue(list.isEmpty());
     }
+
+    @Test
+    public void 재고_분류_목록_조회_성공() {
+        List<String> list = inventoryService.getSubCategoryList();
+
+        Assertions.assertFalse(list.isEmpty());
+        Assertions.assertTrue(list.contains("육가공류"));
+        Assertions.assertEquals(list.size(), list.stream().distinct().count());   // 중복 없음
+        log.info("{}", list);
+    }
 }

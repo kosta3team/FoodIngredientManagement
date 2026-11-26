@@ -48,6 +48,7 @@ public interface InventoryRepository {
 
   InventoryOrderVO getInventoryOrder(@Param("orderDetailId") Long orderDetailId);
 
+  List<String> getSubCategoryList();
 
 
 

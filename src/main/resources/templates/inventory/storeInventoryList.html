@@ -28,14 +28,13 @@
                         <div class="d-flex align-items-center gap-2">
 
                                 <label class="form-label mb-0 text-nowrap" for="subCategoryName">분류</label>
-                                <select class="form-select" id="subCategoryName" name="subCategoryName">
+
+                            <select class="form-select" id="subCategoryName" name="subCategoryName">
                                 <option value="">전체</option>
-                                <option>계란류</option>
-                                <option>채소류</option>
-                                <option>가공품</option>
-                                <option>육가공품</option>
-                                <option>유제품</option>
-                                <option>소스류</option>
+                                <option th:each="category : ${subCategoryList}"
+                                        th:value="${category}"
+                                        th:text="${category}"
+                                        th:selected="${filter != null and category == filter.subCategoryName}">계란류</option>
                             </select>
                         </div>
                     </div>

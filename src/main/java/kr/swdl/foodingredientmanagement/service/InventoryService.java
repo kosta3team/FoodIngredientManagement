@@ -166,4 +166,9 @@ public class InventoryService {
                         .build())
                 .toList();
     }
+
+    // 분류 드롭다운 목록
+    public List<String> getSubCategoryList() {
+        return inventoryRepository.getSubCategoryList();
+    }
 }
