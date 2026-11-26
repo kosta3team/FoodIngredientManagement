@@ -20,7 +20,7 @@ import java.sql.Timestamp;
 @RequiredArgsConstructor
 @Slf4j
 public class DisposalService {
-    private final JPAUsersRepository jPAUsersRepository;
+    private final UserRepository jPAUserRepository;
     private final DisposalAppInfosRepository disposalAppInfosRepository;
     private final DisposalsRepository disposalsRepository;
     private final InventoryRepository inventoryRepository;
@@ -29,7 +29,7 @@ public class DisposalService {
     // 폐기 등록
     @Transactional
     public boolean addDisposal(Long orderDetailId, DisposalDTO disposalDTO) {
-        Users reqUser = jPAUsersRepository
+        Users reqUser = jPAUserRepository
                 .findById(disposalDTO.getReqUserId()).orElseThrow();
         String status = "승인";
         if (!reqUser.getRole().equals("HQ")) {

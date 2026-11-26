@@ -41,10 +41,10 @@ public class TestController {
         return "order/hqOrderDetail";
     }
 
-    @GetMapping("/hqOrderList")
-    public String hqOrderList(){
-        return "order/hqOrderList";
-    }
+//    @GetMapping("/hqOrderList")
+//    public String hqOrderList(){
+//        return "order/hqOrderList";
+//    }
 
     @GetMapping("/storeOrderDetail")
     public String storeOrderDSetail(){

@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.swdl.foodingredientmanagement.repository.OrderRepository">
+
+    <insert id="insertOrder"
+            parameterType="kr.swdl.foodingredientmanagement.dto.OrderRequestDTO"
+            useGeneratedKeys="true"
+            keyProperty="orderId"
+    >
+        INSERT INTO orders (
+        order_at,
+        app_at,
+        total_price,
+        user_id,
+        store_id
+        )
+        VALUES (
+        NOW(),
+        NULL,
+        0,
+        NULL,
+        #{storeId}
+        );
+    </insert>
+
+
+    <select id="getOrderStatusList"
+            resultType="kr.swdl.foodingredientmanagement.repository.vo.OrderStatusVO">
+        SELECT
+        o.order_id AS orderId,
+        od.order_detail_id AS orderDetailId,
+        od.order_status AS orderStatus
+
+        FROM orders o
+        JOIN order_details od
+        ON o.order_id = od.order_id
+
+        ORDER BY o.order_id
+
+    </select>
+
+
+    <select id="getOrderList"
+            resultType="kr.swdl.foodingredientmanagement.dto.OrderRequestDTO">
+
+        SELECT
+        o.order_id AS orderId,
+        o.order_at AS orderAt,
+        s.store_id AS storeId,
+        s.store_name AS storeName,
+        MIN(i.ingredient_name) AS firstIngredientName,
+        COUNT(DISTINCT od.ingredient_id) AS ingredientCount,
+        o.total_price AS totalPrice,
+        MAX(od.store_at) AS storeAt,
+
+        CASE
+        WHEN SUM(CASE WHEN od.order_status = '대기' THEN 1 ELSE 0 END) > 0
+        THEN '대기'
+        WHEN SUM(CASE WHEN od.order_status = '승인' THEN 1 ELSE 0 END) > 0
+        AND SUM(CASE WHEN od.order_status = '거절' THEN 1 ELSE 0 END) > 0
+        THEN '부분'
+        WHEN SUM(CASE WHEN od.order_status = '승인' THEN 1 ELSE 0 END) = COUNT(*)
+        THEN '승인'
+        WHEN SUM(CASE WHEN od.order_status = '거절' THEN 1 ELSE 0 END) = COUNT(*)
+        THEN '거절'
+        ELSE '부분'
+        END AS orderStatus
+
+        FROM orders o
+        JOIN stores s ON o.store_id = s.store_id
+        JOIN order_details od ON o.order_id = od.order_id
+        JOIN ingredients i ON od.ingredient_id = i.ingredient_id
+
+        <where>
+            s.user_id = 2
+
+            <!-- 전체 검색 -->
+            <if test="storeName != null and orderId != null">
+                AND (
+                s.store_name LIKE CONCAT('%', #{storeName}, '%')
+                OR CAST(o.order_id AS CHAR) LIKE CONCAT('%', #{orderId}, '%')
+                )
+            </if>
+
+            <!-- 지점명 검색 -->
+            <if test="storeName != null and orderId == null">
+                AND s.store_name LIKE CONCAT('%', #{storeName}, '%')
+            </if>
+
+            <!-- 발주번호 검색 -->
+            <if test="storeName == null and orderId != null">
+                AND CAST(o.order_id AS CHAR) LIKE CONCAT('%', #{orderId}, '%')
+            </if>
+
+            <!-- 발주일시 검색 -->
+            <if test="startDate != null and startDate != ''
+              and endDate != null and endDate != ''
+              and dateType == 'orderAt'">
+                AND o.order_at >= #{startDate}
+                AND o.order_at &lt; DATE_ADD(#{endDate}, INTERVAL 1 DAY)
+            </if>
+        </where>
+
+        GROUP BY
+        o.order_id,
+        o.order_at,
+        s.store_id,
+        s.store_name,
+        o.total_price
+
+        HAVING 1 = 1
+
+        <!-- 발주 전체 상태 검색 -->
+        <if test="orderStatus != null and orderStatus != ''">
+            AND orderStatus = #{orderStatus}
+        </if>
+
+        <!-- 입고완료일시 검색 -->
+        <if test="startDate != null and startDate != ''
+          and endDate != null and endDate != ''
+          and dateType == 'storeAt'">
+            AND MAX(od.store_at) >= #{startDate}
+            AND MAX(od.store_at) &lt; DATE_ADD(#{endDate}, INTERVAL 1 DAY)
+        </if>
+
+        ORDER BY o.order_at DESC
+
+    </select>
+
+
+    <select id="selectOrderInfo"
+            resultType="kr.swdl.foodingredientmanagement.repository.vo.OrderInfoVO">
+
+        SELECT
+        o.order_id AS orderId,
+        o.order_at AS orderAt,
+        s.store_name AS storeName,
+
+        CASE
+        WHEN SUM(CASE WHEN od.order_status = '대기' THEN 1 ELSE 0 END) > 0
+        THEN '대기'
+
+        WHEN SUM(CASE WHEN od.order_status = '승인' THEN 1 ELSE 0 END) > 0
+        AND SUM(CASE WHEN od.order_status = '거절' THEN 1 ELSE 0 END) > 0
+        THEN '부분'
+
+        WHEN SUM(CASE WHEN od.order_status = '승인' THEN 1 ELSE 0 END) = COUNT(*)
+        THEN '승인'
+
+        WHEN SUM(CASE WHEN od.order_status = '거절' THEN 1 ELSE 0 END) = COUNT(*)
+        THEN '거절'
+
+        ELSE '부분'
+        END AS orderStatus,
+
+        o.app_at AS appAt,
+        MAX(od.store_at) AS storeAt,
+        o.total_price AS totalPrice,
+        u.user_name AS userName
+
+        FROM orders o
+
+        JOIN stores s
+        ON o.store_id = s.store_id
+
+        JOIN order_details od
+        ON o.order_id = od.order_id
+
+        JOIN users u
+        ON o.user_id = u.user_id
+
+        WHERE o.order_id = #{orderId}
+
+        GROUP BY
+        o.order_id,
+        o.order_at,
+        s.store_name,
+        o.app_at,
+        o.total_price,
+        u.user_name
+
+    </select>
+
+    <select id="selectOrderDetailList"
+            parameterType="long"
+            resultType="kr.swdl.foodingredientmanagement.repository.vo.OrderDetailListVO">
+        SELECT
+        od.order_detail_id AS orderDetailId,
+        i.ingredient_name AS ingredientName,
+        od.order_quantity AS orderQuantity,
+        i.order_unit AS orderUnit,
+        od.supply_price AS supplyPrice,
+        od.order_price AS orderPrice,
+        od.order_status AS orderStatus,
+        od.reject_reason AS rejectReason
+
+        FROM orders o
+
+        JOIN order_details od
+        ON o.order_id = od.order_id
+
+        JOIN ingredients i
+        ON od.ingredient_id = i.ingredient_id
+
+        WHERE o.order_id = #{orderId}
+
+        ORDER BY od.ingredient_id
+    </select>
+
+    <select id="selectOrderTotalPrice" resultType="long">
+        SELECT total_price
+        FROM orders
+        WHERE order_id = #{orderId}
+    </select>
+
+    <select id="getOrderDetail"
+            resultType="kr.swdl.foodingredientmanagement.repository.vo.OrderListVO">
+
+        SELECT
+        o.order_id AS orderId,
+        o.order_at AS orderAt,
+
+        MIN(i.ingredient_name) AS ingredientName,
+        COUNT(DISTINCT od.ingredient_id) AS ingredientCount,
+
+        o.total_price AS totalPrice,
+
+        CASE
+        WHEN SUM(CASE WHEN od.order_status = '대기' THEN 1 ELSE 0 END) > 0
+        THEN '대기'
+
+        WHEN SUM(CASE WHEN od.order_status = '승인' THEN 1 ELSE 0 END) > 0
+        AND SUM(CASE WHEN od.order_status = '거절' THEN 1 ELSE 0 END) > 0
+        THEN '부분'
+
+        WHEN SUM(CASE WHEN od.order_status = '승인' THEN 1 ELSE 0 END) = COUNT(*)
+        THEN '승인'
+
+        WHEN SUM(CASE WHEN od.order_status = '거절' THEN 1 ELSE 0 END) = COUNT(*)
+        THEN '거절'
+
+        ELSE '부분'
+        END AS orderStatus,
+
+        MAX(od.store_at) AS storeAt
+
+        FROM orders o
+
+        JOIN order_details od
+        ON o.order_id = od.order_id
+
+        JOIN ingredients i
+        ON od.ingredient_id = i.ingredient_id
+
+        WHERE o.store_id IN (
+        SELECT s.store_id
+        FROM stores s
+        WHERE s.user_id = #{userId}
+        )
+
+        <!-- 날짜 검색 조건 -->
+        <if test="startDate != null and startDate != ''
+          and endDate != null and endDate != ''">
+
+            <choose>
+                <!-- 발주일시 기준 검색 -->
+                <when test="dateType == 'orderAt'">
+                    AND o.order_at >= #{startDate}
+                    AND o.order_at &lt; DATE_ADD(#{endDate}, INTERVAL 1 DAY)
+                </when>
+
+                <!-- 입고일시 기준 검색 -->
+                <when test="dateType == 'storeAt'">
+                    AND EXISTS (
+                    SELECT 1
+                    FROM order_details od2
+                    WHERE od2.order_id = o.order_id
+                    AND od2.store_at >= #{startDate}
+                    AND od2.store_at &lt; DATE_ADD(#{endDate}, INTERVAL 1 DAY)
+                    )
+                </when>
+            </choose>
+
+        </if>
+
+        GROUP BY
+        o.order_id,
+        o.order_at,
+        o.total_price
+
+        <!-- 정렬 조건 -->
+        <choose>
+            <when test="dateType == 'storeAt'">
+                ORDER BY
+                CASE WHEN MAX(od.store_at) IS NULL THEN 0 ELSE 1 END ASC,
+                MAX(od.store_at) DESC,
+                o.order_at DESC,
+                o.order_id DESC
+            </when>
+
+            <otherwise>
+                ORDER BY
+                o.order_at DESC,
+                o.order_id DESC
+            </otherwise>
+        </choose>
+
+    </select>
+
+    <select id="getOrderProgress" resultType="kr.swdl.foodingredientmanagement.repository.vo.OrderProgressVO">
+        SELECT
+        o.order_id AS orderId,
+        o.order_at AS orderAt,
+        o.total_price AS totalPrice,
+        MAX(od.order_status) AS orderStatus,
+        MAX(od.app_at) AS appAt,
+        MAX(od.store_at) AS storeAt
+
+        FROM orders o
+
+        JOIN order_details od
+        ON o.order_id = od.order_id
+
+        WHERE o.store_id = #{storeId}
+
+        GROUP BY
+        o.order_id,
+        o.order_at,
+        o.total_price
+    </select>
+
+</mapper>

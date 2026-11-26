@@ -1,11 +1,11 @@
-package kr.swdl.foodingredientmanagement.dto;
+package kr.swdl.foodingredientmanagement.repository.vo;
 
 import lombok.Data;
 
 import java.sql.Timestamp;
 
 @Data
-public class OrderDTO {
+public class OrderVO {
     private Long orderId;
     private Timestamp orderAt;
     private String storeName;

@@ -1,4 +1,4 @@
-package kr.swdl.foodingredientmanagement.dto;
+package kr.swdl.foodingredientmanagement.repository.vo;
 
 import lombok.*;
 
@@ -9,12 +9,13 @@ import java.sql.Timestamp;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderProgressDTO {
+public class OrderListVO {
+
     private Long orderId;
     private Timestamp orderAt;
+    private String ingredientName;
+    private Integer ingredientCount;
     private Integer totalPrice;
     private String orderStatus;
-    private Timestamp appAt;
     private Timestamp storeAt;
 }
-
