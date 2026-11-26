@@ -1,5 +1,9 @@
 package kr.swdl.foodingredientmanagement.repository;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import kr.swdl.foodingredientmanagement.repository.entitiy.IngredientCategories;
+import kr.swdl.foodingredientmanagement.repository.entitiy.Ingredients;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -7,23 +11,36 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class IngredientMappingQATest {
 
+    // mybatis 검증
     @Autowired
     private SqlSessionFactory sqlSessionFactory;
 
+    // JPA 검증
+    @PersistenceContext
+    private EntityManager entityManager;
+
     // 1. IngredientCategoriesRepository
     // JPA
+    @Test
+    @Order(1)
+    @Transactional(readOnly = true)
+    void ingredientCategories_Entity_DB_mapping_success(){
+        validateJpaMapping(IngredientCategories.class);
+    }
 
     // 2. MBIngredientRepository
     @Test
@@ -32,7 +49,16 @@ public class IngredientMappingQATest {
         validateMapping(MBIngredientRepository.class);
     }
 
-    // 검증로직
+    // 3. Ingredients
+    // JPA
+    @Test
+    @Order(3)
+    @Transactional(readOnly = true)
+    void ingredients_Entity_DB_mapping_success(){
+        validateJpaMapping(Ingredients.class);
+    }
+
+    // mybatis 검증로직
     private void validateMapping(Class<?> repository){
 
         // Given
@@ -78,5 +104,31 @@ public class IngredientMappingQATest {
                 "Mybatis mapping missed: " + missingMappings
         );
 
+    }
+
+    // JPA 검증로직
+    private void validateJpaMapping(Class<?> entity){
+
+        // Given
+        String entityName = entityManager
+                .getMetamodel()
+                .entity(entity)
+                .getName();
+
+        String jpSql =
+                "SELECT e FROM "
+                        + entityName
+                        + " e WHERE 1 = 0";
+
+        // When
+        assertDoesNotThrow(() -> {
+                    entityManager
+                            .createQuery(jpSql, entity)
+                            .getResultList();
+                },
+                // Then
+                "JPA mapping failed: " + entityName);
+
+        System.out.println("[PASS] " + entityName);
     }
 }
