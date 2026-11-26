@@ -4,7 +4,7 @@
 
 <mapper namespace="kr.swdl.foodingredientmanagement.repository.DisposalsRepository">
 
-    <select id="findAll"
+    <select id="getDisposals"
             resultType="kr.swdl.foodingredientmanagement.repository.vo.DisposalVO">
         SELECT d.disposal_id            AS disposalId,
                d.disposal_unit          AS disposalUnit,
@@ -24,7 +24,7 @@
     </select>
 
     <!-- 폐기조회 -->
-    <select id="findById"
+    <select id="getDisposalById"
             resultType="kr.swdl.foodingredientmanagement.repository.vo.DisposalVO">
         SELECT d.disposal_id            AS disposalId,
                d.disposal_unit          AS disposalUnit,
@@ -45,7 +45,7 @@
     </select>
 
     <!-- 폐기 등록 -->
-    <insert id="insertDisposal" parameterType="kr.swdl.foodingredientmanagement.repository.vo.DisposalVO"
+    <insert id="addDisposal" parameterType="kr.swdl.foodingredientmanagement.repository.vo.DisposalVO"
             useGeneratedKeys="true"
             keyProperty="disposalId"
             keyColumn="disposal_id">
@@ -191,7 +191,7 @@
         </choose>
     </select>
 
-    <select id="countByTodayDisposed" resultType="int">
+    <select id="getCountByTodayDisposed" resultType="int">
 
         SELECT COUNT(*)
         FROM disposals
@@ -201,7 +201,7 @@
     </select>
 
 
-    <select id="sumByTodayDisposedPrice" resultType="int">
+    <select id="getSumByTodayDisposedPrice" resultType="int">
         SELECT IFNULL(SUM(disposal_price), 0)
         FROM disposals AS d
         WHERE disposal_status IN ('승인', '완료')
@@ -209,7 +209,7 @@
           AND CURDATE() + INTERVAL 1 DAY > disposal_app_at
     </select>
 
-    <select id="countNeedToConfirmByStoreId" resultType="int">
+    <select id="getCountNeedToConfirmByStoreId" resultType="int">
         SELECT COUNT(*)
         FROM disposals d,
              order_details od,
