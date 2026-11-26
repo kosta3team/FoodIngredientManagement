@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.swdl.foodingredientmanagement.repository.OrderDetailsRepository">
+    <select id="countOrderStatus"
+            resultType="kr.swdl.foodingredientmanagement.dto.OrderStatusCountDTO">
+        SELECT
+        (SELECT COUNT(*) FROM order_details
+        WHERE order_status = '대기') AS waitingCount,
+
+        (SELECT COUNT(*) FROM order_details
+        WHERE order_status = '승인') AS approvedCount,
+
+        (SELECT COUNT(*) FROM order_details
+        WHERE order_status = '거절') AS rejectedCount
+    </select>
+
+
+    <insert id="insertOrderDetail"
+            parameterType="kr.swdl.foodingredientmanagement.repository.vo.OrderDetailRequestVO"
+            useGeneratedKeys="true"
+            keyProperty="orderDetailId">
+        INSERT INTO order_details (
+        order_quantity,
+        supply_price,
+        manufacture_at,
+        store_at ,
+        app_at,
+        order_status,
+        order_price,
+        reject_reason,
+        current_quantity,
+        order_id,
+        ingredient_id
+        ) VALUES (
+        #{orderQuantity},
+        #{supplyPrice},
+        NULL,
+        NULL,
+        NULL,
+        '대기',
+        #{orderPrice},
+        NULL,
+        0,
+        #{orderId},
+        #{ingredientId}
+        )
+    </insert>
+
+    <update id="updateOrderTotalPrice">
+        UPDATE orders
+        SET total_price = (
+        SELECT COALESCE(SUM(order_price), 0)
+        FROM order_details
+        WHERE order_id = #{orderId}
+        )
+        WHERE order_id = #{orderId}
+    </update>
+
+    <select id="countOrderDetails" resultType="int">
+        SELECT COUNT(*)
+        FROM order_details
+        WHERE order_id = #{orderId}
+    </select>
+
+    <select id="getOrderDetailItems" resultType="map">
+        SELECT
+        i.ingredient_name,
+        od.order_quantity,
+        i.order_unit,
+        od.supply_price,
+        od.order_price,
+        u.user_name
+        FROM order_details od
+        JOIN orders o
+        ON o.order_id = od.order_id
+        JOIN ingredients i
+        ON od.ingredient_id = i.ingredient_id
+        JOIN users u
+        ON o.user_id = u.user_id
+        WHERE o.store_id = #{storeId}
+        AND o.order_id = #{orderId}
+    </select>
+
+    <update id="updateOrderDetailStatus">
+        UPDATE order_details
+        SET
+        order_status = #{orderStatus},
+        app_at = NOW(),
+        reject_reason = CASE
+        WHEN #{orderStatus} = '거절' THEN #{rejectReason}
+        ELSE NULL
+        END
+        WHERE order_detail_id = #{orderDetailId}
+        AND order_status = '대기'
+    </update>
+
+    <update id="updateOrderDetailsDates">
+        UPDATE order_details
+        SET
+        manufacture_at = #{manufactureAt},
+        store_at = #{storeAt}
+        WHERE order_detail_id = #{orderDetailId}
+    </update>
+    <select id="selectOrderInfoByOrderId"
+            parameterType="long"
+            resultType="kr.swdl.foodingredientmanagement.repository.vo.OrderInfoVO">
+
+        SELECT
+        o.order_id AS orderId,
+        o.order_at AS orderAt,
+        s.store_name AS storeName,
+
+        CASE
+        WHEN SUM(CASE WHEN od.order_status = '대기' THEN 1 ELSE 0 END) > 0
+        THEN '대기'
+
+        WHEN SUM(CASE WHEN od.order_status = '승인' THEN 1 ELSE 0 END) > 0
+        AND SUM(CASE WHEN od.order_status = '거절' THEN 1 ELSE 0 END) > 0
+        THEN '부분'
+
+        WHEN SUM(CASE WHEN od.order_status = '승인' THEN 1 ELSE 0 END) = COUNT(*)
+        THEN '승인'
+
+        WHEN SUM(CASE WHEN od.order_status = '거절' THEN 1 ELSE 0 END) = COUNT(*)
+        THEN '거절'
+
+        ELSE '부분'
+        END AS orderStatus,
+
+        o.app_at AS appAt,
+        MAX(od.store_at) AS storeAt,
+        o.total_price AS totalPrice,
+        u.user_name AS userName
+
+        FROM orders o
+
+        JOIN stores s
+        ON o.store_id = s.store_id
+
+        JOIN order_details od
+        ON o.order_id = od.order_id
+
+        JOIN users u
+        ON o.user_id = u.user_id
+
+        WHERE o.order_id = #{orderId}
+
+        GROUP BY
+        o.order_id,
+        o.order_at,
+        s.store_name,
+        o.app_at,
+        o.total_price,
+        u.user_name
+
+    </select>
+
+    <select id="getOrderDetailStatuses" resultType="string">
+        SELECT order_status
+        FROM order_details
+        WHERE order_id = #{orderId}
+    </select>
+</mapper>

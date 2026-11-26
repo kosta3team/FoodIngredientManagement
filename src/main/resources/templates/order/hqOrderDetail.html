@@ -42,7 +42,6 @@
           <table id="hqOrderItemTable" class="table table-hover align-middle hq-table table-sm mb-0">
             <thead>
             <tr>
-              <!-- 전체선택 UI: JS 연동 전에는 개별 체크박스를 자동 변경하지 않음 -->
               <th scope="col" class="text-center"><input id="selectAllItems" type="checkbox" class="form-check-input m-0" aria-label="모든 품목 선택"></th>
               <th scope="col">순번</th>
               <th scope="col">식재료</th>
@@ -60,7 +59,6 @@
               <td>1</td><td>양상추</td><td>3</td><td>박스</td><td>25,000원</td><td>75,000원</td>
               <td><select name="items[0].decision" class="form-select form-select-sm item-decision" aria-label="양상추 변경 상태">
                 <option value="PENDING" selected>대기</option><option value="APPROVE">승인</option>
-                <option value="PARTIAL">부분 승인</option><option value="REJECT">거절</option>
               </select></td>
               <td><input name="items[0].reason" type="text" maxlength="200" class="form-control form-control-sm item-reason"
                          placeholder="사유" aria-label="양상추 거절·조정 사유"></td>
@@ -70,7 +68,6 @@
               <td>2</td><td>토마토소스</td><td>2</td><td>팩</td><td>13,000원</td><td>26,000원</td>
               <td><select name="items[1].decision" class="form-select form-select-sm item-decision" aria-label="토마토소스 변경 상태">
                 <option value="PENDING" selected>대기</option><option value="APPROVE">승인</option>
-                <option value="PARTIAL">부분 승인</option><option value="REJECT">거절</option>
               </select></td>
               <td><input name="items[1].reason" type="text" maxlength="200" class="form-control form-control-sm item-reason"
                          placeholder="사유" aria-label="토마토소스 거절·조정 사유"></td>
@@ -88,12 +85,9 @@
             <label for="manufactureDate" class="form-label small fw-semibold">제조일자</label>
             <input id="manufactureDate" type="date" class="form-control form-control-sm">
           </div>
-          <div class="col-12 col-md-9">
-            <p class="small text-secondary mb-0">승인·거절·부분 승인 결과의 실제 저장은 서버 연동 이후 가능합니다.</p>
-          </div>
         </div>
         <div class="d-flex justify-content-end flex-wrap gap-2 mt-3">
-          <button type="button" class="btn btn-primary btn-sm" disabled title="저장 API 연동 전">처리 결과 저장</button>
+          <button type="button" id="saveOrderBtn" class="btn btn-primary btn-sm">처리 결과 저장</button>
           <a class="btn btn-outline-secondary btn-sm" href="hqOrderList.html" th:href="@{/hq/orders/list}">목록</a>
         </div>
       </section>

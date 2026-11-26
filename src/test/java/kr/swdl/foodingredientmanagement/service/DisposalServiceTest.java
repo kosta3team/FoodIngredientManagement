@@ -27,7 +27,7 @@ public class DisposalServiceTest {
     private DisposalService disposalService;
 
     @Autowired
-    private JPAUsersRepository jpaUsersRepository;
+    private UserRepository userRepository;
     @Autowired
     private InventoryRepository inventoryRepository;
     @Autowired
@@ -60,7 +60,7 @@ public class DisposalServiceTest {
                 .orderDetailId(orderDetailId)
                 .build();
 
-        Users reqUser = jpaUsersRepository.findById(dto.getReqUserId()).orElseThrow();
+        Users reqUser = userRepository.findById(dto.getReqUserId()).orElseThrow();
         String status = "승인";
         if (!reqUser.getRole().equals("HQ")) {
             status = "대기";
