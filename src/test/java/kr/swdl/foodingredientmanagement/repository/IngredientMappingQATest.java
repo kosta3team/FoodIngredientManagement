@@ -27,7 +27,7 @@ public class IngredientMappingQATest {
 
     // 2. MBIngredientRepository
     @Test
-    @Order(3)
+    @Order(2)
     void mbIngredient_Repository_XML_mapping_success(){
         validateMapping(MBIngredientRepository.class);
     }
