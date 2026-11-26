@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('searchBtn').addEventListener('click', searchInventory);
-    dateType.addEventListener('change', toggleDateInputs);
-    toggleDateInputs();
+
 });
 
 async function loadInventoryList(params = new URLSearchParams()){

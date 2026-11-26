@@ -26,8 +26,9 @@
                 <div class="row g-3 align-items-center">
                     <div class="col-md-3">
                         <div class="d-flex align-items-center gap-2">
-                            <label class="form-label mb-0 text-nowrap" for="ingredientCategories">분류</label>
-                            <select class="form-select" id="ingredientCategories" name="ingredientCategories">
+
+                                <label class="form-label mb-0 text-nowrap" for="subCategoryName">분류</label>
+                                <select class="form-select" id="subCategoryName" name="subCategoryName">
                                 <option value="">전체</option>
                                 <option>계란류</option>
                                 <option>채소류</option>
@@ -41,18 +42,14 @@
 
                     <div class="col-md-3">
                         <div class="d-flex align-items-center gap-2">
-                            <label class="form-label mb-0 text-nowrap" for="ingredient">식재료명</label>
-                            <select class="form-select" id="ingredient" name="ingredient">
-                                <option value="">전체</option>
-                                <option>식빵</option>
-                                <option>브리오슈</option>
-                                <option>기타 토스트용 빵</option>
-                                <option>계란</option>
-                            </select>
+                            <label class="form-label mb-0 text-nowrap" for="ingredientName">식재료명</label>
+                            <input class="form-control" id="ingredientName" name="ingredientName" type="text"
+                                   placeholder="식재료명을 입력하세요"
+                                   th:value="${filter != null ? filter.ingredientName : null}"/>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <button class="btn btn-primary px-4" type="submit">검색</button>
+                        <button class="btn btn-primary px-4" id="searchBtn" type="button">검색</button>
                     </div>
 
                 </div>
