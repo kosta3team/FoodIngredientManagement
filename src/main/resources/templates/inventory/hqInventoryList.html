@@ -109,12 +109,12 @@
                 <tbody id="inventoryTableBody">
                 <tr th:each="item, stat : ${list}">
                   <td th:text="${stat.count}">1</td>
-                  <td th:text="${item.storeName}">—</td>
-                  <td th:text="${item.ingredientName}">—</td>
-                  <td th:text="${item.storageType}">—</td>
+                  <td th:text="${item.storeName}">강남직영점</td>
+                  <td th:text="${item.ingredientName}">계란</td>
+                  <td th:text="${item.storageType}">냉장</td>
                   <td th:text="|${item.currentQuantity} ${item.orderUnit}|">0</td>
-                  <td th:text="${item.storeAt != null ? #temporals.format(item.storeAt, 'yyyy-MM-dd HH:mm') : '-'}">-</td>
-                  <td th:text="${item.consumptionAt != null ? #temporals.format(item.consumptionAt, 'yyyy-MM-dd HH:mm') : '-'}">-</td>
+                  <td th:text="${item.storeAt != null ? #temporals.format(item.storeAt, 'yyyy-MM-dd HH:mm') : '-'}">2026-11-15</td>
+                  <td th:text="${item.consumptionAt != null ? #temporals.format(item.consumptionAt, 'yyyy-MM-dd HH:mm') : '-'}">2026-11-09</td>
                   <td th:text="${item.userName ?: '-'}">-</td>
                   <td>
                     <button type="button" class="btn btn-outline-primary btn-sm btn-detail"
