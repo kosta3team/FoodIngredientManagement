@@ -19,26 +19,24 @@ public class HqInventoryDetailResponseDTO {
     // 기본 정보
     private String storeName;
     private String ingredientName;
-    private String storageType;
-    private String managementMethod;
     private int currentQuantity;
     private String orderUnit;
     private int capacity;
     private String capacityUnit;
+    private String storageType;
+    private String managementMethod;
     private int expirationPeriod;
     private int consumptionPeriod;
     private int summerConsumptionPeriod;
+    private String userName;
+
+    // 입고 정보 (최근 입고 1건)
+    private LocalDateTime manufactureAt;
+    private LocalDateTime expirationDate;
+    private LocalDateTime storeAt;
+    private int orderQuantity;
 
     // 사용 이력
-    private List<UsageItem> usageList;
-    @Data
-    @Builder
-    public static class UsageItem {
-        private LocalDateTime managementStartAt;
-        private LocalDateTime consumptionAt;
-        private LocalDateTime storeAt;
-        private LocalDateTime expirationAt;
-        private int usageQuantity;
-        private String orderUnit;
-    }
+    private List<InventoryUsageResponseDTO> usageList;
+
 }

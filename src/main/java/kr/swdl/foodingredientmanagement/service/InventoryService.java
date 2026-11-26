@@ -3,6 +3,7 @@ package kr.swdl.foodingredientmanagement.service;
 import kr.swdl.foodingredientmanagement.controller.request.HqInventorySearchRequestDTO;
 import kr.swdl.foodingredientmanagement.controller.response.HqInventoryDetailResponseDTO;
 import kr.swdl.foodingredientmanagement.controller.response.HqInventoryListResponseDTO;
+import kr.swdl.foodingredientmanagement.controller.response.InventoryUsageResponseDTO;
 import kr.swdl.foodingredientmanagement.repository.vo.InventoryListVO;
 import kr.swdl.foodingredientmanagement.repository.vo.InventoryOrderVO;
 import kr.swdl.foodingredientmanagement.repository.vo.InventoryUsageListVO;
@@ -107,36 +108,42 @@ public class InventoryService {
 
 
 
-    // 본사 재고 상세 (화면용)!!!!!!!!!!!!!
+    // 본사 재고 상세
     public HqInventoryDetailResponseDTO getHqInventoryDetail(Long storeId, Long ingredientId, Long orderDetailId) {
         InventoryListVO detail = getInventoryDetail(storeId, ingredientId);
-        InventoryOrderVO latest = getInventoryOrder(orderDetailId);
         if (detail == null) return null;   // 없는 직영점/식재료
+        InventoryOrderVO latest = getInventoryOrder(orderDetailId);
 
-        List<HqInventoryDetailResponseDTO.UsageItem> usageList =
+        List<InventoryUsageResponseDTO> usageList =
                 getInventoryUsageList(storeId, ingredientId).stream()
-                        .map(u -> HqInventoryDetailResponseDTO.UsageItem.builder()
-                                .managementStartAt(toLocalDateTime(u.getManagementStartAt()))
+                        .map(u -> InventoryUsageResponseDTO.builder()
                                 .consumptionAt(toLocalDateTime(u.getConsumptionAt()))
-                                .storeAt(toLocalDateTime(u.getStoreAt()))
-                                .expirationAt(toLocalDateTime(u.getExpirationAt()))
+                                .managementStartAt(toLocalDateTime(u.getManagementStartAt()))
                                 .usageQuantity(u.getUsageQuantity())
                                 .orderUnit(u.getOrderUnit())
                                 .build())
                         .toList();
 
         return HqInventoryDetailResponseDTO.builder()
+                // 기본 정보
                 .storeName(detail.getStoreName())
                 .ingredientName(detail.getIngredientName())
-                .storageType(detail.getStorageType())
-                .managementMethod(detail.getManagementMethod())
                 .currentQuantity(detail.getCurrentQuantity())
                 .orderUnit(detail.getOrderUnit())
                 .capacity(detail.getCapacity())
                 .capacityUnit(detail.getCapacityUnit())
+                .storageType(detail.getStorageType())
+                .managementMethod(detail.getManagementMethod())
                 .expirationPeriod(detail.getExpirationPeriod())
                 .consumptionPeriod(detail.getConsumptionPeriod())
                 .summerConsumptionPeriod(detail.getSummerConsumptionPeriod())
+                .userName(detail.getUserName())
+                // 입고 정보 (입고 건이 없으면 비워 둠)
+                .manufactureAt(latest == null ? null : toLocalDateTime(latest.getManufactureAt()))
+                .expirationDate(latest == null ? null : toLocalDateTime(latest.getExpirationDate()))
+                .storeAt(latest == null ? null : toLocalDateTime(latest.getStoreAt()))
+                .orderQuantity(latest == null ? 0 : latest.getOrderQuantity())
+                // 사용 이력
                 .usageList(usageList)
                 .build();
     }

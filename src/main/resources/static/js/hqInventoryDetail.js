@@ -39,37 +39,71 @@
             });
     }
 
+    function formatDay(value) {
+        return value ? value.substring(0, 10) : '-';
+    }
+
+    function item(label, value) {
+        return '<div class="col-3 text-secondary">' + label + '</div>'
+            + '<div class="col-3">' + value + '</div>';
+    }
 
 
     function renderDetail(d) {
+        var method = d.managementMethod ?? '관리';
+
         var usageRows = d.usageList.length === 0
-            ? '<tr><td colspan="5" class="text-center text-secondary py-3">사용 이력이 없습니다.</td></tr>'
-            : d.usageList.map(function (u) {
+            ? '<tr><td colspan="4" class="text-center text-secondary py-3">사용 이력이 없습니다.</td></tr>'
+            : d.usageList.map(function (u, i) {
                 return '<tr>'
-                    + '<td>' + formatDate(u.storeAt) + '</td>'
+                    + '<td>' + (i + 1) + '</td>'
+                    + '<td>' + formatDay(u.consumptionAt) + '</td>'
                     + '<td>' + formatDate(u.managementStartAt) + '</td>'
-                    + '<td>' + formatDate(u.consumptionAt) + '</td>'
-                    + '<td>' + formatDate(u.expirationAt) + '</td>'
                     + '<td>' + u.usageQuantity + ' ' + u.orderUnit + '</td>'
                     + '</tr>';
             }).join('');
 
         return ''
-            + '<section class="mb-4"><h6 class="fw-bold mb-3">기본 정보</h6>'
-            + '<table class="table table-bordered mb-0"><tbody>'
-            + '<tr><th>직영점명</th><td>' + d.storeName + '</td><th>식재료명</th><td>' + d.ingredientName + '</td></tr>'
-            + '<tr><th>보관유형</th><td>' + d.storageType + '</td><th>관리방법</th><td>' + (d.managementMethod ?? '-') + '</td></tr>'
-            + '<tr><th>현재 재고</th><td>' + d.currentQuantity + ' ' + d.orderUnit + '</td><th>용량</th><td>' + d.capacity + ' ' + d.capacityUnit + '</td></tr>'
-            + '<tr><th>유통기한</th><td>' + d.expirationPeriod + '일</td><th>소비기한 (하절기)</th><td>' + d.consumptionPeriod + '일 (' + d.summerConsumptionPeriod + '일)</td></tr>'
-            + '</tbody></table></section>'
-            + '<section><h6 class="fw-bold mb-3">사용 이력</h6>'
-            + '<table class="table table-hover mb-0"><thead><tr>'
-            + '<th>입고일시</th><th>관리시작</th><th>소비일시</th><th>유통기한</th><th>사용수량</th>'
-            + '</tr></thead><tbody>' + usageRows + '</tbody></table></section>';
+            // 기본 정보
+            + '<section class="card p-4 mb-3">'
+            + '<div class="d-flex justify-content-between align-items-start mb-3">'
+            + '<h4 class="fw-bold mb-0">' + d.ingredientName + '</h4>'
+            + '<div class="bg-light rounded px-4 py-3">잔여수량'
+            + '<span class="fs-4 fw-bold ms-5">' + d.currentQuantity + '</span> ' + d.orderUnit
+            + '</div>'
+            + '</div>'
+            + '<div class="row g-2">'
+            + item('입고단위', d.orderUnit)
+            + item('용량단위', d.capacity + ' ' + d.capacityUnit)
+            + item('보관유형', d.storageType)
+            + item('관리방식', d.managementMethod ?? '-')
+            + item('유통기한', '제조일자 후 + ' + d.expirationPeriod + '일')
+            + item('소비기한', method + ' 후 + ' + d.consumptionPeriod + '일')
+            + item('담당자', d.userName ?? '-')
+            + item('소비기한 (여름)', method + ' 후 + ' + d.summerConsumptionPeriod + '일')
+            + '</div>'
+            + '</section>'
+            // 입고 정보
+            + '<section class="card p-4 mb-3">'
+            + '<h6 class="fw-bold mb-3">입고 정보</h6>'
+            + '<div class="row g-2">'
+            + item('제조일자', formatDay(d.manufactureAt))
+            + item('유통기한', formatDay(d.expirationDate))
+            + item('입고일자', formatDate(d.storeAt))
+            + item('입고수량', d.orderQuantity + ' ' + d.orderUnit)
+            + '</div>'
+            + '</section>'
+            // 사용 이력
+            + '<section class="card p-4">'
+            + '<h6 class="fw-bold mb-3">사용 이력</h6>'
+            + '<table class="table mb-0">'
+            + '<thead class="table-light"><tr>'
+            + '<th>번호</th><th>소비기한</th><th>관리시작일시</th><th>사용개수</th>'
+            + '</tr></thead>'
+            + '<tbody>' + usageRows + '</tbody>'
+            + '</table>'
+            + '</section>';
     }
-
-
-
 
 
     // 모달
