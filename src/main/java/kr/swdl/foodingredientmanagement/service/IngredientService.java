@@ -1,12 +1,6 @@
 package kr.swdl.foodingredientmanagement.service;
 
-import kr.swdl.foodingredientmanagement.repository.IngredientRepository;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class IngredientService {
