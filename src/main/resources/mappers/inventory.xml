@@ -138,7 +138,7 @@
         i.sub_category_name AS subCategoryName,
         i.ingredient_name   AS ingredientName,
         i.storage_type      AS storageType,
-        od.current_quantity AS currentQuantity,
+        SUM(od.current_quantity) AS currentQuantity,
         i.order_unit        AS orderUnit,
         u.user_name         AS userName
         FROM order_details od
@@ -147,14 +147,19 @@
         JOIN users u       ON s.user_id        = u.user_id
         JOIN ingredients i ON od.ingredient_id = i.ingredient_id
         WHERE od.current_quantity > 0
+        AND od.order_status = '승인'
+        AND od.store_at IS NOT NULL
         AND o.store_id = #{storeId}
+
         <if test="subCategoryName != null and subCategoryName != ''">
             AND i.sub_category_name = #{subCategoryName}
         </if>
         <if test="ingredientName != null and ingredientName != ''">
             AND i.ingredient_name LIKE CONCAT('%', #{ingredientName}, '%')
         </if>
-        ORDER BY i.sub_category_name, i.ingredient_name, od.store_at
+        GROUP BY s.store_id, s.store_name, i.ingredient_id, i.sub_category_name,
+        i.ingredient_name, i.storage_type, i.order_unit, u.user_name
+        ORDER BY i.sub_category_name, i.ingredient_name
     </select>
 
 
