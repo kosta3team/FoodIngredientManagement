@@ -1,13 +1,12 @@
 package kr.swdl.foodingredientmanagement.controller;
 
 import kr.swdl.foodingredientmanagement.controller.request.StoreInventorySearchRequestDTO;
+import kr.swdl.foodingredientmanagement.controller.response.StoreInventoryDetailResponseDTO;
 import kr.swdl.foodingredientmanagement.controller.response.StoreInventoryListResponseDTO;
 import kr.swdl.foodingredientmanagement.service.InventoryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,5 +27,12 @@ public class StoreInventoryRestController {
     @GetMapping("/list")
     public List<StoreInventoryListResponseDTO> getStoreInventoryList(@ModelAttribute StoreInventorySearchRequestDTO request){
         return inventoryService.getStoreInventoryList(request);
+    }
+
+    // 직영점 재고 상세
+    @GetMapping("/detail")
+    public ResponseEntity<StoreInventoryDetailResponseDTO> getStoreInventoryDetail(@RequestParam Long ingredientId) {
+        StoreInventoryDetailResponseDTO detail = inventoryService.getStoreInventoryDetail(ingredientId);
+        return detail == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(detail);
     }
 }

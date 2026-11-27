@@ -2,6 +2,7 @@ package kr.swdl.foodingredientmanagement.service;
 
 import kr.swdl.foodingredientmanagement.controller.request.HQInventorySearchRequestDTO;
 import kr.swdl.foodingredientmanagement.controller.response.HQInventoryListResponseDTO;
+import kr.swdl.foodingredientmanagement.controller.response.StoreInventoryDetailResponseDTO;
 import kr.swdl.foodingredientmanagement.repository.vo.InventoryListVO;
 import kr.swdl.foodingredientmanagement.repository.vo.InventoryOrderVO;
 import kr.swdl.foodingredientmanagement.repository.vo.InventoryUsageListVO;
@@ -252,5 +253,18 @@ public class InventoryServiceTest {
         Assertions.assertTrue(list.contains("육가공류"));
         Assertions.assertEquals(list.size(), list.stream().distinct().count());   // 중복 없음
         log.info("{}", list);
+    }
+
+    @Test
+    public void 직영점_재고_상세_조회_성공() {
+        StoreInventoryDetailResponseDTO detail = inventoryService.getStoreInventoryDetail(1L);
+        Assertions.assertNotNull(detail);
+        log.info("{}", detail);
+    }
+
+    @Test
+    public void 직영점_재고_상세_조회_실패() {
+        StoreInventoryDetailResponseDTO detail = inventoryService.getStoreInventoryDetail(99999L);
+        Assertions.assertNull(detail);
     }
 }

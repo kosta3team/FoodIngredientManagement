@@ -2,10 +2,7 @@ package kr.swdl.foodingredientmanagement.service;
 
 import kr.swdl.foodingredientmanagement.controller.request.HQInventorySearchRequestDTO;
 import kr.swdl.foodingredientmanagement.controller.request.StoreInventorySearchRequestDTO;
-import kr.swdl.foodingredientmanagement.controller.response.HQInventoryDetailResponseDTO;
-import kr.swdl.foodingredientmanagement.controller.response.HQInventoryListResponseDTO;
-import kr.swdl.foodingredientmanagement.controller.response.HQInventoryUsageResponseDTO;
-import kr.swdl.foodingredientmanagement.controller.response.StoreInventoryListResponseDTO;
+import kr.swdl.foodingredientmanagement.controller.response.*;
 import kr.swdl.foodingredientmanagement.repository.vo.InventoryListVO;
 import kr.swdl.foodingredientmanagement.repository.vo.InventoryOrderVO;
 import kr.swdl.foodingredientmanagement.repository.vo.InventoryUsageListVO;
@@ -170,5 +167,42 @@ public class InventoryService {
     // 분류 드롭다운 목록
     public List<String> getSubCategoryList() {
         return inventoryRepository.getSubCategoryList();
+    }
+
+    // 직영점 재고 상세
+    public StoreInventoryDetailResponseDTO getStoreInventoryDetail(Long ingredientId) {
+        Long storeId = 2L;   // TODO: 로그인 세션 생기면 교체
+        InventoryListVO detail = getInventoryDetail(storeId, ingredientId);
+        if (detail == null) return null;
+
+        List<StoreInventoryUsageResponseDTO> usageList =
+                getInventoryUsageList(storeId, ingredientId).stream()
+                        .map(u -> StoreInventoryUsageResponseDTO.builder()
+                                .consumptionAt(toLocalDateTime(u.getConsumptionAt()))
+                                .managementStartAt(toLocalDateTime(u.getManagementStartAt()))
+                                .expirationAt(toLocalDateTime(u.getExpirationAt()))
+                                .manufactureAt(toLocalDateTime(u.getManufactureAt()))
+                                .storeAt(toLocalDateTime(u.getStoreAt()))
+                                .orderQuantity(u.getOrderQuantity())
+                                .usageQuantity(u.getUsageQuantity())
+                                .orderUnit(u.getOrderUnit())
+                                .build())
+                        .toList();
+
+        return StoreInventoryDetailResponseDTO.builder()
+                .storeName(detail.getStoreName())
+                .ingredientName(detail.getIngredientName())
+                .currentQuantity(detail.getCurrentQuantity())
+                .orderUnit(detail.getOrderUnit())
+                .capacity(detail.getCapacity())
+                .capacityUnit(detail.getCapacityUnit())
+                .storageType(detail.getStorageType())
+                .managementMethod(detail.getManagementMethod())
+                .expirationPeriod(detail.getExpirationPeriod())
+                .consumptionPeriod(detail.getConsumptionPeriod())
+                .summerConsumptionPeriod(detail.getSummerConsumptionPeriod())
+                .userName(detail.getUserName())
+                .usageList(usageList)
+                .build();
     }
 }
