@@ -65,7 +65,7 @@ public class ImageHandler {
 
     private String makeUniqueName(String contentType) {
         String type = contentType.split("/")[1];
-        if (!type.equals("jpg") && !(!type.equals("png"))) {
+        if (!type.equals("jpg") && !(type.equals("png"))) {
             throw new IllegalArgumentException("This format is not supported. Please check if the media type is JPG or PNG.");
         }
         return UUID.randomUUID() + "." + type;
@@ -73,7 +73,7 @@ public class ImageHandler {
 
     public String getImage(String urn) {
         if (null == urn || urn.isEmpty()) {
-            throw new IllegalStateException("Invalid urn.");
+            return null;
         }
         Path filePath = saveDirectory.resolve(urn).normalize();
         try {

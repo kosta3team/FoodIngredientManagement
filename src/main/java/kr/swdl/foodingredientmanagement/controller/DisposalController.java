@@ -14,9 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
-@Slf4j
-
-
 public class DisposalController {
 
     private final DisposalService disposalService;

@@ -5,16 +5,11 @@ import kr.swdl.foodingredientmanagement.controller.response.DisposalDetailRespon
 import kr.swdl.foodingredientmanagement.dto.*;
 import kr.swdl.foodingredientmanagement.service.DisposalService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
-
-
 @RestController
 @RequiredArgsConstructor
-@Slf4j
 public class DisposalRestController {
 
     private final DisposalService disposalService;
@@ -30,7 +25,6 @@ public class DisposalRestController {
         return ResponseEntity.ok().body(disposalService.getStoreDisposals(filter, page, size));
     }
 
-    // 본사 승인/거절
     @PatchMapping("/api/hq/approve/{disposalId}")
     public void approveDisposal(@PathVariable("disposalId") Long disposalId, @RequestBody DisposalApproveRequestDTO disposalApproveRequestDTO) {
         disposalService.approveDisposal(2L, disposalId
@@ -40,20 +34,16 @@ public class DisposalRestController {
                         .rejectReason(disposalApproveRequestDTO.getRejectReason()).build());
     }
 
-    // 폐기 확인 정보 등록
     @PatchMapping("/api/store/disposalApproveInfo/{disposalId}")
     public void updateDisposalAppInfo(@PathVariable("disposalId") Long disposalId, @ModelAttribute DisposalAppInfoRequestDTO disposalAppInfoRequestDTO) {
-        log.info("dump : {}", disposalAppInfoRequestDTO);
         disposalService.updateDisposalAppInfo(4L, disposalId, DisposalAppInfoDTO.builder()
                 .disposalImg(disposalAppInfoRequestDTO.getDisposalImg()).build());
     }
 
-    // 삭제
     @DeleteMapping("/api/store/disposal/{disposalId}")
     public void deleteDisposal(@PathVariable("disposalId") Long disposalId) {
         disposalService.deleteDisposal(disposalId);
     }
-
 
     @GetMapping("/api/disposal/{disposalId}")
     public ResponseEntity<?> getDisposalDetailByDisposalId(@PathVariable("disposalId") Long disposalId) {
