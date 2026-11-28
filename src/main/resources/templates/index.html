@@ -1,0 +1,2508 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>관리자 메인 페이지</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <link rel="stylesheet" href="/css/common.css">
+
+    <style>
+        /* ==================== 전체 레이아웃 ==================== */
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .hq-layout {
+            height: 100dvh;
+            min-height: 0 !important;
+            overflow: hidden;
+        }
+
+        .hq-layout > .hq-main {
+            flex: 1 1 0%;
+            min-width: 0;
+            max-width: none;
+            height: 100%;
+            min-height: 0;
+            overflow: hidden !important;
+        }
+
+        .hq-main > .hq-content {
+            width: 100%;
+            max-width: none;
+            height: 100%;
+            min-height: 0;
+            display: grid;
+            grid-template-rows:
+                auto
+                minmax(0, 1.15fr)
+                minmax(0, 1fr);
+            gap: 10px;
+            padding: 12px !important;
+            overflow: hidden;
+        }
+
+        .hq-content > section {
+            margin: 0;
+            min-height: 0;
+            min-width: 0;
+            display: grid;
+            gap: 10px;
+        }
+
+        .kpi-section {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .chart-section {
+            grid-template-columns:
+                minmax(0, 1.8fr)
+                minmax(0, 1fr)
+                minmax(0, 1.8fr);
+        }
+
+        .statistics-section {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .hq-content .hq-card {
+            height: 100%;
+            min-height: 0;
+            min-width: 0;
+            padding: 12px !important;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+
+        /* ==================== 상단 KPI ==================== */
+
+        .hq-kpi-number {
+            font-size: clamp(15px, 1.6vw, 26px);
+            font-weight: 700;
+            margin: 5px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+
+        /* ==================== 공통 ==================== */
+
+        .dashboard-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 6px;
+            flex: none;
+        }
+
+        .dashboard-head h6 {
+            font-size: 14px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            min-width: 0;
+        }
+
+        .controls select {
+            width: auto;
+            max-width: 100%;
+            font-size: 12px;
+            padding-top: 3px;
+            padding-bottom: 3px;
+        }
+
+        .note {
+            font-size: 11px;
+            color: #6c757d;
+            margin: 0 0 6px;
+            flex: none;
+        }
+
+        .empty {
+            text-align: center;
+            color: #6c757d;
+        }
+
+
+        /* ==================== 테이블 ==================== */
+
+        .table-scroll {
+            flex: 1;
+            min-height: 0;
+            min-width: 0;
+            overflow: auto;
+        }
+
+        .table-scroll table {
+            width: 100%;
+            font-size: 12px;
+            margin: 0;
+        }
+
+        .table-scroll th,
+        .table-scroll td {
+            white-space: nowrap;
+            padding: 5px 7px;
+        }
+
+        .table-scroll thead {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 1;
+        }
+
+        .statistics-section .table-scroll table {
+            font-size: 14px;
+        }
+
+        .statistics-section .table-scroll td,
+        .statistics-section .table-scroll th {
+            padding: 9px 12px;
+        }
+
+
+        /* ==================== 공통 탭 ==================== */
+
+        .tab-input {
+            position: absolute;
+            opacity: 0;
+            width: 1px;
+            height: 1px;
+        }
+
+        .tab-labels {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 8px;
+            flex: none;
+        }
+
+        .tab-labels label {
+            cursor: pointer;
+            border: 1px solid #dce2ea;
+            border-radius: 5px;
+            padding: 6px 10px;
+            font-size: 12px;
+            color: #495057;
+            transition: background-color .15s;
+        }
+
+        .tab-labels label:hover {
+            background-color: #f1f5f9;
+        }
+
+        .tab-panel {
+            display: none;
+            flex: 1;
+            min-height: 0;
+            min-width: 0;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        .tab-panel > .table-scroll {
+            flex: 1;
+            min-height: 0;
+        }
+
+        .tab-panel h6 {
+            font-size: 13px;
+            margin: 4px 0 8px;
+        }
+
+
+        /* ==================== 상세 통계 탭 전환 ==================== */
+
+        #stats-0:checked ~ #stats-panel-0,
+        #stats-1:checked ~ #stats-panel-1,
+        #stats-2:checked ~ #stats-panel-2,
+        #stats-3:checked ~ #stats-panel-3,
+        #stats-4:checked ~ #stats-panel-4,
+        #stats-5:checked ~ #stats-panel-5,
+        #stats-6:checked ~ #stats-panel-6,
+        #stats-7:checked ~ #stats-panel-7,
+        #stats-8:checked ~ #stats-panel-8,
+        #stats-9:checked ~ #stats-panel-9 {
+            display: flex;
+        }
+
+        #stats-0:checked ~ .tab-labels label[for="stats-0"],
+        #stats-1:checked ~ .tab-labels label[for="stats-1"],
+        #stats-2:checked ~ .tab-labels label[for="stats-2"],
+        #stats-3:checked ~ .tab-labels label[for="stats-3"],
+        #stats-4:checked ~ .tab-labels label[for="stats-4"],
+        #stats-5:checked ~ .tab-labels label[for="stats-5"],
+        #stats-6:checked ~ .tab-labels label[for="stats-6"],
+        #stats-7:checked ~ .tab-labels label[for="stats-7"],
+        #stats-8:checked ~ .tab-labels label[for="stats-8"],
+        #stats-9:checked ~ .tab-labels label[for="stats-9"] {
+            background: #3478df;
+            color: white;
+            border-color: #3478df;
+        }
+
+        #stats-0:focus-visible ~ .tab-labels label[for="stats-0"],
+        #stats-1:focus-visible ~ .tab-labels label[for="stats-1"],
+        #stats-2:focus-visible ~ .tab-labels label[for="stats-2"],
+        #stats-3:focus-visible ~ .tab-labels label[for="stats-3"],
+        #stats-4:focus-visible ~ .tab-labels label[for="stats-4"],
+        #stats-5:focus-visible ~ .tab-labels label[for="stats-5"],
+        #stats-6:focus-visible ~ .tab-labels label[for="stats-6"],
+        #stats-7:focus-visible ~ .tab-labels label[for="stats-7"],
+        #stats-8:focus-visible ~ .tab-labels label[for="stats-8"],
+        #stats-9:focus-visible ~ .tab-labels label[for="stats-9"] {
+            outline: 2px solid #222;
+        }
+
+
+        /* ==================== 꺾은선 그래프 전환 ==================== */
+
+        .trend-switch {
+            display: flex;
+            gap: 4px;
+        }
+
+        .trend-switch label {
+            cursor: pointer;
+            border: 1px solid #dce2ea;
+            border-radius: 5px;
+            padding: 5px 9px;
+            font-size: 12px;
+            color: #495057;
+        }
+
+        #trend-price:checked ~ .dashboard-head label[for="trend-price"] {
+            background: #3478df;
+            border-color: #3478df;
+            color: white;
+        }
+
+        #trend-quantity:checked ~ .dashboard-head label[for="trend-quantity"] {
+            background: #16a085;
+            border-color: #16a085;
+            color: white;
+        }
+
+        #trend-price:focus-visible ~ .dashboard-head label[for="trend-price"],
+        #trend-quantity:focus-visible ~ .dashboard-head label[for="trend-quantity"] {
+            outline: 2px solid #222;
+        }
+
+
+        /* ==================== 꺾은선 그래프 ==================== */
+
+        .chart-wrap {
+            position: relative;
+            flex: 1 1 0;
+            width: 100%;
+            min-height: 0;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .chart-wrap svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .axis-text {
+            fill: #6c757d;
+            font-size: 11px;
+        }
+
+        .point-text {
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+
+        /* ==================== 공통 도넛 그래프 ==================== */
+
+        .donut-container {
+            flex: 1;
+            min-height: 0;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            container-type: size;
+        }
+
+        .donut-chart {
+            position: relative;
+            width: min(200px, 94cqw, 94cqh);
+            aspect-ratio: 1;
+            flex: none;
+            border-radius: 50%;
+            background-color: #e5e9ef;
+        }
+
+        .donut-chart > svg {
+            position: absolute;
+            inset: 0;
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .donut-center {
+            position: absolute;
+            inset: 19%;
+            z-index: 1;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .donut-number {
+            font-size: clamp(16px, 2vw, 25px);
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .donut-center small {
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .rate-summary {
+            font-size: 12px;
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        .legend-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 4px;
+            flex: none;
+        }
+
+        .legend-blue {
+            background-color: #3478df;
+        }
+
+        .legend-gray {
+            background-color: #e5e9ef;
+        }
+
+
+        /* ==================== 식재료별 폐기 비용 ==================== */
+
+        .ingredient-chart-layout {
+            display: grid;
+            grid-template-columns:
+                minmax(0, 1fr)
+                minmax(0, 1fr);
+            align-items: stretch;
+            gap: 12px;
+            flex: 1;
+            min-width: 0;
+            min-height: 0;
+        }
+
+        .ingredient-chart-layout .donut-container {
+            width: 100%;
+            height: 100%;
+        }
+
+        .ingredient-total {
+            font-size: clamp(10px, 1.1vw, 19px);
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .ingredient-legend {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 10px;
+            min-width: 0;
+            min-height: 0;
+            font-size: 12px;
+        }
+
+        .ingredient-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            min-width: 0;
+        }
+
+        .ingredient-name {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .ingredient-price {
+            margin-left: auto;
+            white-space: nowrap;
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+        }
+
+
+        /* ==================== 폐기율 막대 ==================== */
+
+        .rate-bar {
+            height: 7px;
+            border-radius: 4px;
+            background: #e5e9ef;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .rate-bar-fill {
+            height: 100%;
+            background: #3478df;
+            border-radius: 4px;
+        }
+
+
+        /* ==================== 반응형 ==================== */
+
+        @media (max-width: 1200px) {
+
+            .chart-section {
+                grid-template-columns:
+                    minmax(0, 1.5fr)
+                    minmax(0, 1fr)
+                    minmax(0, 1.7fr);
+            }
+
+            .dashboard-head h6 {
+                font-size: 12px;
+            }
+
+            .ingredient-chart-layout {
+                gap: 6px;
+            }
+
+            .ingredient-legend {
+                font-size: 10px;
+                gap: 7px;
+            }
+
+            .trend-switch label {
+                font-size: 11px;
+                padding: 4px 6px;
+            }
+        }
+
+    </style>
+</head>
+
+<body th:attr="data-statistics-url=@{/api/disposal-statistics}">
+
+<div class="hq-layout d-flex">
+
+    <div th:replace="~{fragment/sidebar :: sidebarFragment}"></div>
+
+    <main class="hq-main">
+
+        <div class="hq-content p-4">
+
+            <!-- ==================== 상단 카드 ==================== -->
+
+            <section class="kpi-section">
+
+                <!-- 최근 7일간 총 폐기 금액 -->
+
+                <div class="card hq-card">
+
+                    <div class="text-secondary small">
+                        최근 7일간 총 폐기 금액
+                    </div>
+
+                    <div class="hq-kpi-number"
+                         th:text="${#numbers.formatInteger(totalDisposalPriceForWeek, 1, 'COMMA') + '원'}">
+                        —
+                    </div>
+
+                    <small class="text-secondary">
+                        전체 직영점 · 최근 7일
+                    </small>
+
+                </div>
+
+
+                <!-- 최근 7일간 폐기 건수 -->
+
+                <div class="card hq-card">
+
+                    <div class="text-secondary small">
+                        최근 7일간 폐기 건수
+                    </div>
+
+                    <div class="hq-kpi-number"
+                         th:text="${#numbers.formatInteger(totalDisposalCountForWeek, 1, 'COMMA') + '건'}">
+                        —
+                    </div>
+
+                    <small class="text-secondary">
+                        승인 및 완료된 폐기
+                    </small>
+
+                </div>
+
+
+                <!-- 전체 발주 대비 통폐기율 -->
+
+                <div class="card hq-card">
+
+                    <div class="text-secondary small">
+                        전체 발주 대비 통폐기율
+                    </div>
+
+                    <div class="hq-kpi-number"
+                         th:text="${orderDisposalRate != null ? #numbers.formatDecimal(orderDisposalRate, 1, 2) + '%' : '—'}">
+                        —
+                    </div>
+
+                    <small class="text-secondary">
+                        전체 기간 · 발주 상세 기준
+                    </small>
+
+                </div>
+
+
+                <!-- 금일 총 폐기 금액 -->
+
+                <div class="card hq-card">
+
+                    <div class="text-secondary small">
+                        금일 총 폐기 금액
+                    </div>
+
+                    <div class="hq-kpi-number"
+                         th:text="${#numbers.formatInteger(totalDisposalPriceForToday, 1, 'COMMA') + '원'}">
+                        —
+                    </div>
+
+                    <small class="text-secondary"
+                           th:text="${today}">
+                    </small>
+
+                </div>
+
+            </section>
+
+
+            <!-- ==================== 차트 영역 ==================== -->
+
+            <section class="chart-section">
+
+                <!-- ==================== 최근 7일간 폐기 추이 ==================== -->
+
+                <div class="card hq-card">
+
+                    <input class="tab-input"
+                           type="radio"
+                           name="trend"
+                           id="trend-price"
+                           value="price"
+                           checked>
+
+                    <input class="tab-input"
+                           type="radio"
+                           name="trend"
+                           id="trend-quantity"
+                           value="quantity">
+
+                    <div class="dashboard-head">
+
+                        <h6>최근 7일간 폐기 추이</h6>
+
+                        <div class="trend-switch">
+
+                            <label for="trend-price">
+                                폐기 비용
+                            </label>
+
+                            <label for="trend-quantity">
+                                폐기 수량
+                            </label>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Controller에서 전달받은 그래프 데이터 -->
+
+                    <div id="trendData" hidden>
+
+                        <span th:each="date, stat : ${dailyDates}"
+                              th:attr="data-date=${date},
+                                       data-price=${dailyPrices[stat.index]},
+                                       data-quantity=${dailyQuantities[stat.index]}">
+                        </span>
+
+                    </div>
+                    <!-- 꺾은선 그래프 -->
+
+                    <div class="chart-wrap">
+
+                        <svg id="trendChart"
+                             xmlns="http://www.w3.org/2000/svg"
+                             viewBox="0 0 600 280"
+                             preserveAspectRatio="xMidYMid meet"
+                             role="img"
+                             aria-label="최근 7일간 폐기 추이">
+                        </svg>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==================== 발주 대비 통폐기율 ==================== -->
+
+                <div class="card hq-card">
+
+                    <div class="dashboard-head">
+
+                        <h6>발주 대비 통폐기율</h6>
+
+                    </div>
+
+                    <p class="note">
+                        전체 기간 · 발주 상세 건수 기준
+                    </p>
+
+                    <div class="donut-container">
+
+                        <div id="rateDonut"
+                             class="donut-chart"
+                             th:attr="data-rate=${orderDisposalRate}">
+
+                            <svg id="rateDonutSvg"
+                                 xmlns="http://www.w3.org/2000/svg"
+                                 viewBox="0 0 100 100"
+                                 aria-hidden="true">
+
+                                <circle cx="50"
+                                        cy="50"
+                                        r="40"
+                                        fill="none"
+                                        stroke="#e5e9ef"
+                                        stroke-width="20">
+                                </circle>
+
+                            </svg>
+
+                            <div class="donut-center">
+
+                                <div class="donut-number"
+                                     th:text="${orderDisposalRate != null ? #numbers.formatDecimal(orderDisposalRate, 1, 2) + '%' : '0.00%'}">
+                                    0.00%
+                                </div>
+
+                                <small class="text-secondary">
+                                    통폐기율
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- 범례 -->
+
+                    <div class="legend">
+
+                        <span>
+
+                            <span class="legend-dot legend-blue"></span>
+
+                            통폐기 발생
+
+                        </span>
+
+                        <span>
+
+                            <span class="legend-dot legend-gray"></span>
+
+                            미발생
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- 발주 상세 건수 및 폐기 발생 건수 -->
+
+                    <div id="rateSummary"
+                         class="rate-summary">
+
+                        발주 상세
+
+                        <strong th:text="${#numbers.formatInteger(totalOrderCount, 1, 'COMMA') + '건'}">
+                        </strong>
+
+                        /
+
+                        폐기 발생
+
+                        <strong th:text="${#numbers.formatInteger(totalDisposalCount, 1, 'COMMA') + '건'}">
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==================== 식재료별 폐기 비용 ==================== -->
+
+                <div class="card hq-card">
+
+                    <div class="dashboard-head">
+
+                        <h6>식재료별 폐기 비용 TOP 5</h6>
+
+                    </div>
+
+                    <p class="note">
+                        전체 직영점 · 전체 기간
+                    </p>
+
+
+                    <!-- Controller에서 전달받은 식재료별 폐기 비용 -->
+
+                    <div id="ingredientData" hidden>
+
+                        <span th:each="row : ${disposalCostsByIngredient}"
+                              th:attr="data-name=${row.ingredientName},
+                                       data-price=${row.totalDisposalPrice}">
+                        </span>
+
+                    </div>
+
+
+                    <!-- 도넛 그래프 및 우측 범례 -->
+
+                    <div class="ingredient-chart-layout">
+
+                        <!-- 좌측 도넛 그래프 -->
+
+                        <div class="donut-container">
+
+                            <div id="ingredientDonut"
+                                 class="donut-chart">
+
+                                <svg id="ingredientDonutSvg"
+                                     xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 100 100"
+                                     aria-hidden="true">
+
+                                    <circle cx="50"
+                                            cy="50"
+                                            r="40"
+                                            fill="none"
+                                            stroke="#e5e9ef"
+                                            stroke-width="20">
+                                    </circle>
+
+                                </svg>
+
+                                <div class="donut-center">
+
+                                    <div id="ingredientTotal"
+                                         class="ingredient-total">
+                                        0원
+                                    </div>
+
+                                    <small class="text-secondary">
+                                        총 폐기 비용
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- 우측 TOP 5 및 기타 범례 -->
+
+                        <div id="ingredientLegend"
+                             class="ingredient-legend">
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ==================== 상세 통계 영역 ==================== -->
+
+            <section class="statistics-section">
+
+                <div class="card hq-card">
+
+                    <div class="dashboard-head">
+
+                        <h6>폐기 상세 통계</h6>
+
+                        <span class="note">
+                            매장별 통계는 직영점 선택 후 조회
+                        </span>
+
+                    </div>
+
+
+                    <!-- 상세 통계 탭 -->
+
+                    <input class="tab-input"
+                           type="radio"
+                           name="stats"
+                           id="stats-0"
+                           checked>
+
+                    <input class="tab-input"
+                           type="radio"
+                           name="stats"
+                           id="stats-1">
+
+                    <input class="tab-input"
+                           type="radio"
+                           name="stats"
+                           id="stats-2">
+
+                    <input class="tab-input"
+                           type="radio"
+                           name="stats"
+                           id="stats-3">
+
+                    <input class="tab-input"
+                           type="radio"
+                           name="stats"
+                           id="stats-4">
+
+                    <input class="tab-input"
+                           type="radio"
+                           name="stats"
+                           id="stats-5">
+
+                    <input class="tab-input"
+                           type="radio"
+                           name="stats"
+                           id="stats-6">
+
+                    <input class="tab-input"
+                           type="radio"
+                           name="stats"
+                           id="stats-7">
+
+                    <input class="tab-input"
+                           type="radio"
+                           name="stats"
+                           id="stats-8">
+
+                    <input class="tab-input"
+                           type="radio"
+                           name="stats"
+                           id="stats-9">
+
+
+                    <!-- 상세 통계 탭 버튼 -->
+
+                    <div class="tab-labels">
+
+                        <label for="stats-0">
+                            직영점별 비용
+                        </label>
+
+                        <label for="stats-1">
+                            직영점별 폐기율
+                        </label>
+
+                        <label for="stats-2">
+                            전체 식재료 비용
+                        </label>
+
+                        <label for="stats-3">
+                            매장 식재료 비용
+                        </label>
+
+                        <label for="stats-4">
+                            전체 폐기 유형
+                        </label>
+
+                        <label for="stats-5">
+                            매장 폐기 유형
+                        </label>
+
+                        <label for="stats-6">
+                            전체 수량 폐기율
+                        </label>
+
+                        <label for="stats-7">
+                            매장 수량 폐기율
+                        </label>
+
+                        <label for="stats-8">
+                            매장 건수 폐기율
+                        </label>
+
+                        <label for="stats-9">
+                            일자별 통계
+                        </label>
+
+                    </div>
+
+
+                    <!-- ==================== 0. 직영점별 폐기 비용 ==================== -->
+
+                    <div class="tab-panel"
+                         id="stats-panel-0">
+
+                        <h6>금일 직영점별 폐기 비용</h6>
+
+                        <div class="table-scroll">
+
+                            <table class="table table-sm hq-table align-middle">
+
+                                <thead>
+
+                                <tr>
+
+                                    <th>순위</th>
+
+                                    <th id="rankingName">
+                                        직영점명
+                                    </th>
+
+                                    <th id="rankingValue"
+                                        class="text-end">
+                                        폐기 비용
+                                    </th>
+
+                                </tr>
+
+                                </thead>
+
+                                <tbody id="rankingRows">
+
+                                <tr th:each="row, stat : ${storeDisposalCostRanking}">
+
+                                    <td th:text="${stat.count}"></td>
+
+                                    <td th:text="${row.storeName}"></td>
+
+                                    <td class="text-end"
+                                        th:text="${#numbers.formatInteger(row.totalDisposalPrice, 1, 'COMMA') + '원'}">
+                                    </td>
+
+                                </tr>
+
+                                <tr th:if="${storeDisposalCostRanking == null or #lists.isEmpty(storeDisposalCostRanking)}">
+
+                                    <td colspan="3"
+                                        class="empty">
+                                        조회된 데이터가 없습니다.
+                                    </td>
+
+                                </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ==================== 1. 직영점별 폐기율 ==================== -->
+
+                    <div class="tab-panel"
+                         id="stats-panel-1">
+
+                        <h6>직영점별 발주 대비 통폐기율</h6>
+
+                        <div class="table-scroll">
+
+                            <table class="table table-sm hq-table">
+
+                                <thead>
+
+                                <tr>
+
+                                    <th>직영점명</th>
+                                    <th>발주 건수</th>
+                                    <th>폐기 건수</th>
+                                    <th>폐기율</th>
+
+                                </tr>
+
+                                </thead>
+
+                                <tbody id="storeRateRows">
+
+                                <tr th:each="row : ${storeOrderDisposalRates}">
+
+                                    <td th:text="${row.storeName}"></td>
+
+                                    <td th:text="${row.totalOrderCount}"></td>
+
+                                    <td th:text="${row.totalDisposalCount}"></td>
+
+                                    <td th:text="${row.disposalRatePct != null ? #numbers.formatDecimal(row.disposalRatePct, 1, 2) + '%' : '—'}">
+                                    </td>
+
+                                </tr>
+
+                                <tr th:if="${storeOrderDisposalRates == null or #lists.isEmpty(storeOrderDisposalRates)}">
+
+                                    <td colspan="4"
+                                        class="empty">
+                                        조회된 데이터가 없습니다.
+                                    </td>
+
+                                </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ==================== 2. 전체 식재료별 폐기 비용 ==================== -->
+
+                    <div class="tab-panel"
+                         id="stats-panel-2">
+
+                        <h6>전체 식재료별 폐기 비용</h6>
+
+                        <div class="table-scroll">
+
+                            <table class="table table-sm hq-table">
+
+                                <thead>
+
+                                <tr>
+
+                                    <th>식재료명</th>
+                                    <th>폐기 수량</th>
+                                    <th>폐기 비용</th>
+
+                                </tr>
+
+                                </thead>
+
+                                <tbody id="ingredientPriceRows">
+
+                                <tr th:each="row : ${disposalCostsByIngredient}">
+
+                                    <td th:text="${row.ingredientName}"></td>
+
+                                    <td th:text="${row.totalDisposalQuantity}"></td>
+
+                                    <td th:text="${#numbers.formatInteger(row.totalDisposalPrice, 1, 'COMMA') + '원'}">
+                                    </td>
+
+                                </tr>
+
+                                <tr th:if="${disposalCostsByIngredient == null or #lists.isEmpty(disposalCostsByIngredient)}">
+
+                                    <td colspan="3"
+                                        class="empty">
+                                        조회된 데이터가 없습니다.
+                                    </td>
+
+                                </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ==================== 3. 매장 식재료별 폐기 비용 ==================== -->
+
+                    <div class="tab-panel"
+                         id="stats-panel-3">
+
+                        <h6>특정 직영점 식재료별 폐기 비용</h6>
+
+                        <div class="controls p-2">
+
+                            <select name="storeId"
+                                    id="costStore"
+                                    class="form-select form-select-sm">
+
+                                <option value=""
+                                        th:if="${storeList == null or #lists.isEmpty(storeList)}">
+                                    등록된 직영점이 없습니다.
+                                </option>
+
+                                <option th:each="store : ${storeList}"
+                                        th:value="${store.storeId}"
+                                        th:text="${store.storeName}"
+                                        th:selected="${selectedStoreId != null and store.storeId == selectedStoreId}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="table-scroll">
+
+                            <table class="table table-sm hq-table">
+
+                                <thead>
+
+                                <tr>
+
+                                    <th>식재료명</th>
+                                    <th>폐기 수량</th>
+                                    <th>폐기 비용</th>
+
+                                </tr>
+
+                                </thead>
+
+                                <tbody id="storeIngredientPriceRows">
+
+                                <tr th:each="row : ${disposalCostsByIngredientForStore}">
+
+                                    <td th:text="${row.ingredientName}"></td>
+
+                                    <td th:text="${row.totalDisposalQuantity}"></td>
+
+                                    <td th:text="${#numbers.formatInteger(row.totalDisposalPrice, 1, 'COMMA') + '원'}">
+                                    </td>
+
+                                </tr>
+
+                                <tr th:if="${disposalCostsByIngredientForStore == null or #lists.isEmpty(disposalCostsByIngredientForStore)}">
+
+                                    <td colspan="3"
+                                        class="empty">
+                                        조회된 데이터가 없습니다.
+                                    </td>
+
+                                </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ==================== 4. 전체 폐기 유형별 비율 ==================== -->
+
+                    <div class="tab-panel"
+                         id="stats-panel-4">
+
+                        <h6>전체 직영점 폐기 유형별 비율</h6>
+
+                        <div class="table-scroll">
+
+                            <table class="table table-sm hq-table">
+
+                                <thead>
+
+                                <tr>
+
+                                    <th>폐기 유형</th>
+                                    <th>건수</th>
+                                    <th>비율</th>
+
+                                </tr>
+
+                                </thead>
+
+                                <tbody id="typeRows">
+
+                                <tr th:each="row : ${disposalTypeRates}">
+
+                                    <td th:text="${row.disposalType}"></td>
+
+                                    <td th:text="${row.disposalCount + '건'}"></td>
+
+                                    <td>
+
+                                        <span th:text="${row.disposalRatePct != null ? #numbers.formatDecimal(row.disposalRatePct, 1, 2) + '%' : '—'}">
+                                        </span>
+
+                                        <div class="rate-bar">
+
+                                            <div class="rate-bar-fill"
+                                                 th:style="${'width:' + (row.disposalRatePct != null ? row.disposalRatePct : 0) + '%'}">
+                                            </div>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                                <tr th:if="${disposalTypeRates == null or #lists.isEmpty(disposalTypeRates)}">
+
+                                    <td colspan="3"
+                                        class="empty">
+                                        조회된 데이터가 없습니다.
+                                    </td>
+
+                                </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ==================== 5. 매장 폐기 유형별 비율 ==================== -->
+
+                    <div class="tab-panel"
+                         id="stats-panel-5">
+
+                        <h6>특정 직영점 폐기 유형별 비율</h6>
+
+                        <div class="controls p-2">
+
+                            <select name="storeId"
+                                    id="typeStore"
+                                    class="form-select form-select-sm">
+
+                                <option value=""
+                                        th:if="${storeList == null or #lists.isEmpty(storeList)}">
+                                    등록된 직영점이 없습니다.
+                                </option>
+
+                                <option th:each="store : ${storeList}"
+                                        th:value="${store.storeId}"
+                                        th:text="${store.storeName}"
+                                        th:selected="${selectedStoreId != null and store.storeId == selectedStoreId}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="table-scroll">
+
+                            <table class="table table-sm hq-table">
+
+                                <thead>
+
+                                <tr>
+
+                                    <th>폐기 유형</th>
+                                    <th>건수</th>
+                                    <th>비율</th>
+
+                                </tr>
+
+                                </thead>
+
+                                <tbody id="storeTypeRows">
+
+                                <tr th:each="row : ${disposalTypeRatesByStore}">
+
+                                    <td th:text="${row.disposalType}"></td>
+
+                                    <td th:text="${row.disposalCount + '건'}"></td>
+
+                                    <td>
+
+                                        <span th:text="${row.disposalRatePct != null ? #numbers.formatDecimal(row.disposalRatePct, 1, 2) + '%' : '—'}">
+                                        </span>
+
+                                        <div class="rate-bar">
+
+                                            <div class="rate-bar-fill"
+                                                 th:style="${'width:' + (row.disposalRatePct != null ? row.disposalRatePct : 0) + '%'}">
+                                            </div>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                                <tr th:if="${disposalTypeRatesByStore == null or #lists.isEmpty(disposalTypeRatesByStore)}">
+
+                                    <td colspan="3"
+                                        class="empty">
+                                        조회된 데이터가 없습니다.
+                                    </td>
+
+                                </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ==================== 6. 전체 식재료별 수량 폐기율 ==================== -->
+
+                    <div class="tab-panel"
+                         id="stats-panel-6">
+
+                        <h6>전체 식재료별 발주 수량 대비 폐기 수량</h6>
+
+                        <div class="table-scroll">
+
+                            <table class="table table-sm hq-table">
+
+                                <thead>
+
+                                <tr>
+
+                                    <th>식재료명</th>
+                                    <th>발주 수량</th>
+                                    <th>폐기 수량</th>
+                                    <th>폐기율</th>
+
+                                </tr>
+
+                                </thead>
+
+                                <tbody id="ingredientRows">
+
+                                <tr th:each="row : ${ingredientDisposalQuantityRates}">
+
+                                    <td th:text="${row.ingredientName}"></td>
+
+                                    <td th:text="${row.totalOrderQuantity + '' + row.orderUnit}">
+                                    </td>
+
+                                    <td th:text="${row.totalDisposalQuantity + '' + row.orderUnit}">
+                                    </td>
+
+                                    <td>
+
+                                        <span th:text="${row.disposalRatePct != null ? #numbers.formatDecimal(row.disposalRatePct, 1, 2) + '%' : '—'}">
+                                        </span>
+
+                                        <div class="rate-bar">
+
+                                            <div class="rate-bar-fill"
+                                                 th:style="${'width:' + (row.disposalRatePct != null ? row.disposalRatePct : 0) + '%'}">
+                                            </div>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                                <tr th:if="${ingredientDisposalQuantityRates == null or #lists.isEmpty(ingredientDisposalQuantityRates)}">
+
+                                    <td colspan="4"
+                                        class="empty">
+                                        조회된 데이터가 없습니다.
+                                    </td>
+
+                                </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ==================== 7. 매장 식재료별 수량 폐기율 ==================== -->
+
+                    <div class="tab-panel"
+                         id="stats-panel-7">
+
+                        <h6>특정 직영점 식재료별 발주 수량 대비 폐기 수량</h6>
+
+                        <div class="controls p-2">
+
+                            <select name="storeId"
+                                    id="ingredientStore"
+                                    class="form-select form-select-sm">
+
+                                <option value=""
+                                        th:if="${storeList == null or #lists.isEmpty(storeList)}">
+                                    등록된 직영점이 없습니다.
+                                </option>
+
+                                <option th:each="store : ${storeList}"
+                                        th:value="${store.storeId}"
+                                        th:text="${store.storeName}"
+                                        th:selected="${selectedStoreId != null and store.storeId == selectedStoreId}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="table-scroll">
+
+                            <table class="table table-sm hq-table">
+
+                                <thead>
+
+                                <tr>
+
+                                    <th>식재료명</th>
+                                    <th>발주 수량</th>
+                                    <th>폐기 수량</th>
+                                    <th>폐기율</th>
+
+                                </tr>
+
+                                </thead>
+
+                                <tbody id="storeIngredientQuantityRows">
+
+                                <tr th:each="row : ${storeIngredientDisposalQuantityRates}">
+
+                                    <td th:text="${row.ingredientName}"></td>
+
+                                    <td th:text="${row.totalOrderQuantity + '' + row.orderUnit}">
+                                    </td>
+
+                                    <td th:text="${row.totalDisposalQuantity + '' + row.orderUnit}">
+                                    </td>
+
+                                    <td th:text="${row.disposalRatePct != null ? #numbers.formatDecimal(row.disposalRatePct, 1, 2) + '%' : '—'}">
+                                    </td>
+
+                                </tr>
+
+                                <tr th:if="${storeIngredientDisposalQuantityRates == null or #lists.isEmpty(storeIngredientDisposalQuantityRates)}">
+
+                                    <td colspan="4"
+                                        class="empty">
+                                        조회된 데이터가 없습니다.
+                                    </td>
+
+                                </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ==================== 8. 매장 식재료별 건수 폐기율 ==================== -->
+
+                    <div class="tab-panel"
+                         id="stats-panel-8">
+
+                        <h6>특정 직영점 식재료별 발주 건수 대비 폐기율</h6>
+
+                        <div class="controls p-2">
+
+                            <select name="storeId"
+                                    id="ingredientCountStore"
+                                    class="form-select form-select-sm">
+
+                                <option value=""
+                                        th:if="${storeList == null or #lists.isEmpty(storeList)}">
+                                    등록된 직영점이 없습니다.
+                                </option>
+
+                                <option th:each="store : ${storeList}"
+                                        th:value="${store.storeId}"
+                                        th:text="${store.storeName}"
+                                        th:selected="${selectedStoreId != null and store.storeId == selectedStoreId}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="table-scroll">
+
+                            <table class="table table-sm hq-table">
+
+                                <thead>
+
+                                <tr>
+
+                                    <th>식재료명</th>
+                                    <th>발주 건수</th>
+                                    <th>폐기 건수</th>
+                                    <th>폐기율</th>
+
+                                </tr>
+
+                                </thead>
+
+                                <tbody id="storeIngredientCountRows">
+
+                                <tr th:each="row : ${storeIngredientDisposalRates}">
+
+                                    <td th:text="${row.ingredientName}"></td>
+
+                                    <td th:text="${row.totalOrderCount}"></td>
+
+                                    <td th:text="${row.totalDisposalCount}"></td>
+
+                                    <td th:text="${row.disposalRatePct != null ? #numbers.formatDecimal(row.disposalRatePct, 1, 2) + '%' : '—'}">
+                                    </td>
+
+                                </tr>
+
+                                <tr th:if="${storeIngredientDisposalRates == null or #lists.isEmpty(storeIngredientDisposalRates)}">
+
+                                    <td colspan="4"
+                                        class="empty">
+                                        조회된 데이터가 없습니다.
+                                    </td>
+
+                                </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ==================== 9. 최근 7일간 일자별 통계 ==================== -->
+
+                    <div class="tab-panel"
+                         id="stats-panel-9">
+
+                        <h6>최근 7일간 일자별 폐기 비용 및 수량</h6>
+
+                        <div class="table-scroll">
+
+                            <table class="table table-sm hq-table">
+
+                                <thead>
+
+                                <tr>
+
+                                    <th>날짜</th>
+                                    <th>폐기 건수</th>
+                                    <th>폐기 수량</th>
+                                    <th>폐기 비용</th>
+
+                                </tr>
+
+                                </thead>
+
+                                <tbody id="dailyRows">
+
+                                <tr th:each="row : ${dailyDisposalTotals}">
+
+                                    <td th:text="${row.disposalDate}"></td>
+
+                                    <td th:text="${row.disposalCount}"></td>
+
+                                    <td th:text="${row.totalDisposalQuantity}"></td>
+
+                                    <td th:text="${#numbers.formatInteger(row.totalDisposalPrice, 1, 'COMMA') + '원'}">
+                                    </td>
+
+                                </tr>
+
+                                <tr th:if="${dailyDisposalTotals == null or #lists.isEmpty(dailyDisposalTotals)}">
+
+                                    <td colspan="4"
+                                        class="empty">
+                                        조회된 데이터가 없습니다.
+                                    </td>
+
+                                </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- ==================== 그래프 렌더링 ==================== -->
+
+<script>
+    (() => {
+
+        'use strict';
+
+        const SVG_NS = 'http://www.w3.org/2000/svg';
+
+        const COLORS = [
+            '#3478df',
+            '#16a085',
+            '#f59e0b',
+            '#8b5cf6',
+            '#ef6461',
+            '#94a3b8'
+        ];
+
+        const numberFormatter = new Intl.NumberFormat('ko-KR', {
+            maximumFractionDigits: 2
+        });
+
+
+        /* ==================== 공통 함수 ==================== */
+
+        function toNumber(value) {
+
+            const number = Number(value);
+
+            return Number.isFinite(number)
+                ? Math.max(0, number)
+                : 0;
+        }
+
+
+        function formatNumber(value) {
+
+            return numberFormatter.format(value);
+        }
+
+
+        function createSvg(tag, attributes, text) {
+
+            const element = document.createElementNS(
+                SVG_NS,
+                tag
+            );
+
+            Object.entries(attributes).forEach(([key, value]) => {
+
+                element.setAttribute(key, String(value));
+
+            });
+
+            if (text !== undefined) {
+
+                element.textContent = String(text);
+            }
+
+            return element;
+        }
+
+
+        function appendSvg(parent, tag, attributes, text) {
+
+            const element = createSvg(
+                tag,
+                attributes,
+                text
+            );
+
+            parent.appendChild(element);
+
+            return element;
+        }
+
+
+        /* ==================== 최근 7일간 폐기 추이 ==================== */
+
+        function getTrendData() {
+
+            return Array.from(
+                document.querySelectorAll('#trendData span')
+            ).map(element => ({
+
+                date: element.dataset.date || '',
+
+                price: toNumber(element.dataset.price),
+
+                quantity: toNumber(element.dataset.quantity)
+
+            }));
+        }
+
+
+        function drawTrend(type, data) {
+
+            const svg = document.getElementById('trendChart');
+
+            if (!svg) {
+                return;
+            }
+
+            svg.replaceChildren();
+
+
+            /* 그래프 유형 */
+
+            const isPrice = type === 'price';
+
+            const color = isPrice
+                ? '#3478df'
+                : '#16a085';
+
+            const unit = isPrice
+                ? '단위: 원'
+                : '폐기 수량';
+
+
+            /* 그래프 좌표 */
+
+            const left = 90;
+            const right = 550;
+            const top = 40;
+            const bottom = 235;
+
+            const width = right - left;
+            const height = bottom - top;
+
+
+            /* 선택된 그래프 데이터 */
+
+            const values = data.map(row => {
+
+                return isPrice
+                    ? row.price
+                    : row.quantity;
+
+            });
+
+
+            /* Y축 최대값 */
+
+            const maxValue = Math.max(0, ...values);
+
+            const step = Math.max(
+                1,
+                Math.ceil(maxValue / 4)
+            );
+
+            const maxY = step * 4;
+
+
+            /* 그래프 단위 */
+
+            appendSvg(svg, 'text', {
+
+                x: left,
+                y: 16,
+
+                fill: '#6c757d',
+
+                'font-size': 12
+
+            }, unit);
+
+
+            /* Y축 눈금 및 가로선 */
+
+            for (let i = 0; i <= 4; i++) {
+
+                const value = step * i;
+
+                const y = bottom - height * i / 4;
+
+
+                appendSvg(svg, 'line', {
+
+                    x1: left,
+                    y1: y,
+                    x2: right,
+                    y2: y,
+
+                    stroke: '#e5e9ef',
+
+                    'stroke-width': 1
+
+                });
+
+
+                appendSvg(svg, 'text', {
+
+                    x: left - 10,
+                    y: y + 4,
+
+                    fill: '#6c757d',
+
+                    'font-size': 11,
+                    'text-anchor': 'end'
+
+                }, formatNumber(value));
+
+            }
+
+
+            /* Y축 */
+
+            appendSvg(svg, 'line', {
+
+                x1: left,
+                y1: top,
+                x2: left,
+                y2: bottom,
+
+                stroke: '#adb5bd',
+
+                'stroke-width': 1
+
+            });
+
+
+            /* X축 */
+
+            appendSvg(svg, 'line', {
+
+                x1: left,
+                y1: bottom,
+                x2: right,
+                y2: bottom,
+
+                stroke: '#adb5bd',
+
+                'stroke-width': 1
+
+            });
+
+
+            /* 데이터가 없는 경우 */
+
+            if (data.length === 0) {
+
+                appendSvg(svg, 'text', {
+
+                    x: (left + right) / 2,
+                    y: (top + bottom) / 2,
+
+                    fill: '#6c757d',
+
+                    'font-size': 13,
+                    'text-anchor': 'middle'
+
+                }, '조회된 데이터가 없습니다.');
+
+                return;
+            }
+
+
+            /* 데이터별 좌표 계산 */
+
+            const points = values.map((value, index) => {
+
+                const x = values.length === 1
+
+                    ? (left + right) / 2
+
+                    : left + width * index
+                    / (values.length - 1);
+
+                const y = bottom - height * value / maxY;
+
+                return {
+                    x,
+                    y,
+                    value
+                };
+
+            });
+
+
+            /* 꺾은선 */
+
+            const linePoints = points.map(point => {
+
+                return point.x + ',' + point.y;
+
+            }).join(' ');
+
+
+            appendSvg(svg, 'polyline', {
+
+                points: linePoints,
+
+                fill: 'none',
+                stroke: color,
+
+                'stroke-width': 3,
+                'stroke-linecap': 'round',
+                'stroke-linejoin': 'round'
+
+            });
+
+
+            /* 데이터 점 및 날짜 */
+
+            points.forEach((point, index) => {
+
+                const circle = appendSvg(svg, 'circle', {
+
+                    cx: point.x,
+                    cy: point.y,
+                    r: 4.5,
+
+                    fill: color,
+                    stroke: '#ffffff',
+
+                    'stroke-width': 1.5
+
+                });
+
+
+                /* 마우스 오버 상세 정보 */
+
+                appendSvg(
+                    circle,
+                    'title',
+                    {},
+                    data[index].date
+                    + ' : '
+                    + formatNumber(point.value)
+                    + (isPrice ? '원' : '')
+                );
+
+
+                /* 데이터 수치 */
+
+                appendSvg(svg, 'text', {
+
+                    x: point.x,
+                    y: point.y - 12,
+
+                    fill: color,
+
+                    'font-size': 11,
+                    'font-weight': 600,
+                    'text-anchor': 'middle'
+
+                }, formatNumber(point.value));
+
+
+                /* X축 날짜 */
+
+                const date = data[index].date;
+
+                const dateLabel = date.length >= 10
+                    ? date.substring(5, 10)
+                    : date;
+
+
+                appendSvg(svg, 'text', {
+
+                    x: point.x,
+                    y: bottom + 22,
+
+                    fill: '#6c757d',
+
+                    'font-size': 11,
+                    'text-anchor': 'middle'
+
+                }, dateLabel);
+
+            });
+
+        }
+
+
+        function initTrendChart() {
+
+            const data = getTrendData();
+
+            const priceInput = document.getElementById(
+                'trend-price'
+            );
+
+            const quantityInput = document.getElementById(
+                'trend-quantity'
+            );
+
+
+            /* 폐기 비용 선택 */
+
+            if (priceInput) {
+
+                priceInput.addEventListener('change', () => {
+
+                    if (priceInput.checked) {
+
+                        drawTrend('price', data);
+                    }
+
+                });
+
+            }
+
+
+            /* 폐기 수량 선택 */
+
+            if (quantityInput) {
+
+                quantityInput.addEventListener('change', () => {
+
+                    if (quantityInput.checked) {
+
+                        drawTrend('quantity', data);
+                    }
+
+                });
+
+            }
+
+
+            /* 최초 화면 렌더링 */
+
+            const initialType =
+                quantityInput && quantityInput.checked
+                    ? 'quantity'
+                    : 'price';
+
+            drawTrend(initialType, data);
+
+        }
+
+
+        /* ==================== 공통 도넛 그래프 ==================== */
+
+        function drawDonut(svg, segments) {
+
+            if (!svg) {
+                return;
+            }
+
+            svg.replaceChildren();
+
+
+            /* 도넛 기본 배경 */
+
+            appendSvg(svg, 'circle', {
+
+                cx: 50,
+                cy: 50,
+                r: 40,
+
+                fill: 'none',
+
+                stroke: '#e5e9ef',
+
+                'stroke-width': 20
+
+            });
+
+
+            /* 누적 비율 */
+
+            let offset = 0;
+
+
+            segments.forEach(segment => {
+
+                const percentage = Math.max(
+                    0,
+                    Math.min(
+                        100 - offset,
+                        segment.percentage
+                    )
+                );
+
+                if (percentage === 0) {
+                    return;
+                }
+
+
+                appendSvg(svg, 'circle', {
+
+                    cx: 50,
+                    cy: 50,
+                    r: 40,
+
+                    pathLength: 100,
+
+                    fill: 'none',
+
+                    stroke: segment.color,
+
+                    'stroke-width': 20,
+
+                    'stroke-dasharray':
+                        percentage + ' ' + (100 - percentage),
+
+                    'stroke-dashoffset': -offset,
+
+                    transform: 'rotate(-90 50 50)'
+
+                });
+
+
+                offset += percentage;
+
+            });
+
+        }
+
+
+        /* ==================== 발주 대비 통폐기율 ==================== */
+
+        function drawRateDonut() {
+
+            const donut = document.getElementById(
+                'rateDonut'
+            );
+
+            const svg = document.getElementById(
+                'rateDonutSvg'
+            );
+
+            if (!donut || !svg) {
+                return;
+            }
+
+
+            /* Controller에서 전달받은 폐기율 */
+
+            const rate = Math.min(
+                100,
+                toNumber(donut.dataset.rate)
+            );
+
+
+            drawDonut(svg, [
+
+                {
+                    percentage: rate,
+                    color: '#3478df'
+                }
+
+            ]);
+
+        }
+
+
+        /* ==================== 식재료별 폐기 비용 ==================== */
+
+        function drawIngredientDonut() {
+
+            const svg = document.getElementById(
+                'ingredientDonutSvg'
+            );
+
+            const legend = document.getElementById(
+                'ingredientLegend'
+            );
+
+            const totalElement = document.getElementById(
+                'ingredientTotal'
+            );
+
+            if (!svg || !legend || !totalElement) {
+                return;
+            }
+
+            legend.replaceChildren();
+
+
+            /* Controller에서 전달받은 식재료별 폐기 비용 */
+
+            const costs = Array.from(
+
+                document.querySelectorAll(
+                    '#ingredientData span'
+                )
+
+            ).map(element => ({
+
+                name: element.dataset.name || '',
+
+                price: toNumber(element.dataset.price)
+
+            })).filter(row => {
+
+                return row.price > 0;
+
+            }).sort((a, b) => {
+
+                return b.price - a.price;
+
+            });
+
+
+            /* 전체 식재료 폐기 비용 */
+
+            const total = costs.reduce((sum, row) => {
+
+                return sum + row.price;
+
+            }, 0);
+
+
+            totalElement.textContent =
+                formatNumber(total) + '원';
+
+
+            /* 데이터가 없는 경우 */
+
+            if (total === 0) {
+
+                drawDonut(svg, []);
+
+                const empty = document.createElement('div');
+
+                empty.className = 'empty';
+
+                empty.textContent =
+                    '조회된 폐기 비용이 없습니다.';
+
+                legend.appendChild(empty);
+
+                return;
+            }
+
+
+            /* 폐기 비용 상위 5개 */
+
+            const topFive = costs.slice(0, 5);
+
+
+            /* 6위 이하 식재료 비용 합산 */
+
+            const otherPrice = costs.slice(5).reduce(
+
+                (sum, row) => sum + row.price,
+
+                0
+
+            );
+
+
+            /* TOP 5 + 기타 */
+
+            const items = topFive.map((row, index) => ({
+
+                name: row.name,
+
+                price: row.price,
+
+                color: COLORS[index]
+
+            }));
+
+
+            if (otherPrice > 0) {
+
+                items.push({
+
+                    name: '기타',
+
+                    price: otherPrice,
+
+                    color: COLORS[5]
+
+                });
+
+            }
+
+
+            /* 도넛 그래프 데이터 생성 */
+
+            const segments = items.map(row => ({
+
+                percentage: row.price / total * 100,
+
+                color: row.color
+
+            }));
+
+
+            /* 도넛 그래프 렌더링 */
+
+            drawDonut(svg, segments);
+
+
+            /* 우측 범례 생성 */
+
+            items.forEach(row => {
+
+                const item = document.createElement('div');
+
+                item.className = 'ingredient-item';
+
+
+                /* 범례 색상 */
+
+                const dot = document.createElement('span');
+
+                dot.className = 'legend-dot';
+
+                dot.style.backgroundColor = row.color;
+
+
+                /* 식재료명 */
+
+                const name = document.createElement('span');
+
+                name.className = 'ingredient-name';
+
+                name.textContent = row.name;
+
+                name.title = row.name;
+
+
+                /* 폐기 비용 */
+
+                const price = document.createElement('span');
+
+                price.className = 'ingredient-price';
+
+                price.textContent =
+                    formatNumber(row.price) + '원';
+
+
+                /* 범례 추가 */
+
+                item.appendChild(dot);
+
+                item.appendChild(name);
+
+                item.appendChild(price);
+
+                legend.appendChild(item);
+
+            });
+
+        }
+
+
+        /* ==================== 그래프 초기화 ==================== */
+
+        function initializeCharts() {
+
+            try {
+
+                initTrendChart();
+
+            } catch (error) {
+
+                console.error(
+                    '최근 7일간 폐기 추이 그래프 오류:',
+                    error
+                );
+
+            }
+
+
+            try {
+
+                drawRateDonut();
+
+            } catch (error) {
+
+                console.error(
+                    '통폐기율 그래프 오류:',
+                    error
+                );
+
+            }
+
+
+            try {
+
+                drawIngredientDonut();
+
+            } catch (error) {
+
+                console.error(
+                    '식재료별 폐기 비용 그래프 오류:',
+                    error
+                );
+
+            }
+
+        }
+
+
+        /* DOM 생성 완료 이후 실행 */
+
+        if (document.readyState === 'loading') {
+
+            document.addEventListener(
+                'DOMContentLoaded',
+                initializeCharts,
+                { once: true }
+            );
+
+        } else {
+
+            initializeCharts();
+
+        }
+
+    })();
+</script>
+
+
+<!-- 기존 상세 통계 비동기 조회 -->
+
+<script th:src="@{/js/index.js}" defer></script>
+
+</body>
+</html>

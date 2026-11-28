@@ -1,6 +1,7 @@
 package kr.swdl.foodingredientmanagement.repository;
 
 import kr.swdl.foodingredientmanagement.dto.*;
+import kr.swdl.foodingredientmanagement.repository.vo.DisposalDetailVO;
 import kr.swdl.foodingredientmanagement.repository.vo.DisposalVO;
 import kr.swdl.foodingredientmanagement.repository.vo.HQDisposalListVO;
 import kr.swdl.foodingredientmanagement.repository.vo.StoreDisposalListVO;
@@ -36,4 +37,8 @@ public interface DisposalsRepository {
     public int getCountNeedToConfirmByStoreId(Long storeId);
 
     public List<Long> getStoreIdsByHQId(Long userId);
+
+    DisposalDetailVO getDisposalDetailByDisposalId(@Param("disposalId") Long disposalId);
+
+    int updateDisposalStatusToCompleted(Long disposalId);
 }

@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import kr.swdl.foodingredientmanagement.dto.*;
 import kr.swdl.foodingredientmanagement.exception.ErrorDomain;
 import kr.swdl.foodingredientmanagement.exception.NotFoundException;
+import kr.swdl.foodingredientmanagement.exception.UpdateFailedException;
 import kr.swdl.foodingredientmanagement.repository.*;
 import kr.swdl.foodingredientmanagement.repository.entitiy.DisposalAppInfos;
 import kr.swdl.foodingredientmanagement.repository.entitiy.Users;
@@ -18,15 +19,14 @@ import java.sql.Timestamp;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class DisposalService {
     private final UserRepository jPAUserRepository;
     private final DisposalAppInfosRepository disposalAppInfosRepository;
     private final DisposalsRepository disposalsRepository;
     private final InventoryRepository inventoryRepository;
     private final MBIngredientRepository mbIngredientRepository;
+    private final ImageHandler imageHandler;
 
-    // 폐기 등록
     @Transactional
     public boolean addDisposal(Long orderDetailId, DisposalDTO disposalDTO) {
         Users reqUser = jPAUserRepository
@@ -69,7 +69,6 @@ public class DisposalService {
         return true;
     }
 
-    // 폐기 수정
     public boolean updateDisposal(Long disposalId, DisposalDTO disposalDTO) {
         return 1 == disposalsRepository.updateDisposal(DisposalVO.builder()
                 .disposalId(disposalId)
@@ -78,7 +77,6 @@ public class DisposalService {
                 .disposalDetailReason(disposalDTO.getDisposalDetailReason()).build());
     }
 
-    // 폐기 승인/거절
     @Transactional
     public void approveDisposal(Long appUserId, Long disposalId, DisposalDTO disposalDTO) {
         // TODO : controller에서 appUserId의 롤 체크 이후, 관리자가 아니면 접근을 막는게 추가되어야 한다.
@@ -88,13 +86,9 @@ public class DisposalService {
                 .disposalStatus(disposalDTO.getDisposalStatus())
                 .rejectReason(disposalDTO.getRejectReason())
                 .build());
-
-        // 승인/거절 처리 실패
         if (updated != 1) {
             throw new IllegalStateException("이미 처리되었거나 존재하지 않는 폐기 요청입니다.");
         }
-
-        // 승인 정보 생성
         if ("승인".equals(disposalDTO.getDisposalStatus())) {
             disposalAppInfosRepository.save(DisposalAppInfos.builder()
                     .appUserId(appUserId)
@@ -103,7 +97,6 @@ public class DisposalService {
         }
     }
 
-    // 폐기 삭제
     public void deleteDisposal(Long disposalId) {
         disposalsRepository.deleteDisposalById(disposalId);
     }
@@ -131,12 +124,34 @@ public class DisposalService {
         return disposalsRepository.getCountNeedToConfirmByStoreId(storeId);
     }
 
+    public DisposalDetailDTO getDisposalDetailByDisposalId(Long disposalId) {
+        DisposalDetailVO vo = disposalsRepository.getDisposalDetailByDisposalId(disposalId);
+        if (vo == null) {
+            throw new NotFoundException(ErrorDomain.DISPOSAL);
+        }
+        return toDisposalDetailDTO(vo);
+    }
+
+    @Transactional
+    public void updateDisposalAppInfo(Long checkUserId, Long disposalId, DisposalAppInfoDTO disposalAppInfoDTO) {
+        DisposalAppInfos disposalAppInfo = disposalAppInfosRepository.findByDisposalId(disposalId).orElseThrow(() ->
+                new NotFoundException(ErrorDomain.DISPOSAL_APP_INFO)
+        );
+        disposalAppInfo.setCheckUserId(checkUserId);
+        disposalAppInfo.setCheckAt(new Timestamp(System.currentTimeMillis()));
+        disposalAppInfo.setDisposalImg(imageHandler.saveImage(disposalAppInfoDTO.getDisposalImg()));
+        if (1 != disposalsRepository.updateDisposalStatusToCompleted(disposalId)) {
+            throw new UpdateFailedException(ErrorDomain.DISPOSAL);
+        }
+    }
+
     private DisposalVO getDisposalById(Long disposalId) {
-        return disposalsRepository.getDisposalById(disposalId);// -> 예외 발생할수 있음
+        return disposalsRepository.getDisposalById(disposalId);
     }
 
     private HQDisposalListDTO toHqDisposalListDTO(HQDisposalListVO vo) {
         return HQDisposalListDTO.builder()
+                .disposalId(vo.getDisposalId())
                 .disposalReqAt(vo.getDisposalReqAt())
                 .storeName(vo.getStoreName())
                 .ingredientName(vo.getIngredientName())
@@ -145,12 +160,14 @@ public class DisposalService {
                 .disposalType(vo.getDisposalType())
                 .processingMethod(vo.getProcessingMethod())
                 .disposalStatus(vo.getDisposalStatus())
-                .checkAt(vo.getCheckAt())
-                .build();
+                .checkAt(vo.getCheckAt()).build();
     }
+
+
 
     private StoreDisposalListDTO toStoreDisposalListDTO(StoreDisposalListVO vo) {
         return StoreDisposalListDTO.builder()
+                .disposalId(vo.getDisposalId())
                 .disposalReqAt(vo.getDisposalReqAt())
                 .ingredientName(vo.getIngredientName())
                 .disposalQuantity(vo.getDisposalQuantity())
@@ -158,7 +175,49 @@ public class DisposalService {
                 .disposalType(vo.getDisposalType())
                 .processingMethod(vo.getProcessingMethod())
                 .disposalStatus(vo.getDisposalStatus())
-                .checkAt(vo.getCheckAt())
-                .build();
+                .checkAt(vo.getCheckAt()).build();
     }
+
+    private DisposalDetailDTO toDisposalDetailDTO(DisposalDetailVO vo) {
+
+        return DisposalDetailDTO.builder()
+                // 기본 정보
+                .disposalId(vo.getDisposalId())
+                .orderDetailId(vo.getOrderDetailId())
+                .disposalUnit(vo.getDisposalUnit())
+                .disposalStatus(vo.getDisposalStatus())
+                // 폐기 정보
+                .storeName(vo.getStoreName())
+                .ingredientName(vo.getIngredientName())
+                .processingMethod(vo.getProcessingMethod())
+                .disposalQuantity(vo.getDisposalQuantity())
+                .orderUnit(vo.getOrderUnit())
+                // 폐기 요청 정보
+                .disposalReqAt(vo.getDisposalReqAt())
+                .reqUserId(vo.getReqUserId())
+                .reqUserName(vo.getReqUserName())
+                .reqUserRole(vo.getReqUserRole())
+                // 폐기 승인 정보
+                .disposalAppAt(vo.getDisposalAppAt())
+                .appUserId(vo.getAppUserId())
+                .appUserName(vo.getAppUserName())
+                .appUserRole(vo.getAppUserRole())
+                // 폐기 유형 및 사유
+                .disposalType(vo.getDisposalType())
+                .disposalReason(vo.getDisposalReason())
+                .disposalDetailReason(vo.getDisposalDetailReason())
+                .rejectReason(vo.getRejectReason())
+                // 금액 정보
+                .supplyPrice(vo.getSupplyPrice())
+                .disposalPrice(vo.getDisposalPrice())
+                // 폐기 확인 정보
+                .disposalAppInfoId(vo.getDisposalAppInfoId())
+                .checkAt(vo.getCheckAt())
+                .checkUserId(vo.getCheckUserId())
+                .checkUserName(vo.getCheckUserName())
+                .checkUserRole(vo.getCheckUserRole())
+                .disposalImg(imageHandler.getImage(vo.getDisposalImg()) ).build();
+    }
+
+
 }

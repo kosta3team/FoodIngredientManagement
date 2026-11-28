@@ -437,4 +437,12 @@ public class DisposalServiceTest {
     public void 특정_직영점_확인필요_폐기_개수() {
         Assertions.assertEquals(disposalService.countNeedToConfirmByStoreId(1L), 6);
     }
+
+    @Test
+    public void 폐기_상세조회() {
+        Long disposalId = 50L;
+        DisposalDetailDTO dto = disposalService.getDisposalDetailByDisposalId(disposalId);
+        Assertions.assertNotNull(dto);
+        log.info("dump dto : {}", dto);
+    }
 }

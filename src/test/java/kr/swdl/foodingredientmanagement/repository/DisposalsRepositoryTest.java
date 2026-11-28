@@ -1,5 +1,6 @@
 package kr.swdl.foodingredientmanagement.repository;
 
+import kr.swdl.foodingredientmanagement.repository.vo.DisposalDetailVO;
 import kr.swdl.foodingredientmanagement.repository.vo.HQDisposalListVO;
 import kr.swdl.foodingredientmanagement.dto.HqDisposalSerachFilterDTO;
 import kr.swdl.foodingredientmanagement.repository.vo.StoreDisposalListVO;
@@ -326,4 +327,17 @@ public class DisposalsRepositoryTest {
         Assertions.assertTrue(disposals.size() >= 0);
     }
 
+    @Test
+    void 폐기_상세조회() {
+
+        Long disposalId = 61L;
+
+        DisposalDetailVO vo =
+                disposalsRepository
+                        .getDisposalDetailByDisposalId(disposalId);
+
+        Assertions.assertNotNull(vo);
+        Assertions.assertEquals(disposalId, vo.getDisposalId());
+        log.info("vo dump : {}", vo);
+    }
 }
