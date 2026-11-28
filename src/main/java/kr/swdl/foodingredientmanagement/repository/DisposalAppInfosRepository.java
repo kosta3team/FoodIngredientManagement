@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface DisposalAppInfosRepository extends JpaRepository<DisposalAppInfos, Long> {
     Optional<DisposalAppInfos> getDisposalAppInfoByDisposalId(Long disposalId);
+    Optional<DisposalAppInfos> findByDisposalId(Long disposalId);
 }

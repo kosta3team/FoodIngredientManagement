@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 @Data
 @Builder
 public class StoreDisposalListDTO {
+    private Long disposalId;
     private Timestamp disposalReqAt;
     private String ingredientName;
     private int disposalQuantity;

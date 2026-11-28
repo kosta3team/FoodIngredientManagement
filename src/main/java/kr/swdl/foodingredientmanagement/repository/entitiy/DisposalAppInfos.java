@@ -21,8 +21,6 @@ public class DisposalAppInfos {
     private Long appUserId;
     private Timestamp checkAt;
     private Long checkUserId;
-    @Lob
-    @Column(columnDefinition = "longblob") // DB의 실제 타입과 일치시킴
-    private byte[] disposalImg;
+    private String disposalImg;
     private Long disposalId;
 }
