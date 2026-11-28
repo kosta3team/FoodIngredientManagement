@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -10,15 +11,22 @@
 <body>
 <div class="hq-layout d-flex">
     <div th:replace="~{fragment/sidebar :: sidebarFragment}"></div>
+
     <main class="hq-main">
+
         <!-- 공통 상단 헤더 -->
-        <header class="hq-header d-flex align-items-center px-4 fw-bold">식재료 · 재고 · 폐기 운영 관리</header>
+        <header class="hq-header d-flex align-items-center px-4 fw-bold">
+            식재료 · 재고 · 폐기 운영 관리
+        </header>
+
         <div class="hq-content p-4">
+
             <!-- 페이지 제목 및 사용자 구분 -->
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
                 <h4 class="hq-page-title mb-0">발주조회(직영점)</h4>
                 <span class="badge text-bg-light border">직영점</span>
             </div>
+
             <!-- 조회 조건 -->
             <section class="card hq-card p-3 mb-3">
                 <h6 class="fw-bold mb-3">조회 조건</h6>
@@ -26,62 +34,42 @@
                 <form id="storeOrderSearchForm">
                     <div class="row g-2 align-items-end">
 
-                        <!-- 날짜 구분 -->
-                        <div class="col-12 col-md-3">
-                            <label class="form-label small fw-semibold">일시구분</label>
-                            <select name="dateType" class="form-select form-select-sm">
-                                <option value="">전체</option>
-                                <option value="orderAt">발주일시</option>
-                                <option value="storeAt">입고일시</option>
-                            </select>
-                        </div>
-
-                        <!-- 시작일 -->
                         <div class="col-12 col-md-3">
                             <label class="form-label small fw-semibold">시작일</label>
-                            <input type="date"
-                                   name="startDate"
+                            <input type="date" name="startDate"
                                    class="form-control form-control-sm">
                         </div>
 
-                        <!-- 종료일 -->
                         <div class="col-12 col-md-3">
                             <label class="form-label small fw-semibold">종료일</label>
-                            <input type="date"
-                                   name="endDate"
+                            <input type="date" name="endDate"
                                    class="form-control form-control-sm">
                         </div>
 
-                        <!-- 발주 상태 -->
                         <div class="col-12 col-md-3">
                             <label class="form-label small fw-semibold">발주상태</label>
-                            <select name="orderStatus"
-                                    class="form-select form-select-sm">
+                            <select name="orderStatus" class="form-select form-select-sm">
                                 <option value="">전체</option>
                                 <option value="대기">대기</option>
                                 <option value="승인">승인</option>
+                                <option value="부분">부분</option>
                                 <option value="거절">거절</option>
                             </select>
                         </div>
 
-                        <!-- 검색 -->
                         <div class="col-12 col-md-3">
-                            <label class="form-label small fw-semibold">검색어</label>
-                            <input type="text"
-                                   name="searchKeyword"
+                            <label class="form-label small fw-semibold">발주번호</label>
+                            <input type="number" name="orderId"
                                    class="form-control form-control-sm"
                                    placeholder="발주번호 입력">
                         </div>
 
-                        <!-- 버튼 -->
                         <div class="col-12 col-md-auto">
-                            <button type="submit"
-                                    class="btn btn-primary btn-sm">
+                            <button type="submit" class="btn btn-primary btn-sm">
                                 검색
                             </button>
 
-                            <button type="button"
-                                    id="resetStoreOrderSearch"
+                            <button type="button" id="resetStoreOrderSearch"
                                     class="btn btn-outline-secondary btn-sm">
                                 초기화
                             </button>
@@ -90,17 +78,26 @@
                     </div>
                 </form>
             </section>
+
             <!-- 발주 목록 -->
             <section class="card hq-card p-3 mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="fw-bold mb-0">발주목록</h6>
 
-                <h6 class="fw-bold mb-3">발주목록</h6>
+                    <button type="button"
+                            class="btn btn-primary btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target="#orderRequestModal">
+                        발주 요청
+                    </button>
+                </div>
 
                 <div class="table-responsive">
                     <table class="table table-hover align-middle hq-table table-sm mb-0">
-
                         <thead>
                         <tr>
                             <th scope="col">순번</th>
+                            <th scope="col">발주번호</th>
                             <th scope="col">발주일시</th>
                             <th scope="col">발주요약</th>
                             <th scope="col">총금액</th>
@@ -110,10 +107,8 @@
                         </tr>
                         </thead>
 
-                        <!-- AJAX로 목록 출력 -->
                         <tbody id="storeOrderListBody">
                         </tbody>
-
                     </table>
                 </div>
 
@@ -121,29 +116,31 @@
                 <div id="storeOrderPagination"
                      class="pagination-center mt-3">
                 </div>
-
             </section>
         </div>
     </main>
 </div>
 
+
+<!-- ======================================== -->
 <!-- 직영점 발주 상세 모달 -->
+<!-- ======================================== -->
 <div class="modal fade" id="storeOrderDetailModal" tabindex="-1"
      aria-labelledby="storeOrderDetailModalLabel" aria-hidden="true">
 
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
 
-            <!-- 모달 헤더 -->
             <div class="modal-header">
                 <h5 class="modal-title fw-bold" id="storeOrderDetailModalLabel">
                     발주상세정보 (직영점)
                 </h5>
+
                 <button type="button" class="btn-close"
-                        data-bs-dismiss="modal" aria-label="닫기"></button>
+                        data-bs-dismiss="modal" aria-label="닫기">
+                </button>
             </div>
 
-            <!-- 모달 본문 -->
             <div class="modal-body">
 
                 <!-- 발주 요청 정보 -->
@@ -151,6 +148,130 @@
                     <h6 class="fw-bold mb-3">발주정보</h6>
 
                     <div class="row g-3">
+
+                        <div class="col-6 col-lg-3">
+                            <div class="small text-secondary">발주일련번호</div>
+                            <div class="fw-semibold" id="detailOrderId">-</div>
+                        </div>
+
+                        <div class="col-6 col-lg-3">
+                            <div class="small text-secondary">발주일시</div>
+                            <div class="fw-semibold" id="detailOrderAt">-</div>
+                        </div>
+
+                        <div class="col-6 col-lg-3">
+                            <div class="small text-secondary">총금액</div>
+                            <div class="fw-semibold" id="detailTotalPrice">-</div>
+                        </div>
+
+                        <div class="col-6 col-lg-3">
+                            <div class="small text-secondary">상태</div>
+                            <div class="fw-semibold">
+                                <span id="detailOrderStatus"
+                                      class="badge text-bg-secondary">-</span>
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-lg-3">
+                            <div class="small text-secondary">처리일시</div>
+                            <div class="fw-semibold" id="detailAppAt">-</div>
+                        </div>
+
+                        <div class="col-6 col-lg-3">
+                            <div class="small text-secondary">입고일시</div>
+                            <div class="fw-semibold" id="detailStoreAt">-</div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- 품목 내역 -->
+                <section class="card hq-card p-3 mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="fw-bold mb-0">품목 내역</h6>
+                        <span class="small text-secondary">
+            승인된 품목만 날짜를 입력할 수 있습니다.
+        </span>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle hq-table table-sm mb-0">
+                            <thead>
+                            <tr>
+                                <th>순번</th>
+                                <th>식재료명</th>
+                                <th>수량</th>
+                                <th>입고단위</th>
+                                <th>공급가액(단가)</th>
+                                <th>주문금액</th>
+                                <th>처리자</th>
+                                <th>상태</th>
+                                <th>제조일자</th>
+                                <th>입고일자</th>
+                            </tr>
+                            </thead>
+
+                            <tbody id="storeOrderDetailItemsBody">
+                            <tr>
+                                <td colspan="10" class="text-center py-4">
+                                    발주 품목 정보를 조회하고 있습니다.
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-primary btn-sm"
+                        id="saveOrderDatesBtn">
+                    날짜 일괄 저장
+                </button>
+
+                <button type="button"
+                        class="btn btn-outline-secondary btn-sm"
+                        data-bs-dismiss="modal">
+                    닫기
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- ======================================== -->
+<!-- 발주 요청 상세 모달 -->
+<!-- ======================================== -->
+<div class="modal fade" id="storeOrderAddModal" tabindex="-1"
+     aria-labelledby="storeOrderAddModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="storeOrderAddModalLabel">
+                    발주 요청 상세정보 (직영점)
+                </h5>
+
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="modal" aria-label="닫기">
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <!-- 발주 요청 정보 -->
+                <section class="card hq-card p-3 mb-3">
+                    <h6 class="fw-bold mb-3">발주정보</h6>
+
+                    <div class="row g-3">
+
                         <div class="col-6 col-lg-3">
                             <div class="small text-secondary">발주일련번호</div>
                             <div class="fw-semibold">202601100001</div>
@@ -169,19 +290,20 @@
                         <div class="col-6 col-lg-3">
                             <div class="small text-secondary">상태</div>
                             <div class="fw-semibold">
-                                <span class="badge text-bg-success">승인</span>
+                                <span class="badge text-bg-warning">대기</span>
                             </div>
                         </div>
 
                         <div class="col-6 col-lg-3">
                             <div class="small text-secondary">처리일시</div>
-                            <div class="fw-semibold">2026-11-03 12:00</div>
+                            <div class="fw-semibold">—</div>
                         </div>
 
                         <div class="col-6 col-lg-3">
                             <div class="small text-secondary">입고일시</div>
-                            <div class="fw-semibold">2026-11-03 14:00</div>
+                            <div class="fw-semibold">—</div>
                         </div>
+
                     </div>
                 </section>
 
@@ -206,22 +328,42 @@
                             <tbody>
                             <tr>
                                 <td>1</td>
-                                <td>식빵</td>
-                                <td>7</td>
+                                <td>
+                                    <span class="view-mode">식빵</span>
+                                    <input type="text"
+                                           class="form-control form-control-sm edit-mode d-none"
+                                           value="식빵">
+                                </td>
+                                <td>
+                                    <span class="view-mode">7</span>
+                                    <input type="number"
+                                           class="form-control form-control-sm edit-mode d-none"
+                                           value="7" min="1">
+                                </td>
                                 <td>박스</td>
                                 <td>20,000원</td>
                                 <td>140,000원</td>
-                                <td>본사 김사원</td>
+                                <td>—</td>
                             </tr>
 
                             <tr>
                                 <td>2</td>
-                                <td>양배추</td>
-                                <td>3</td>
+                                <td>
+                                    <span class="view-mode">양배추</span>
+                                    <input type="text"
+                                           class="form-control form-control-sm edit-mode d-none"
+                                           value="양배추">
+                                </td>
+                                <td>
+                                    <span class="view-mode">3</span>
+                                    <input type="number"
+                                           class="form-control form-control-sm edit-mode d-none"
+                                           value="3" min="1">
+                                </td>
                                 <td>통</td>
                                 <td>7,000원</td>
                                 <td>21,000원</td>
-                                <td>본사 김사원</td>
+                                <td>—</td>
                             </tr>
                             </tbody>
                         </table>
@@ -230,9 +372,145 @@
 
             </div>
 
-            <!-- 모달 하단 -->
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary btn-sm"
+
+                <button type="button" id="editOrderBtn"
+                        class="btn btn-outline-success btn-sm">
+                    수정
+                </button>
+
+                <button type="button" id="saveOrderBtn"
+                        class="btn btn-primary btn-sm d-none">
+                    수정 완료
+                </button>
+
+                <button type="button" id="cancelEditBtn"
+                        class="btn btn-outline-secondary btn-sm d-none">
+                    취소
+                </button>
+
+                <button type="button"
+                        class="btn btn-outline-secondary btn-sm"
+                        data-bs-dismiss="modal">
+                    닫기
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- ======================================== -->
+<!-- 발주 요청 등록 모달 -->
+<!-- ======================================== -->
+<div class="modal fade" id="orderRequestModal"
+     tabindex="-1"
+     aria-labelledby="orderRequestModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <!-- 모달 헤더 -->
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="orderRequestModalLabel">
+                    발주요청(직영점)
+                </h5>
+
+                <span class="badge text-bg-light border ms-2">
+                    지점: 서울 한국대점
+                </span>
+
+                <button type="button"
+                        class="btn-close ms-auto"
+                        data-bs-dismiss="modal"
+                        aria-label="닫기">
+                </button>
+            </div>
+
+            <!-- 모달 본문 -->
+            <div class="modal-body">
+
+                <form id="orderRequestForm">
+
+                    <!-- 발주 품목 작성 -->
+                    <section class="card hq-card p-3 mb-3">
+
+                        <h6 class="fw-bold mb-3">발주 품목 작성</h6>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle hq-table table-sm mb-0">
+
+                                <thead>
+                                <tr>
+                                    <th scope="col" class="text-center">순번</th>
+                                    <th scope="col">품목 선택</th>
+                                    <th scope="col">현재 수량</th>
+                                    <th scope="col">주문 수량</th>
+                                    <th scope="col">공급가액(단가)</th>
+                                    <th scope="col">주문금액</th>
+                                    <th scope="col">삭제</th>
+                                </tr>
+                                </thead>
+
+                                <!-- JS에서 DB 식재료 목록으로 행 생성 -->
+                                <tbody id="orderRequestItemBody">
+                                </tbody>
+
+                            </table>
+                        </div>
+
+                        <!-- 품목 추가 -->
+                        <div class="d-flex justify-content-end mt-3">
+                            <button type="button"
+                                    id="addOrderItemBtn"
+                                    class="btn btn-outline-primary btn-sm">
+                                + 품목 추가
+                            </button>
+                        </div>
+
+                    </section>
+
+                    <!-- 발주 금액 요약 -->
+                    <section class="card hq-card p-3 mb-3">
+
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+                            <span class="text-secondary">
+                                선택된 품목:
+                                <strong id="selectedIngredientCount"
+                                        class="text-dark">0</strong>개
+                            </span>
+
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+
+                                <span class="small">
+                                    총 발주금액:
+                                    <strong id="orderTotalPrice">0</strong>원
+                                </span>
+
+                                <button type="button"
+                                        id="submitOrderBtn"
+                                        class="btn btn-primary btn-sm">
+                                    발주 요청 완료
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                </form>
+
+            </div>
+
+            <!-- 모달 푸터 -->
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-outline-secondary btn-sm"
                         data-bs-dismiss="modal">
                     닫기
                 </button>
@@ -242,307 +520,12 @@
     </div>
 </div>
 
-<!-- 발주 요청 상세 모달 -->
-<div class="modal fade" id="storeOrderAddModal" tabindex="-1"
-     aria-labelledby="storeOrderAddModalLabel" aria-hidden="true">
 
-  <div class="modal-dialog modal-xl modal-dialog-scrollable">
-    <div class="modal-content">
-
-      <!-- 모달 헤더 -->
-      <div class="modal-header">
-        <h5 class="modal-title fw-bold" id="storeOrderAddModalLabel">
-          발주 요청 상세정보 (직영점)
-        </h5>
-        <button type="button" class="btn-close"
-                data-bs-dismiss="modal" aria-label="닫기"></button>
-      </div>
-
-      <!-- 모달 본문 -->
-      <div class="modal-body">
-
-        <!-- 발주 요청 정보 -->
-        <section class="card hq-card p-3 mb-3">
-          <h6 class="fw-bold mb-3">발주정보</h6>
-
-          <div class="row g-3">
-            <div class="col-6 col-lg-3">
-              <div class="small text-secondary">발주일련번호</div>
-              <div class="fw-semibold">202601100001</div>
-            </div>
-
-            <div class="col-6 col-lg-3">
-              <div class="small text-secondary">발주일시</div>
-              <div class="fw-semibold">2026-11-03 11:00</div>
-            </div>
-
-            <div class="col-6 col-lg-3">
-              <div class="small text-secondary">총금액</div>
-              <div class="fw-semibold">140,000원</div>
-            </div>
-
-            <div class="col-6 col-lg-3">
-              <div class="small text-secondary">상태</div>
-              <div class="fw-semibold">
-                <span class="badge text-bg-warning">대기</span>
-              </div>
-            </div>
-
-            <div class="col-6 col-lg-3">
-              <div class="small text-secondary">처리일시</div>
-              <div class="fw-semibold">—</div>
-            </div>
-
-            <div class="col-6 col-lg-3">
-              <div class="small text-secondary">입고일시</div>
-              <div class="fw-semibold">—</div>
-            </div>
-          </div>
-        </section>
-
-        <!-- 품목 내역 -->
-        <section class="card hq-card p-3 mb-3">
-          <h6 class="fw-bold mb-3">품목 내역</h6>
-
-          <div class="table-responsive">
-            <table class="table table-hover align-middle hq-table table-sm mb-0">
-              <thead>
-              <tr>
-                <th scope="col">순번</th>
-                <th scope="col">식재료명</th>
-                <th scope="col">수량</th>
-                <th scope="col">입고단위</th>
-                <th scope="col">공급가액(단가)</th>
-                <th scope="col">주문금액</th>
-                <th scope="col">처리자</th>
-              </tr>
-              </thead>
-
-              <tbody>
-              <tr>
-                <td>1</td>
-                <td>
-                  <span class="view-mode">식빵</span>
-                  <input type="text" class="form-control form-control-sm edit-mode d-none"
-                         value="식빵">
-                </td>
-                <td>
-                  <span class="view-mode">7</span>
-                  <input type="number" class="form-control form-control-sm edit-mode d-none"
-                         value="7" min="1">
-                </td>
-                <td>박스</td>
-                <td>20,000원</td>
-                <td>140,000원</td>
-                <td>—</td>
-              </tr>
-
-              <tr>
-                <td>2</td>
-                <td>
-                  <span class="view-mode">양배추</span>
-                  <input type="text" class="form-control form-control-sm edit-mode d-none"
-                         value="양배추">
-                </td>
-                <td>
-                  <span class="view-mode">3</span>
-                  <input type="number" class="form-control form-control-sm edit-mode d-none"
-                         value="3" min="1">
-                </td>
-                <td>통</td>
-                <td>7,000원</td>
-                <td>21,000원</td>
-                <td>—</td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-      </div>
-
-        <div class="modal-footer">
-
-            <button type="button"
-                    id="editOrderBtn"
-                    class="btn btn-outline-success btn-sm">
-                수정
-            </button>
-
-            <button type="button"
-                    id="saveOrderBtn"
-                    class="btn btn-primary btn-sm d-none">
-                수정 완료
-            </button>
-
-            <button type="button"
-                    id="cancelEditBtn"
-                    class="btn btn-outline-secondary btn-sm d-none">
-                취소
-            </button>
-
-            <button type="button"
-                    class="btn btn-outline-secondary btn-sm"
-                    data-bs-dismiss="modal">
-                닫기
-            </button>
-
-        </div>
-
-    </div>
-  </div>
-</div>
-<!-- 발주 요청 등록 모달 -->
-<div class="modal fade" id="storeOrderRequestModal" tabindex="-1"
-     aria-labelledby="storeOrderRequestModalLabel" aria-hidden="true">
-
-  <div class="modal-dialog modal-xl modal-dialog-scrollable">
-    <div class="modal-content">
-
-      <!-- 모달 헤더 -->
-      <div class="modal-header">
-        <h5 class="modal-title fw-bold" id="storeOrderRequestModalLabel">
-          발주요청(직영점)
-        </h5>
-
-        <button type="button" class="btn-close"
-                data-bs-dismiss="modal" aria-label="닫기"></button>
-      </div>
-
-      <!-- 모달 본문 -->
-      <div class="modal-body">
-
-        <div class="d-flex justify-content-end mb-3">
-                    <span class="badge text-bg-light border">
-                        지점: 서울 한국대점
-                    </span>
-        </div>
-
-        <form id="orderRequestForm">
-
-          <!-- 발주 품목 작성 -->
-          <section class="card hq-card p-3 mb-3">
-            <h6 class="fw-bold mb-3">발주 품목 작성</h6>
-
-            <div class="table-responsive">
-              <table class="table table-hover align-middle hq-table table-sm mb-0">
-                <thead>
-                <tr>
-                  <th class="text-center">순번</th>
-                  <th>품목선택</th>
-                  <th>수량</th>
-                  <th>공급가액(단가)</th>
-                  <th>주문금액</th>
-                  <th>삭제</th>
-                </tr>
-                </thead>
-
-                <tbody id="orderItemList">
-
-                <!-- 기존 품목 1 -->
-                <tr>
-                  <td class="text-center">1</td>
-                  <td>
-                    <select name="ingredient"
-                            class="form-select form-select-sm ingredient-select"
-                            disabled>
-                      <option value="">-- 품목 선택 --</option>
-                      <option value="sugar">설탕</option>
-                      <option value="salt" selected>소금</option>
-                      <option value="cheese">슬라이스치즈</option>
-                    </select>
-                  </td>
-                  <td>
-                    <input name="quantity" type="number"
-                           class="form-control form-control-sm quantity-input"
-                           min="1" value="2" disabled>
-                  </td>
-                  <td class="text-nowrap unit-price">9,000원</td>
-                  <td class="text-nowrap fw-semibold order-price">18,000원</td>
-                  <td>
-                    <button type="button"
-                            class="btn btn-outline-danger btn-sm delete-item"
-                            disabled>
-                      삭제
-                    </button>
-                  </td>
-                </tr>
-
-                <!-- 기존 품목 2 -->
-                <tr>
-                  <td class="text-center">2</td>
-                  <td>
-                    <select name="ingredient"
-                            class="form-select form-select-sm ingredient-select"
-                            disabled>
-                      <option value="">-- 품목 선택 --</option>
-                      <option value="sugar">설탕</option>
-                      <option value="salt">소금</option>
-                      <option value="cheese" selected>슬라이스치즈</option>
-                    </select>
-                  </td>
-                  <td>
-                    <input name="quantity" type="number"
-                           class="form-control form-control-sm quantity-input"
-                           min="1" value="2" disabled>
-                  </td>
-                  <td class="text-nowrap unit-price">13,000원</td>
-                  <td class="text-nowrap fw-semibold order-price">26,000원</td>
-                  <td>
-                    <button type="button"
-                            class="btn btn-outline-danger btn-sm delete-item"
-                            disabled>
-                      삭제
-                    </button>
-                  </td>
-                </tr>
-
-                </tbody>
-              </table>
-            </div>
-
-            <div class="d-flex justify-content-end mt-3">
-              <button type="button"
-                      id="addOrderItemBtn"
-                      class="btn btn-outline-primary btn-sm"
-                      disabled>
-                + 품목 추가
-              </button>
-            </div>
-          </section>
-
-          <!-- 발주 금액 요약 -->
-          <section class="card hq-card p-3">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <span class="text-secondary">
-                선택된 품목: <strong id="itemCount">2</strong>개
-            </span>
-
-              <div class="d-flex align-items-center gap-2 flex-wrap">
-                <span class="small">
-                    총 발주금액:
-                    <strong id="totalOrderPrice">44,000</strong>원
-                </span>
-              </div>
-            </div>
-          </section>
-
-        </form>
-      </div>
-
-      <!-- 모달 하단 -->
-      <div class="modal-footer">
-        <button type="button"
-                class="btn btn-outline-secondary btn-sm"
-                data-bs-dismiss="modal">
-          닫기
-        </button>
-      </div>
-
-    </div>
-  </div>
-</div>
+<!-- JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/js/storeOrderList.js}"></script>
+<script th:src="@{/js/storeOrderDetail.js}"></script>
+<script th:src="@{/js/storeOrderRequest.js}"></script>
+
 </body>
 </html>

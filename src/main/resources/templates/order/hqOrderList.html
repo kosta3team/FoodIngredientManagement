@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -12,45 +11,46 @@
 <body>
 <div class="hq-layout d-flex">
   <div th:replace="~{fragment/sidebar :: sidebarFragment}"></div>
+
   <main class="hq-main">
     <!-- 공통 상단 헤더 -->
-    <header class="hq-header d-flex align-items-center px-4 fw-bold">식재료 · 재고 · 폐기 운영 관리</header>
+    <header class="hq-header d-flex align-items-center px-4 fw-bold">
+      식재료 · 재고 · 폐기 운영 관리
+    </header>
 
     <div class="hq-content p-4">
-      <!-- 페이지 제목 및 사용자 구분 -->
+
+      <!-- 페이지 제목 -->
       <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
         <h4 class="hq-page-title mb-0">발주조회 (본사)</h4>
         <span class="badge text-bg-light border">본사</span>
       </div>
 
-      <!-- 요약 현황 (화면 확인용 예시 데이터) -->
-      <div class="row g-3 mb-3">
+      <!-- 요약 현황 -->
+      <div class="row g-3 mb-3" id="orderStatusCount">
         <div class="col-6 col-lg-3">
           <div class="card hq-card p-3 h-100">
             <div class="small text-secondary">대기</div>
-            <div class="fw-bold fs-4"
-                 th:text="${orderStatusCount.waitingCount + '건'}">0건
-            </div>
+            <div class="fw-bold fs-4" id="waitingCount">0건</div>
           </div>
         </div>
+
         <div class="col-6 col-lg-3">
           <div class="card hq-card p-3 h-100">
             <div class="small text-secondary">승인</div>
-            <div class="fw-bold fs-4"
-                 th:text="${orderStatusCount.approvedCount + '건'}">0건
-            </div>
+            <div class="fw-bold fs-4" id="approvedCount">0건</div>
           </div>
         </div>
+
         <div class="col-6 col-lg-3">
           <div class="card hq-card p-3 h-100">
             <div class="small text-secondary">거절</div>
-            <div class="fw-bold fs-4"
-                 th:text="${orderStatusCount.rejectedCount + '건'}">0건
-            </div>
+            <div class="fw-bold fs-4" id="rejectedCount">0건</div>
           </div>
         </div>
       </div>
 
+      <!-- 조회 조건 -->
       <section class="card hq-card p-3 mb-3">
         <h6 class="fw-bold mb-3">조회 조건</h6>
 
@@ -60,18 +60,9 @@
             <div class="col-12 col-md-3">
               <label class="form-label small fw-semibold">검색 구분</label>
               <select name="searchType" class="form-select form-select-sm">
-                <option value="all"
-                        th:selected="${searchType == 'all' or searchType == null}">
-                  전체
-                </option>
-                <option value="orderId"
-                        th:selected="${searchType == 'orderId'}">
-                  발주번호
-                </option>
-                <option value="storeName"
-                        th:selected="${searchType == 'storeName'}">
-                  지점명
-                </option>
+                <option value="all" selected>전체</option>
+                <option value="orderId">발주번호</option>
+                <option value="storeName">지점명</option>
               </select>
             </div>
 
@@ -80,63 +71,31 @@
               <input type="text"
                      name="searchKeyword"
                      class="form-control form-control-sm"
-                     placeholder="발주번호 또는 지점명"
-                     th:value="${searchKeyword}">
+                     placeholder="발주번호 또는 지점명">
             </div>
 
             <div class="col-12 col-md-3">
               <label class="form-label small fw-semibold">시작일</label>
               <input type="date"
                      name="startDate"
-                     class="form-control form-control-sm"
-                     th:value="${startDate}">
+                     class="form-control form-control-sm">
             </div>
 
             <div class="col-12 col-md-3">
               <label class="form-label small fw-semibold">종료일</label>
               <input type="date"
                      name="endDate"
-                     class="form-control form-control-sm"
-                     th:value="${endDate}">
-            </div>
-
-            <div class="col-12 col-md-3">
-              <label class="form-label small fw-semibold">일자 구분</label>
-              <select name="dateType" class="form-select form-select-sm">
-                <option value="orderAt"
-                        th:selected="${dateType == 'orderAt' or dateType == null}">
-                  발주일시
-                </option>
-                <option value="storeAt"
-                        th:selected="${dateType == 'storeAt'}">
-                  입고완료일시
-                </option>
-              </select>
+                     class="form-control form-control-sm">
             </div>
 
             <div class="col-12 col-md-3">
               <label class="form-label small fw-semibold">발주상태</label>
               <select name="orderStatus" class="form-select form-select-sm">
-                <option value=""
-                        th:selected="${orderStatus == null or orderStatus == ''}">
-                  전체
-                </option>
-                <option value="대기"
-                        th:selected="${orderStatus == '대기'}">
-                  대기
-                </option>
-                <option value="승인"
-                        th:selected="${orderStatus == '승인'}">
-                  승인
-                </option>
-                <option value="거절"
-                        th:selected="${orderStatus == '거절'}">
-                  거절
-                </option>
-                <option value="부분"
-                        th:selected="${orderStatus == '부분'}">
-                  부분
-                </option>
+                <option value="" selected>전체</option>
+                <option value="대기">대기</option>
+                <option value="승인">승인</option>
+                <option value="거절">거절</option>
+                <option value="부분">부분</option>
               </select>
             </div>
 
@@ -144,7 +103,9 @@
               <button type="submit" class="btn btn-primary btn-sm">
                 검색
               </button>
-              <button type="button" id="resetOrderSearch"
+
+              <button type="button"
+                      id="resetOrderSearch"
                       class="btn btn-outline-secondary btn-sm">
                 초기화
               </button>
@@ -157,17 +118,21 @@
       <!-- 발주 목록 -->
       <section class="card hq-card p-3 mb-3">
         <h6 class="fw-bold mb-3">발주 목록</h6>
+
         <div class="table-responsive hq-order-table-scroll">
-          <table id="hqOrderTable" class="table table-hover align-middle hq-table table-sm mb-0">
-            <!-- 테이블 항목 -->
+          <table id="hqOrderTable"
+                 class="table table-hover align-middle hq-table table-sm mb-0">
+
             <thead>
             <tr>
-              <!-- 전체선택 / 전체해제 -->
               <th scope="col" class="text-center align-middle">
-                <input type="checkbox" id="selectAllOrders" class="form-check-input m-0" aria-label="발주 전체 선택">
+                <input type="checkbox"
+                       id="selectAllOrders"
+                       class="form-check-input m-0"
+                       aria-label="발주 전체 선택">
               </th>
               <th scope="col">순번</th>
-              <th scope="col">발주일련번호</th>
+              <th scope="col">발주번호</th>
               <th scope="col">발주일시</th>
               <th scope="col">직영점명</th>
               <th scope="col">발주요약</th>
@@ -185,8 +150,10 @@
               </td>
             </tr>
             </tbody>
+
           </table>
         </div>
+
         <!-- 페이지네이션 -->
         <div id="hqOrderPagination"
              class="pagination-center mt-3">
@@ -197,14 +164,16 @@
         </p>
       </section>
 
-
     </div>
   </main>
 </div>
 
 <!-- 본사 발주 상세 모달 -->
-<div class="modal fade" id="hqOrderDetailModal" tabindex="-1"
-     aria-labelledby="hqOrderDetailModalLabel" aria-hidden="true">
+<div class="modal fade"
+     id="hqOrderDetailModal"
+     tabindex="-1"
+     aria-labelledby="hqOrderDetailModalLabel"
+     aria-hidden="true">
 
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
@@ -214,8 +183,12 @@
         <h5 class="modal-title fw-bold" id="hqOrderDetailModalLabel">
           발주 상세 조회 (본사)
         </h5>
-        <button type="button" class="btn-close"
-                data-bs-dismiss="modal" aria-label="닫기"></button>
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="닫기">
+        </button>
       </div>
 
       <!-- 모달 본문 -->
@@ -226,41 +199,49 @@
           <h6 class="fw-bold mb-3">발주 기본 정보</h6>
 
           <div class="row g-3">
+
             <div class="col-6 col-lg-3">
               <div class="small text-secondary">발주일련번호</div>
               <div class="fw-semibold" id="modalOrderId">-</div>
             </div>
+
             <div class="col-6 col-lg-3">
               <div class="small text-secondary">발주일시</div>
               <div class="fw-semibold" id="modalOrderAt">-</div>
             </div>
+
             <div class="col-6 col-lg-3">
               <div class="small text-secondary">직영점명</div>
               <div class="fw-semibold" id="modalStoreName">-</div>
             </div>
+
             <div class="col-6 col-lg-3">
               <div class="small text-secondary">상태</div>
-              <div class="fw-semibold"id="modalOrderStatus">-</div>
+              <div class="fw-semibold" id="modalOrderStatus">-</div>
             </div>
+
             <div class="col-6 col-lg-3">
               <div class="small text-secondary">처리일시</div>
               <div class="fw-semibold" id="modalAppAt">-</div>
             </div>
+
             <div class="col-6 col-lg-3">
               <div class="small text-secondary">입고일시</div>
-              <div class="fw-semibold"id="modalStoreAt">-</div>
+              <div class="fw-semibold" id="modalStoreAt">-</div>
             </div>
+
             <div class="col-6 col-lg-3">
               <div class="small text-secondary">총 발주금액</div>
               <div class="fw-semibold" id="modalTotalPrice">-</div>
             </div>
+
             <div class="col-6 col-lg-3">
               <div class="small text-secondary">승인 담당자</div>
               <div class="fw-semibold" id="modalManagerName">-</div>
             </div>
+
           </div>
         </section>
-
 
         <!-- 발주 상세 품목 -->
         <section class="card hq-card p-3 mb-3">
@@ -269,10 +250,12 @@
           <div class="table-responsive">
             <table id="hqOrderItemTable"
                    class="table table-hover align-middle hq-table table-sm mb-0">
+
               <thead>
               <tr>
                 <th>
-                  <input id="selectAllItems" type="checkbox"
+                  <input id="selectAllItems"
+                         type="checkbox"
                          class="form-check-input m-0">
                 </th>
                 <th>순번</th>
@@ -286,7 +269,6 @@
               </tr>
               </thead>
 
-              <!-- JavaScript에서 DB 조회 결과를 삽입 -->
               <tbody id="hqOrderItemBody">
               <tr>
                 <td colspan="9" class="text-center text-secondary py-4">
@@ -303,21 +285,29 @@
 
       <!-- 모달 하단 -->
       <div class="modal-footer">
-        <button type="button" id="saveOrderBtn"
+
+        <button type="button"
+                id="saveOrderBtn"
                 class="btn btn-primary btn-sm">
           처리 결과 저장
         </button>
-        <button type="button" class="btn btn-outline-secondary btn-sm"
+
+        <button type="button"
+                class="btn btn-outline-secondary btn-sm"
                 data-bs-dismiss="modal">
           닫기
         </button>
+
       </div>
 
     </div>
   </div>
 </div>
+
+<!-- JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/js/hqOrderDetail.js}"></script>
 <script th:src="@{/js/hqOrderList.js}"></script>
+
 </body>
 </html>

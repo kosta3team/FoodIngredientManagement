@@ -1,9 +1,11 @@
 package kr.swdl.foodingredientmanagement.service;
 
 import com.github.pagehelper.PageInfo;
+import kr.swdl.foodingredientmanagement.controller.request.OrderDetailDateUpdateDTO;
 import kr.swdl.foodingredientmanagement.dto.OrderDetailRequestDTO;
 import kr.swdl.foodingredientmanagement.dto.OrderRequestDTO;
 import kr.swdl.foodingredientmanagement.dto.OrderStatusCountDTO;
+import kr.swdl.foodingredientmanagement.dto.OrderStoreSearchDTO;
 import kr.swdl.foodingredientmanagement.repository.OrderDetailsRepository;
 import kr.swdl.foodingredientmanagement.repository.OrderRepository;
 import kr.swdl.foodingredientmanagement.repository.vo.*;
@@ -17,12 +19,12 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Slf4j
-@Transactional
 public class OrderServiceTest {
 
     @Autowired
@@ -56,7 +58,7 @@ public class OrderServiceTest {
 
         OrderDetailRequestDTO detail2 = new OrderDetailRequestDTO().builder()
                 .ingredientId(2L)
-                .orderQuantity(5)
+                .orderQuantity(51)
                 .supplyPrice(3000)
                 .orderPrice(15000)
                 .build();
@@ -65,8 +67,8 @@ public class OrderServiceTest {
 
         Long orderId = orderService.registerOrder(order, detailList);
 
-        int count = orderDetailsRepository.countOrderDetails(orderId);
-        Long totalPrice = orderRepository.selectOrderTotalPrice(orderId);
+        int count = orderService.countOrderDetails(orderId);
+        Long totalPrice = orderService.selectOrderTotalPrice(orderId);
 
         assertNotNull(orderId);
         assertEquals(2, count);
@@ -77,24 +79,39 @@ public class OrderServiceTest {
         log.info("발주 총금액: {}", totalPrice);
     }
 
+
+
+    @Test
+    void 재고_초과_발주_등록_실패() {
+
+        // given
+        OrderRequestDTO order = OrderRequestDTO.builder()
+                .orderAt(Timestamp.valueOf(LocalDateTime.now()))
+                .totalPrice(0)
+                .storeId(1L)
+                .build();
+
+        List<OrderDetailRequestDTO> detailList = new ArrayList<>();
+
+        OrderDetailRequestDTO detail = OrderDetailRequestDTO.builder()
+                .ingredientId(1L)
+                .orderQuantity(999999)
+                .supplyPrice(2000)
+                .orderPrice(1999998000)
+                .build();
+
+        detailList.add(detail);
+
+        // when & then
+        assertThrows(IllegalArgumentException.class, () -> {
+            orderService.registerOrder(order, detailList);
+        });
+
+        log.info("재고 초과 발주 등록 차단 테스트 통과");
+    }
+
     //2. 발주 조회
-//    @Test
-//    void 본사_발주_목록_조회() {
-//
-//        List<OrderRequestDTO> orderList = ordersService.findOrderList();
-//
-//        assertNotNull(orderList, "발주 목록이 null입니다.");
-//
-//        for (int i = 0; i < orderList.size(); i++) {
-//            OrderRequestDTO order = orderList.get(i);
-//
-//            if (order == null) {
-//                log.error("null 데이터 위치: {}", i);
-//            } else {
-//                log.info("발주번호: {}", order.getOrderId());
-//            }
-//        }
-//    }
+
     @Test
     void 발주상세조회_전체상태확인() {
 
@@ -127,40 +144,48 @@ public class OrderServiceTest {
     }
 
     @Test
-    void 직영점_발주_요청_조회() {
-        List<OrderListVO> result =
-                orderRepository.getOrderDetail(
-                        4L,
-                        "2026-11-01 00:00:00",
-                        "2026-11-11 00:00:00",
-                        "ORDER"
-                );
+    void 특정직영점_발주_조회() {
 
-        log.info("조회 결과: {}", result);
+        OrderStoreSearchDTO search = new OrderStoreSearchDTO();
+        search.setStoreId(1L);
+        search.setPage(1);
+        search.setSize(8);
+
+        // when
+        PageInfo<OrderRequestDTO> result =
+                orderService.getStoreOrderList(search);
+
+        // then
+        log.info("===== 특정 직영점 발주 목록 조회 테스트 =====");
+        log.info("테스트 직영점 ID: {}", search.getStoreId());
+        log.info("전체 데이터: {}", result.getTotal());
+        log.info("현재 페이지: {}", result.getPageNum());
 
         assertNotNull(result);
+        assertNotNull(result.getList());
+        assertTrue(result.getTotal() > 0);
 
-        for (OrderListVO dto : result) {
-            assertNotNull(dto.getOrderId());
-            assertNotNull(dto.getOrderAt());
+        for (OrderRequestDTO order : result.getList()) {
 
-            log.info("발주번호: {}", dto.getOrderId());
-            log.info("발주일: {}", dto.getOrderAt());
-            log.info("식재료: {}", dto.getIngredientName());
-            log.info("식재료 종류 수: {}", dto.getIngredientCount());
-            log.info("총 가격: {}", dto.getTotalPrice());
-            log.info("발주 상태: {}", dto.getOrderStatus());
-            log.info("입고일: {}", dto.getStoreAt());
+            log.info("발주번호: {}", order.getOrderId());
+            log.info("직영점 ID: {}", order.getStoreId());
+            log.info("발주상태: {}", order.getOrderStatus());
+
+            assertEquals(2L, order.getStoreId());
         }
     }
 
     @Test
     void 매장별_발주_정보_조회() {
+
+        // given
         Long storeId = 2L;
 
+        // when
         List<OrderProgressVO> result =
-                orderRepository.getOrderProgress(storeId);
+                orderService.getOrderProgress(storeId);
 
+        // then
         assertNotNull(result);
 
         for (OrderProgressVO dto : result) {
@@ -178,7 +203,28 @@ public class OrderServiceTest {
             log.info("입고일: {}", dto.getStoreAt());
         }
     }
+    @Test
+    void 발주번호별_품목내역_조회() {
 
+        Long orderId = 9L;
+        Long storeId = 2L;
+
+        log.info("===== 발주 품목 상세 Service 테스트 =====");
+
+        List<Map<String, Object>> result =
+                orderService.getOrderDetailItems(orderId, storeId);
+
+        assertNotNull(result, "Service 조회 결과는 null이면 안 됩니다.");
+        assertTrue(result.size() > 0, "품목 내역이 존재해야 합니다.");
+
+        log.info("Service 반환 품목 수: {}", result.size());
+
+        for (Map<String, Object> item : result) {
+            log.info("Service 반환 데이터: {}", item);
+        }
+
+        log.info("===== Service 테스트 종료 =====");
+    }
     @Test
     void 발주_상세_상태_조회() {
 
@@ -247,7 +293,15 @@ public class OrderServiceTest {
     // 5. 입고 처리(입고, 제조일자 변경)
     @Test
     void 직영점_입고_처리() {
-        int result = orderService.updateOrderDate(35L, "2026-11-17", "2026-11-19");
+
+        OrderDetailDateUpdateDTO dto = new OrderDetailDateUpdateDTO();
+
+        dto.setOrderDetailId(35L);
+        dto.setManufactureAt(Timestamp.valueOf("2026-11-17 00:00:00"));
+        dto.setStoreAt(Timestamp.valueOf("2026-11-19 00:00:00"));
+
+        int result = orderService.updateOrderDate(dto);
+
         log.info("직영점 입고 처리 {}", result);
 
         assertEquals(1, result, "입고 날짜가 수정되지 않았습니다.");
@@ -257,29 +311,9 @@ public class OrderServiceTest {
 
 
 
-
     // 5. 입고 처리 -> 제조일자 + 식재료 기간
 
-    @Test
-    void 발주_입고_날짜_수정_성공() {
 
-        Long orderDetailId = 1L;
-        String manufactureAt = "2026-11-15";
-        String storeAt = "2026-11-18";
-
-        int result = orderService.updateOrderDate(
-                orderDetailId,
-                manufactureAt,
-                storeAt
-        );
-
-        log.info("입고 날짜 수정 테스트");
-        log.info("발주 상세 ID: {}", orderDetailId);
-        log.info("제조일자: {}", manufactureAt);
-        log.info("입고일자: {}", storeAt);
-        log.info("수정 결과: {}", result);
-
-    }
     @Test
     void 발주목록_페이지네이션_조회() {
 
@@ -288,6 +322,7 @@ public class OrderServiceTest {
 
         PageInfo<OrderRequestDTO> result =
                 orderService.getOrderList(
+                        2L,
                         page,
                         size,
                         null,
@@ -331,5 +366,6 @@ public class OrderServiceTest {
 
         assertEquals("부분", order.getOrderStatus());
     }
+
 }
 

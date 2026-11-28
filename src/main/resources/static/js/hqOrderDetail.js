@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function () {
 
     const orderDetailModal = document.getElementById('hqOrderDetailModal');
@@ -166,9 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({
-                            items: updateItems
-                        })
+                        body: JSON.stringify(updateItems)
                     }
                 );
 
@@ -184,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 console.log(
                     '[본사] 서버로 전송한 데이터:',
-                    JSON.stringify({ items: updateItems }, null, 2)
+                    JSON.stringify({items: updateItems}, null, 2)
                 );
 
                 alert(result);
@@ -197,8 +194,21 @@ document.addEventListener('DOMContentLoaded', function () {
                     modalInstance.hide();
                 }
 
-                // TODO: 본사 발주 목록 조회 함수 연결
-                // refreshOrderList();
+                // 본사 발주 목록 재조회
+                // 1. 발주 목록 재조회
+                if (typeof window.fetchOrderList === 'function') {
+                    window.fetchOrderList(1);
+                } else {
+                    console.error('[본사] 발주 목록 조회 함수를 찾을 수 없습니다.');
+                }
+
+                // 2. 상태별 건수 재조회
+                if (typeof window.fetchOrderStatusCount === 'function') {
+                    window.fetchOrderStatusCount();
+                } else {
+                    console.error('[본사] 상태별 건수 조회 함수를 찾을 수 없습니다.');
+                }
+
 
             } catch (error) {
 
@@ -379,7 +389,7 @@ document.addEventListener('DOMContentLoaded', function () {
             addTextCell(tr, item.orderQuantity);
 
             // 입고단위
-            addTextCell(tr, item.unit);
+            addTextCell(tr, item.orderUnit);
 
             // 단가
             addPriceCell(tr, item.supplyPrice);
@@ -394,9 +404,9 @@ document.addEventListener('DOMContentLoaded', function () {
             select.className = 'form-select form-select-sm item-decision';
 
             const statusOptions = [
-                { value: '대기', text: '대기' },
-                { value: '승인', text: '승인' },
-                { value: '거절', text: '거절' }
+                {value: '대기', text: '대기'},
+                {value: '승인', text: '승인'},
+                {value: '거절', text: '거절'}
             ];
 
             statusOptions.forEach(option => {

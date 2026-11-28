@@ -179,6 +179,56 @@ body {
   border-color: #40516c !important;
 }
 
+
+
 /*
 사이드바 끝
+ */
+
+
+
+/*
+상태 시작
+ */
+
+.status {
+  display: inline-block;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: .76rem;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.status-pending {
+  background: #fff4d8;
+  color: #986400;
+}
+
+.status-approved {
+  background: #e5f6ee;
+  color: #167451;
+}
+
+.status-rejected {
+  background: #fcebed;
+  color: #ae3742;
+}
+
+.status-completed {
+  background-color: #e8f1ff;
+  color: #1d5fd6;
+}
+ 
+.status-partial {
+  background: #e8f1ff;
+  color: #1d5fd6;
+}
+
+.status-default {
+  background: #eeeeee;
+  color: #555555;
+}
+/*
+상태 끝
  */

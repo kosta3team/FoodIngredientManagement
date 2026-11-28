@@ -16,11 +16,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // ----------------------------------------
     searchForm.addEventListener('submit', function (event) {
 
-        // 브라우저 기본 폼 제출 방지
         event.preventDefault();
-
-        // 검색 시 첫 페이지부터 조회
         fetchOrderList(1);
+
     });
 
     // ----------------------------------------
@@ -31,10 +29,10 @@ document.addEventListener('DOMContentLoaded', function () {
         resetButton.addEventListener('click', function () {
 
             searchForm.reset();
-
-            // 초기화 후 첫 페이지 조회
             fetchOrderList(1);
+
         });
+
     }
 
     // ----------------------------------------
@@ -48,16 +46,10 @@ document.addEventListener('DOMContentLoaded', function () {
         params.set('page', page);
         params.set('size', 10);
 
-        // 로딩 표시
-        orderListBody.innerHTML = `
-            <tr>
-                <td colspan="7" class="text-center py-4">
-                    발주 내역을 불러오는 중입니다.
-                </td>
-            </tr>
-        `;
-
         try {
+
+            console.log('[직영점] 발주 목록 조회 시작');
+            console.log('[직영점] 요청 페이지:', page);
 
             const response = await fetch(
                 `/api/v1/store/orders?${params.toString()}`
@@ -80,15 +72,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
             orderListBody.innerHTML = `
                 <tr>
-                    <td colspan="7"
-                        class="text-center text-danger py-4">
+                    <td colspan="8" class="text-center text-danger py-4">
                         발주 목록을 불러오지 못했습니다.
                     </td>
                 </tr>
             `;
 
             pagination.replaceChildren();
+
         }
+
     }
 
     // ----------------------------------------
@@ -106,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const tr = document.createElement('tr');
             const td = document.createElement('td');
 
-            td.colSpan = 7;
+            td.colSpan = 8;
             td.className = 'text-center py-4';
             td.textContent = '조회된 발주 내역이 없습니다.';
 
@@ -129,12 +122,17 @@ document.addEventListener('DOMContentLoaded', function () {
             addCell(tr, rowNumber);
 
             // --------------------------------
-            // 2. 발주일시
+            // 2. 발주번호
+            // --------------------------------
+            addCell(tr, order.orderId);
+
+            // --------------------------------
+            // 3. 발주일시
             // --------------------------------
             addCell(tr, formatDate(order.orderAt));
 
             // --------------------------------
-            // 3. 발주 요약
+            // 4. 발주 요약
             // --------------------------------
             const summaryTd = document.createElement('td');
 
@@ -145,8 +143,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
             summaryTd.appendChild(ingredientName);
 
-            if (order.ingredientCount != null &&
-                order.ingredientCount > 1) {
+            if (
+                order.ingredientCount != null &&
+                order.ingredientCount > 1
+            ) {
 
                 const countSpan = document.createElement('span');
 
@@ -154,38 +154,44 @@ document.addEventListener('DOMContentLoaded', function () {
                     ` 외 ${order.ingredientCount - 1}종`;
 
                 summaryTd.appendChild(countSpan);
+
             }
 
             tr.appendChild(summaryTd);
 
             // --------------------------------
-            // 4. 총금액
+            // 5. 총금액
             // --------------------------------
             addCell(tr, formatPrice(order.totalPrice));
 
             // --------------------------------
-            // 5. 발주 상태
+            // 6. 발주 상태
             // --------------------------------
             const statusTd = document.createElement('td');
-
             const statusSpan = document.createElement('span');
 
-            statusSpan.className = getStatusClass(order.orderStatus);
-            statusSpan.textContent = order.orderStatus ?? '-';
+            const status = order.orderStatus ?? '-';
+
+            // 기본 CSS 클래스
+            statusSpan.className = 'status';
+
+            // 상태별 CSS 클래스 추가
+            statusSpan.classList.add(getStatusClass(status));
+
+            statusSpan.textContent = status;
 
             statusTd.appendChild(statusSpan);
             tr.appendChild(statusTd);
 
             // --------------------------------
-            // 6. 입고일시
+            // 7. 입고일시
             // --------------------------------
             addCell(tr, formatDate(order.storeAt));
 
             // --------------------------------
-            // 7. 상세 버튼
+            // 8. 상세 버튼
             // --------------------------------
             const detailTd = document.createElement('td');
-
             const detailButton = document.createElement('button');
 
             detailButton.type = 'button';
@@ -209,28 +215,38 @@ document.addEventListener('DOMContentLoaded', function () {
             tr.appendChild(detailTd);
 
             orderListBody.appendChild(tr);
+
         });
+
     }
 
     // ----------------------------------------
-    // 5. 상태별 Bootstrap 배지
+    // 5. 상태별 CSS 클래스
     // ----------------------------------------
     function getStatusClass(status) {
 
         switch (status) {
 
             case '승인':
-                return 'badge text-bg-success';
+                return 'status-approved';
 
             case '대기':
-                return 'badge text-bg-warning';
+                return 'status-pending';
 
             case '거절':
-                return 'badge text-bg-danger';
+                return 'status-rejected';
+
+            case '완료':
+                return 'status-completed';
+
+            case '부분':
+                return 'status-partial';
 
             default:
-                return 'badge text-bg-secondary';
+                return 'status-default';
+
         }
+
     }
 
     // ----------------------------------------
@@ -258,13 +274,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 button.classList.add('active');
                 button.disabled = true;
+
             }
+
         });
 
         // 다음
         if (data.hasNextPage) {
             createPageButton('다음', data.nextPage);
         }
+
     }
 
     // ----------------------------------------
@@ -281,11 +300,13 @@ document.addEventListener('DOMContentLoaded', function () {
         button.addEventListener('click', function () {
 
             fetchOrderList(page);
+
         });
 
         pagination.appendChild(button);
 
         return button;
+
     }
 
     // ----------------------------------------
@@ -298,6 +319,7 @@ document.addEventListener('DOMContentLoaded', function () {
         td.textContent = value ?? '-';
 
         tr.appendChild(td);
+
     }
 
     // ----------------------------------------
@@ -305,11 +327,15 @@ document.addEventListener('DOMContentLoaded', function () {
     // ----------------------------------------
     function formatDate(value) {
 
-        if (!value) return '-';
+        if (!value) {
+            return '-';
+        }
 
         const date = new Date(value);
 
-        if (isNaN(date.getTime())) return '-';
+        if (isNaN(date.getTime())) {
+            return '-';
+        }
 
         return date.toLocaleString('ko-KR', {
             timeZone: 'Asia/Seoul',
@@ -320,6 +346,7 @@ document.addEventListener('DOMContentLoaded', function () {
             minute: '2-digit',
             hour12: false
         });
+
     }
 
     // ----------------------------------------
@@ -327,9 +354,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // ----------------------------------------
     function formatPrice(value) {
 
-        if (value == null) return '-';
+        if (value == null) {
+            return '-';
+        }
 
         return Number(value).toLocaleString('ko-KR') + '원';
+
     }
 
     // ----------------------------------------

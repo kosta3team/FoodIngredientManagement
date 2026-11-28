@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -289,9 +290,36 @@ public class OrderRepositoryTest {
 //    }
 
     @Test
-    void 직영점_식자재_목록_조회() {
+    void 발주번호별_품목내역_조회() {
 
+        Long orderId = 9L;
+        Long storeId = 2L;
 
+        log.info("===== 발주 품목 내역 조회 테스트 =====");
+        log.info("테스트 발주번호: {}", orderId);
+        log.info("테스트 매장 ID: {}", storeId);
+
+        List<Map<String, Object>> result =
+                orderDetailsRepository.getOrderDetailItems(orderId, storeId);
+
+        assertNotNull(result, "조회 결과는 null이면 안 됩니다.");
+
+        log.info("조회된 품목 개수: {}", result.size());
+
+        for (Map<String, Object> item : result) {
+            log.info("조회 품목: {}", item);
+
+            assertNotNull(item.get("ingredientName"));
+            assertNotNull(item.get("orderQuantity"));
+            assertNotNull(item.get("orderUnit"));
+            assertNotNull(item.get("supplyPrice"));
+            assertNotNull(item.get("orderPrice"));
+            assertNotNull(item.get("userName"));
+        }
+
+        assertTrue(result.size() > 0, "발주 품목이 최소 1개 이상 조회되어야 합니다.");
+
+        log.info("===== 발주 품목 내역 조회 테스트 종료 =====");
     }
     @Test
     void 발주_상세_승인(){
@@ -310,12 +338,17 @@ public class OrderRepositoryTest {
     }
 
     @Test
-    void 직영점_입고_제조_변경(){
+    void 직영점_입고_제조_변경() {
+
         int result = orderDetailsRepository.updateOrderDetailsDates(
-                34L,"2026-11-17","2026-11-19"
+                34L,
+                Timestamp.valueOf("2026-11-17 09:00:00"),
+                Timestamp.valueOf("2026-11-19 14:30:00")
         );
+
         log.info("입고, 제조일 변경 결과 : {}", result);
-        assertEquals(1,result);
+
+        assertEquals(1, result);
     }
 
     @Test
@@ -393,4 +426,27 @@ public class OrderRepositoryTest {
         assertNotNull(result);
         assertEquals(orderId, result.getOrderId());
     }
+
+    @Test
+    void 직영점별_발주_진행정보_조회() {
+
+        Long storeId = 2L;
+
+        List<OrderProgressVO> result =
+                orderRepository.getOrderProgress(storeId);
+
+        log.info("===== 직영점 발주 진행정보 테스트 =====");
+        log.info("조회 직영점 ID: {}", storeId);
+
+        assertNotNull(result);
+
+        for (OrderProgressVO order : result) {
+            log.info("발주번호: {}", order.getOrderId());
+            log.info("발주상태: {}", order.getOrderStatus());
+        }
+
+        assertFalse(result.isEmpty());
+    }
+
+
 }

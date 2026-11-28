@@ -45,7 +45,7 @@
         </if>
         GROUP BY s.store_id, s.store_name, i.ingredient_id, i.ingredient_name,
         i.storage_type, i.order_unit, u.user_name
-        <trim prefix="HAVING" prefixOverrides="AND">
+        <trim prefix="HAVING" prefixOverrides="AND |OR ">
             <if test="manageStartDate != null">
                 AND MIN(iu.consumption_at) &gt;= #{manageStartDate}
             </if>

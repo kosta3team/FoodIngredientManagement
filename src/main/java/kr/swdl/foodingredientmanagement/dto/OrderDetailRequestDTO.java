@@ -32,6 +32,8 @@ public class OrderDetailRequestDTO {
 
     private String rejectReason;
 
+    private Integer supplyQuantity;
+
     private Integer currentQuantity;
 
     private Long orderId;

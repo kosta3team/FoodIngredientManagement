@@ -19,7 +19,7 @@ public class UserRepositoryTest {
     @Test
     void 담당직영점_직원_조회(){
         int storeId=4;
-        Users userId = userRepository.findByStoreId(storeId);
+        Users userId = userRepository.findByUserId(storeId);
         assertNotNull(userId);
         log.info(userId.getUserName());
         // 조회된 모든 직원이 4번 매장 소속인지 검증

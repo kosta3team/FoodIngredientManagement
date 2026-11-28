@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function () {
 
     const searchForm = document.getElementById('hqOrderSearchForm');
@@ -16,19 +15,23 @@ document.addEventListener('DOMContentLoaded', function () {
     // ----------------------------------------
     searchForm.addEventListener('submit', function (event) {
 
-        // 브라우저의 기본 GET 제출 방지
         event.preventDefault();
         fetchOrderList(1);
+
     });
 
     // ----------------------------------------
     // 2. 초기화 버튼
     // ----------------------------------------
     if (resetButton) {
+
         resetButton.addEventListener('click', function () {
+
             searchForm.reset();
             fetchOrderList(1);
+
         });
+
     }
 
     // ----------------------------------------
@@ -41,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         params.set('page', page);
         params.set('size', 10);
-  
+
         try {
 
             const response = await fetch(
@@ -70,12 +73,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     </td>
                 </tr>
             `;
+
         }
+
     }
 
     // ----------------------------------------
     // 4. 발주 목록 출력
-    // ---------------------------------------
+    // ----------------------------------------
     function renderOrderList(data) {
 
         orderListBody.replaceChildren();
@@ -150,8 +155,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
             summaryTd.appendChild(ingredientName);
 
-            if (order.ingredientCount != null &&
-                order.ingredientCount > 1) {
+            if (
+                order.ingredientCount != null &&
+                order.ingredientCount > 1
+            ) {
 
                 const countSpan = document.createElement('span');
 
@@ -159,6 +166,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     ` 외 ${order.ingredientCount - 1}종`;
 
                 summaryTd.appendChild(countSpan);
+
             }
 
             tr.appendChild(summaryTd);
@@ -169,35 +177,36 @@ document.addEventListener('DOMContentLoaded', function () {
             addCell(tr, formatPrice(order.totalPrice));
 
             // --------------------------------
+            // 8. 발주 전체 상태
             // --------------------------------
-// 8. 발주 전체 상태
-// --------------------------------
             const statusTd = document.createElement('td');
             const statusSpan = document.createElement('span');
 
             const status = order.orderStatus ?? '-';
 
-            statusSpan.className = 'badge';
+            statusSpan.className = 'status';
 
             switch (status) {
+
                 case '대기':
-                    statusSpan.classList.add('bg-warning-subtle', 'text-warning-emphasis');
+                    statusSpan.classList.add('status-pending');
                     break;
 
                 case '승인':
-                    statusSpan.classList.add('bg-success-subtle', 'text-success-emphasis');
+                    statusSpan.classList.add('status-approved');
                     break;
 
                 case '거절':
-                    statusSpan.classList.add('bg-danger-subtle', 'text-danger-emphasis');
+                    statusSpan.classList.add('status-rejected');
                     break;
 
                 case '부분':
-                    statusSpan.classList.add('bg-info-subtle', 'text-info-emphasis');
+                    statusSpan.classList.add('status-partial');
                     break;
 
                 default:
-                    statusSpan.classList.add('bg-secondary-subtle', 'text-secondary');
+                    statusSpan.classList.add('status-default');
+
             }
 
             statusSpan.textContent = status;
@@ -228,6 +237,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 'data-bs-target',
                 '#hqOrderDetailModal'
             );
+
             detailButton.setAttribute(
                 'data-order-id',
                 order.orderId
@@ -237,18 +247,19 @@ document.addEventListener('DOMContentLoaded', function () {
             tr.appendChild(detailTd);
 
             orderListBody.appendChild(tr);
+
         });
+
     }
 
-
     // ----------------------------------------
-// 페이지네이션 출력
-// ----------------------------------------
+    // 5. 페이지네이션 출력
+    // ----------------------------------------
     function renderPagination(data) {
 
         pagination.replaceChildren();
 
-        // 페이지가 1개 이하라면 페이지 버튼을 표시하지 않음
+        // 페이지가 1개 이하라면 표시하지 않음
         if (!data.pages || data.pages <= 1) {
             return;
         }
@@ -258,27 +269,28 @@ document.addEventListener('DOMContentLoaded', function () {
             createPageButton('이전', data.prePage);
         }
 
-        // 페이지 번호 버튼
+        // 페이지 번호
         (data.navigatepageNums || []).forEach(page => {
 
             const button = createPageButton(page, page);
 
-            // 현재 페이지 표시
             if (page === data.pageNum) {
                 button.classList.add('active');
                 button.disabled = true;
             }
+
         });
 
         // 다음 버튼
         if (data.hasNextPage) {
             createPageButton('다음', data.nextPage);
         }
+
     }
 
-// ----------------------------------------
-// 페이지 버튼 생성
-// ----------------------------------------
+    // ----------------------------------------
+    // 6. 페이지 버튼 생성
+    // ----------------------------------------
     function createPageButton(label, page) {
 
         const button = document.createElement('button');
@@ -287,7 +299,6 @@ document.addEventListener('DOMContentLoaded', function () {
         button.className = 'btn btn-sm btn-outline-primary mx-1';
         button.textContent = label;
 
-        // 버튼 클릭 시 해당 페이지 조회
         button.addEventListener('click', function () {
             fetchOrderList(page);
         });
@@ -296,9 +307,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         return button;
     }
-// ----------------------------------------
-// 공통 셀 생성
-// ----------------------------------------
+
+    // ----------------------------------------
+    // 7. 공통 셀 생성
+    // ----------------------------------------
     function addCell(tr, value) {
 
         const td = document.createElement('td');
@@ -306,11 +318,12 @@ document.addEventListener('DOMContentLoaded', function () {
         td.textContent = value ?? '-';
 
         tr.appendChild(td);
+
     }
 
-// ----------------------------------------
-// 날짜 포맷
-// ----------------------------------------
+    // ----------------------------------------
+    // 8. 날짜 포맷
+    // ----------------------------------------
     function formatDate(value) {
 
         if (!value) return '-';
@@ -328,18 +341,76 @@ document.addEventListener('DOMContentLoaded', function () {
             minute: '2-digit',
             hour12: false
         });
+
     }
 
+    // ----------------------------------------
+    // 9. 금액 포맷
+    // ----------------------------------------
     function formatPrice(value) {
 
         if (value == null) return '-';
 
         return Number(value).toLocaleString('ko-KR') + '원';
+
     }
 
     // ----------------------------------------
-    // 7. 최초 목록 조회
-    // ----------------------------------------
-    fetchOrderList(1);
+// 10. 상태별 건수 AJAX 조회
+// ----------------------------------------
+    async function fetchOrderStatusCount() {
 
+        try {
+
+            const response = await fetch('/api/v1/hq/orders/status');
+
+            if (!response.ok) {
+                throw new Error(`HTTP 오류: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            console.log('[본사] 상태별 건수 조회 결과:', data);
+
+            renderOrderStatusCount(data);
+
+        } catch (error) {
+
+            console.error('[본사] 상태별 건수 조회 실패:', error);
+
+        }
+
+    }
+
+// ----------------------------------------
+// 11. 상태별 건수 렌더링
+// ----------------------------------------
+    function renderOrderStatusCount(data) {
+
+        const waitingCount = document.getElementById('waitingCount');
+        const approvedCount = document.getElementById('approvedCount');
+        const rejectedCount = document.getElementById('rejectedCount');
+
+        if (!waitingCount || !approvedCount || !rejectedCount) {
+            console.error('[본사] 상태별 건수 출력 요소를 찾을 수 없습니다.');
+            return;
+        }
+
+        waitingCount.textContent = `${data.waitingCount ?? 0}건`;
+        approvedCount.textContent = `${data.approvedCount ?? 0}건`;
+        rejectedCount.textContent = `${data.rejectedCount ?? 0}건`;
+
+    }
+
+// ----------------------------------------
+// 12. 최초 목록 및 상태별 건수 조회
+// ----------------------------------------
+    fetchOrderList(1);
+    fetchOrderStatusCount();
+
+// ----------------------------------------
+// 13. 외부 JS에서 재조회 가능하도록 노출
+// ----------------------------------------
+    window.fetchOrderList = fetchOrderList;
+    window.fetchOrderStatusCount = fetchOrderStatusCount;
 });

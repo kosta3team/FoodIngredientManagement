@@ -13,6 +13,7 @@ public class OrderDetailListVO {
     private int supplyPrice;
     private int orderPrice;
     private String orderStatus;
+    private Long ingredientId;
     private String rejectReason;
 
 }

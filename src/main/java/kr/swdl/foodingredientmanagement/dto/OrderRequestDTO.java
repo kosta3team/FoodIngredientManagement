@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderRequestDTO {
+
     private Long orderId;
     private Timestamp orderAt;
     private Timestamp appAt;
@@ -25,6 +26,11 @@ public class OrderRequestDTO {
     private Timestamp storeAt;
     private String orderStatus;
 
+    // 검색 조건
+    private String startDate;
+    private String endDate;
+    private String dateType;
+    
     private Integer size;
     private Integer page;
 }

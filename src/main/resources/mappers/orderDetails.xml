@@ -65,25 +65,6 @@
         WHERE order_id = #{orderId}
     </select>
 
-    <select id="getOrderDetailItems" resultType="map">
-        SELECT
-        i.ingredient_name,
-        od.order_quantity,
-        i.order_unit,
-        od.supply_price,
-        od.order_price,
-        u.user_name
-        FROM order_details od
-        JOIN orders o
-        ON o.order_id = od.order_id
-        JOIN ingredients i
-        ON od.ingredient_id = i.ingredient_id
-        JOIN users u
-        ON o.user_id = u.user_id
-        WHERE o.store_id = #{storeId}
-        AND o.order_id = #{orderId}
-    </select>
-
     <update id="updateOrderDetailStatus">
         UPDATE order_details
         SET
@@ -96,14 +77,27 @@
         WHERE order_detail_id = #{orderDetailId}
         AND order_status = '대기'
     </update>
+    <select id="selectOrderDetailList"
+            parameterType="long"
+            resultType="kr.swdl.foodingredientmanagement.repository.vo.OrderDetailListVO">
+        SELECT
+        od.order_detail_id AS orderDetailId,
+        od.ingredient_id AS ingredientId,
+        od.order_quantity AS orderQuantity,
+        i.ingredient_name AS ingredientName,
+        i.order_unit AS orderUnit,
+        od.supply_price AS supplyPrice,
+        od.order_price AS orderPrice,
+        od.order_status AS orderStatus,
+        od.reject_reason AS rejectReason
+        FROM order_details od
+        JOIN ingredients i
+        ON od.ingredient_id = i.ingredient_id
+        WHERE od.order_id = #{orderId}
+        ORDER BY od.ingredient_id
+    </select>
 
-    <update id="updateOrderDetailsDates">
-        UPDATE order_details
-        SET
-        manufacture_at = #{manufactureAt},
-        store_at = #{storeAt}
-        WHERE order_detail_id = #{orderDetailId}
-    </update>
+
     <select id="selectOrderInfoByOrderId"
             parameterType="long"
             resultType="kr.swdl.foodingredientmanagement.repository.vo.OrderInfoVO">
@@ -137,13 +131,13 @@
 
         FROM orders o
 
-        JOIN stores s
+        LEFT JOIN stores s
         ON o.store_id = s.store_id
 
-        JOIN order_details od
+        LEFT JOIN order_details od
         ON o.order_id = od.order_id
 
-        JOIN users u
+        LEFT JOIN users u
         ON o.user_id = u.user_id
 
         WHERE o.order_id = #{orderId}
@@ -157,10 +151,52 @@
         u.user_name
 
     </select>
-
     <select id="getOrderDetailStatuses" resultType="string">
         SELECT order_status
         FROM order_details
         WHERE order_id = #{orderId}
     </select>
+
+    <select id="getOrderDetailItems" resultType="map">
+        SELECT
+        od.order_detail_id AS orderDetailId,
+        i.ingredient_name AS ingredientName,
+        od.order_quantity AS orderQuantity,
+        i.order_unit AS orderUnit,
+        od.supply_price AS supplyPrice,
+        od.order_price AS orderPrice,
+        u.user_name AS userName,
+        od.order_status AS orderStatus,
+        od.manufacture_at AS manufactureAt,
+        od.store_at AS storeAt
+        FROM order_details od
+        JOIN orders o
+        ON o.order_id = od.order_id
+        JOIN ingredients i
+        ON od.ingredient_id = i.ingredient_id
+        JOIN users u
+        ON o.user_id = u.user_id
+        WHERE o.order_id = #{orderId}
+        AND o.store_id = #{storeId}
+        ORDER BY od.ingredient_id
+    </select>
+
+    <update id="updateIngredientStock">
+        UPDATE ingredients
+        SET supply_quantity = supply_quantity - #{orderQuantity}
+        WHERE ingredient_id = #{ingredientId}
+        AND supply_quantity >= #{orderQuantity}
+    </update>
+
+    <update id="updateOrderDetailsDates">
+        UPDATE order_details od
+        JOIN orders o
+        ON o.order_id = od.order_id
+        SET
+        od.manufacture_at = #{manufactureAt},
+        od.store_at = #{storeAt}
+        WHERE od.order_detail_id = #{orderDetailId}
+        AND o.store_id = #{storeId}
+        AND od.order_status = '승인'
+    </update>
 </mapper>
