@@ -11,7 +11,7 @@ public class TestController {
         return "disposal/hqDisposalList";
     }
 
-    @GetMapping("/storeDisposalList")
+    @GetMapping("/test/storeDisposalList")
     public String store(){
         return "disposal/storeDisposalList";
     }
