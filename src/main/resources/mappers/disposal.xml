@@ -4,7 +4,7 @@
 
 <mapper namespace="kr.swdl.foodingredientmanagement.repository.DisposalsRepository">
 
-    <select id="findAll"
+    <select id="getDisposals"
             resultType="kr.swdl.foodingredientmanagement.repository.vo.DisposalVO">
         SELECT d.disposal_id            AS disposalId,
                d.disposal_unit          AS disposalUnit,
@@ -24,7 +24,7 @@
     </select>
 
     <!-- 폐기조회 -->
-    <select id="findById"
+    <select id="getDisposalById"
             resultType="kr.swdl.foodingredientmanagement.repository.vo.DisposalVO">
         SELECT d.disposal_id            AS disposalId,
                d.disposal_unit          AS disposalUnit,
@@ -45,7 +45,7 @@
     </select>
 
     <!-- 폐기 등록 -->
-    <insert id="insertDisposal" parameterType="kr.swdl.foodingredientmanagement.repository.vo.DisposalVO"
+    <insert id="addDisposal" parameterType="kr.swdl.foodingredientmanagement.repository.vo.DisposalVO"
             useGeneratedKeys="true"
             keyProperty="disposalId"
             keyColumn="disposal_id">
@@ -110,6 +110,7 @@
             resultType="kr.swdl.foodingredientmanagement.repository.vo.HQDisposalListVO">
 
         SELECT
+        d.disposal_id AS disposalId,
         d.disposal_req_at AS disposalReqAt,
         s.store_name AS storeName,
         i.ingredient_name AS ingredientName,
@@ -191,7 +192,7 @@
         </choose>
     </select>
 
-    <select id="countByTodayDisposed" resultType="int">
+    <select id="getCountByTodayDisposed" resultType="int">
 
         SELECT COUNT(*)
         FROM disposals
@@ -201,7 +202,7 @@
     </select>
 
 
-    <select id="sumByTodayDisposedPrice" resultType="int">
+    <select id="getSumByTodayDisposedPrice" resultType="int">
         SELECT IFNULL(SUM(disposal_price), 0)
         FROM disposals AS d
         WHERE disposal_status IN ('승인', '완료')
@@ -209,7 +210,7 @@
           AND CURDATE() + INTERVAL 1 DAY > disposal_app_at
     </select>
 
-    <select id="countNeedToConfirmByStoreId" resultType="int">
+    <select id="getCountNeedToConfirmByStoreId" resultType="int">
         SELECT COUNT(*)
         FROM disposals d,
              order_details od,
@@ -229,9 +230,12 @@
                dai.disposal_img IS NULL) -- 폐기 확인이 안된 경우
     </select>
 
-    <select id="getStoreDisposals" parameterType="kr.swdl.foodingredientmanagement.dto.StoreDisposalSerachFilterDTO"
+    <select id="getStoreDisposals"
+            parameterType="kr.swdl.foodingredientmanagement.dto.StoreDisposalSerachFilterDTO"
             resultType="kr.swdl.foodingredientmanagement.repository.vo.StoreDisposalListVO">
+
         SELECT
+        d.disposal_id AS disposalId,
         d.disposal_req_at AS disposalReqAt,
         i.ingredient_name AS ingredientName,
         d.disposal_quantity AS disposalQuantity,
@@ -246,37 +250,38 @@
         LEFT OUTER JOIN ingredients i
         ON od.ingredient_id = i.ingredient_id
         LEFT OUTER JOIN orders AS o
-        ON od.order_id = o.order_id -- [수정 완료] o.order_id로 변경
+        ON od.order_id = o.order_id
         LEFT OUTER JOIN stores s
         ON o.store_id = s.store_id
         LEFT OUTER JOIN disposal_app_infos dai
         ON dai.disposal_id = d.disposal_id
         <where>
             s.store_id = #{storeId}
-
-            <if test="ingredientName != null and ingredientName != ''">
+            <if test="ingredientName != null and ingredientName.trim() != ''">
                 AND i.ingredient_name LIKE CONCAT('%', #{ingredientName}, '%')
             </if>
-            <if test="disposalStatus != null and disposalStatus != ''">
+            <if test="disposalStatus != null and disposalStatus.trim() != ''">
                 AND d.disposal_status = #{disposalStatus}
             </if>
-            <if test="startDate != null and endDate != null">
+            <if test="startDate != null and startDate.trim() != ''
+                  and endDate != null and endDate.trim() != ''">
                 AND d.disposal_req_at &gt;= #{startDate}
                 AND d.disposal_req_at &lt; DATE_ADD(#{endDate}, INTERVAL 1 DAY)
             </if>
-            <if test="processingMethod != null and processingMethod != ''">
+            <if test="processingMethod != null and processingMethod.trim() != ''">
                 AND d.processing_method = #{processingMethod}
             </if>
         </where>
         ORDER BY d.disposal_req_at
         <choose>
-            <when test="sortType != null and sortType.equalsIgnoreCase('DESC')">
+            <when test="sortType != null and sortType.trim().equalsIgnoreCase('DESC')">
                 DESC
             </when>
             <otherwise>
                 ASC
             </otherwise>
         </choose>
+
     </select>
 
     <select id="getStoreIdsByHQId">
@@ -284,5 +289,89 @@
         FROM stores
         WHERE user_id = #{userId}
     </select>
+
+    <!-- 폐기 PK 기준 상세 조회 -->
+    <select id="getDisposalDetailByDisposalId"
+            resultType="kr.swdl.foodingredientmanagement.repository.vo.DisposalDetailVO">
+        SELECT
+        d.disposal_id               AS disposalId,
+        d.order_detail_id           AS orderDetailId,
+        d.disposal_unit             AS disposalUnit,
+        d.disposal_status           AS disposalStatus,
+
+        <!-- 폐기 정보 -->
+        s.store_name                AS storeName,
+        i.ingredient_name           AS ingredientName,
+        d.processing_method         AS processingMethod,
+        d.disposal_quantity         AS disposalQuantity,
+        i.order_unit                AS orderUnit,
+
+        <!-- 폐기 요청 정보 -->
+        d.disposal_req_at           AS disposalReqAt,
+        d.req_user_id               AS reqUserId,
+        ru.user_name                AS reqUserName,
+        ru.role                     AS reqUserRole,
+
+        <!-- 폐기 승인 정보 -->
+        d.disposal_app_at           AS disposalAppAt,
+        dai.app_user_id             AS appUserId,
+        au.user_name                AS appUserName,
+        au.role                     AS appUserRole,
+
+        <!-- 폐기 유형 및 사유 -->
+        d.disposal_type             AS disposalType,
+        d.disposal_reason           AS disposalReason,
+        d.disposal_detail_reason    AS disposalDetailReason,
+        d.reject_reason             AS rejectReason,
+
+        <!-- 금액 정보 -->
+        od.supply_price             AS supplyPrice,
+        od.supply_price * d.disposal_quantity
+        AS disposalPrice,
+
+        <!-- 폐기 확인 정보 -->
+        dai.disposal_app_info_id    AS disposalAppInfoId,
+        dai.check_at                AS checkAt,
+        dai.check_user_id           AS checkUserId,
+        cu.user_name                AS checkUserName,
+        cu.role                     AS checkUserRole,
+        dai.disposal_img            AS disposalImg
+
+        FROM disposals AS d
+
+        INNER JOIN order_details AS od
+        ON d.order_detail_id = od.order_detail_id
+
+        INNER JOIN ingredients AS i
+        ON od.ingredient_id = i.ingredient_id
+
+        INNER JOIN orders AS o
+        ON od.order_id = o.order_id
+
+        INNER JOIN stores AS s
+        ON o.store_id = s.store_id
+
+        INNER JOIN users AS ru
+        ON d.req_user_id = ru.user_id
+
+        LEFT OUTER JOIN disposal_app_infos AS dai
+        ON d.disposal_id = dai.disposal_id
+
+        LEFT OUTER JOIN users AS au
+        ON dai.app_user_id = au.user_id
+
+        LEFT OUTER JOIN users AS cu
+        ON dai.check_user_id = cu.user_id
+
+        WHERE d.disposal_id = #{disposalId}
+    </select>
+
+
+    <!-- 요청 상태에서만 승인 또는 거절 -->
+    <update id="updateDisposalStatusToCompleted">
+        UPDATE disposals
+        SET disposal_status = '완료'
+        WHERE disposal_id = #{disposalId}
+    </update>
 
 </mapper>

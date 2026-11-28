@@ -190,9 +190,7 @@ function renderDisposalRows(data) {
 
             <td class="text-center">
                 <button type="button"
-                        class="btn btn-outline-primary btn-sm py-0 px-2 nowrap disposal-detail-btn"
-                        data-bs-toggle="modal"
-                        data-bs-target="#disposalDetailModal">
+                        class="btn btn-outline-primary btn-sm py-0 px-2 nowrap disposal-detail-btn">
                     상세
                 </button>
             </td>

@@ -24,6 +24,15 @@ spring:
     suffix: .html
     cache: false
     check-template-location: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 15MB
+
+
+file:
+  upload-dir: C:/2ndSprint/MultiFile
 
 mybatis:
   mapper-locations: classpath:mappers/*.xml
